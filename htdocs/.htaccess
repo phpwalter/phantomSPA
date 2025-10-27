@@ -1,0 +1,58 @@
+### ----------------------------------------
+### .htaccess — SPA Routing + SSI + Security + Caching (Improved)
+### ----------------------------------------
+
+# SSI
+AddType text/html .shtml
+AddOutputFilter INCLUDES .shtml
+Options +Includes
+
+# Directory Index
+DirectoryIndex index.shtml index.html
+
+# Charset & MIME
+AddDefaultCharset utf-8
+AddType application/javascript .js .mjs
+AddType image/svg+xml .svg
+
+# Rewrite Engine
+RewriteEngine On
+
+# Bypass real files/dirs
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Bypass static asset mounts
+RewriteCond %{REQUEST_URI} ^/(vendor|sites/phantom/shared)/ [OR]
+RewriteCond %{REQUEST_URI} \.(js|mjs|css|svg|png|jpe?g|webp|woff2?|map)$ [NC]
+RewriteRule ^ - [L]
+
+# SPA Routing
+RewriteRule ^phantom(/.*)?$ apps/phantom/index.shtml [L]
+RewriteRule ^apps/(consumer|phantom|spa-docs)(/.*)?$ apps/$1/index.shtml [L]
+
+# Caching
+SetEnvIf Request_URI "^/framework/(core|modules)/" IS_RUNTIME=1
+
+<IfModule mod_headers.c>
+  # Cache-busting for hashed assets
+  <FilesMatch "\.[0-9a-f]{8,}\.(js|css|woff2?|svg|png|jpe?g|ico|webmanifest)$">
+    Header always set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Disable cache for runtime
+  Header always set Cache-Control "no-store" env=IS_RUNTIME
+
+  # Strict security headers
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "fullscreen=(), geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# Sensitive files
+<FilesMatch "^(\.env|\.git|\.htaccess|\.htpasswd|\.DS_Store|\.svn|\.idea|composer\.(json|lock)|package(-lock)?\.json|yarn\.lock|.*\.bak|.*\.swp)$">
+  Require all denied
+</FilesMatch>
