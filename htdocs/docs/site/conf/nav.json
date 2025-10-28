@@ -1,0 +1,8 @@
+{
+  "basePath": "/docs/site/",
+  "contentRoot": "/docs/site/pages/",
+  "routes": [
+    { "path": "/", "title": "Welcome", "file": "intro.html" },
+    { "path": "*", "title": "Not found", "file": "404.html" }
+  ]
+}

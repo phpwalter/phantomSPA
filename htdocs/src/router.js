@@ -1,22 +1,13 @@
 // /src/router.js
 // SPA fragment router driven by nav.json (same file your TOC uses).
-// Auto-boot from <script type="module" src="/src/router.js" data-* ...> — no inline JS needed.
+// Auto-boot from <script type="module" src="/src/router.js" data-* ...> (no inline JS).
 //
-// Supported data-* attributes on the script tag:
+// Data attributes on the script tag:
 //   data-nav="/docs/dev/conf/nav.json"   (required)
-//   data-main="main.site-main"           (selector or element for MAIN)
-//   data-aside="#site-nav"               (selector or element containing TOC links)
-//   data-active-class="active"           (class on <li> for current route)
-//   data-query-mode="array"              ("array" or "single")
-//
-// Features:
-// - basePath (URL mount) + contentRoot (where fragments live)
-// - :param segments and * wildcard
-// - 404 fallback if route file missing OR path not matched
-// - Preload API + automatic hover preloading for links with [data-preload]
-// - Safe click interception (respects new tab, download, rel="external", non-http schemes)
-// - Focus first <h1> on navigation; scroll to top
-// - Emits CustomEvents: "route:after" and "route:error"
+//   data-main="main.site-main"
+//   data-aside="#site-nav"
+//   data-active-class="active"
+//   data-query-mode="array"              ("array" | "single")
 
 function isModifiedClick(e) {
     return e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
@@ -56,7 +47,7 @@ async function fetchTEXT(url) {
     return r.text();
 }
 
-// Build RegExp for each route
+// Build route regexes
 function compile(routes) {
     return routes.map((r) => {
         const keys = [];
@@ -85,11 +76,11 @@ function matchRoute(pathname, compiled) {
     return null;
 }
 
-// Resolve contentRoot + file; guard against duplicated final segment (e.g., "pages/pages")
+// Resolve contentRoot + file; guard against double final segment (e.g., "pages/pages")
 function resolveFileURL(contentRoot, file) {
     if (!file) return null;
-    if (/^https?:\/\//i.test(file)) return file;  // absolute URL
-    if (file.startsWith('/')) return file;        // site-absolute
+    if (/^https?:\/\//i.test(file)) return file;
+    if (file.startsWith('/')) return file;
     let root = contentRoot || '/';
     root = root.replace(/\/+$/,'') + '/';
     let f = file.replace(/^\.\/+/,'').replace(/^\/+/,'');
@@ -100,8 +91,8 @@ function resolveFileURL(contentRoot, file) {
 
 export function createRouter({
                                  nav,                 // { basePath, contentRoot, routes[] }
-                                 main = 'main',       // selector or Element
-                                 aside = 'aside',     // selector or Element (TOC container)
+                                 main = 'main',
+                                 aside = 'aside',
                                  activeClass = 'active',
                                  queryMode = 'array'
                              } = {}) {
@@ -113,16 +104,14 @@ export function createRouter({
     const ASIDE = typeof aside === 'string' ? document.querySelector(aside) : aside;
     if (!MAIN) throw new Error('router: <main> element not found (check data-main)');
 
-    // Prepare routes (skip disabled) and resolve file URLs once
     const routeDefs = (nav.routes || []).filter(r => !r.disabled).map(r => ({
         ...r, _fileURL: resolveFileURL(CONTENT_ROOT, r.file || null)
     }));
     const compiled = compile(routeDefs);
     const notFound = routeDefs.find(r => r.path === '*') || { path: '*', title: 'Not found', _fileURL: null };
 
-    // Cache (html text) and in-flight fetch promises for dedupe
-    const HTML_CACHE = new Map();      // url -> html string
-    const PENDING = new Map();         // url -> Promise<string>
+    const HTML_CACHE = new Map();  // url -> html
+    const PENDING = new Map();     // url -> Promise<html>
 
     async function getHTML(url) {
         if (url == null) return `<section class="not-found"><h1>Not found</h1></section>`;
@@ -132,10 +121,7 @@ export function createRouter({
             HTML_CACHE.set(url, txt);
             PENDING.delete(url);
             return txt;
-        }).catch((e) => {
-            PENDING.delete(url);
-            throw e;
-        });
+        }).catch((e) => { PENDING.delete(url); throw e; });
         PENDING.set(url, p);
         return await p;
     }
@@ -173,7 +159,7 @@ export function createRouter({
         let html, titleToUse = meta.title;
 
         try {
-            html = await getHTML(meta._fileURL);        // try the route fragment
+            html = await getHTML(meta._fileURL);        // try normal fragment
         } catch (err) {
             try {
                 html = await getHTML(notFound._fileURL);  // fallback to 404 fragment
@@ -197,18 +183,15 @@ export function createRouter({
 
     function navigate(url, replace = false) { return load(url, replace); }
 
-    // Public preload API: resolve route and fetch its HTML into cache
     async function preload(url) {
         const u = new URL(url, location.origin);
         const local = localizePath(u.pathname, BASE);
         const hit = local && matchRoute(local, compiled);
         const meta = hit ? hit.route : notFound;
-        if (meta._fileURL) {
-            try { await getHTML(meta._fileURL); } catch { /* ignore preload failure */ }
-        }
+        if (meta._fileURL) { try { await getHTML(meta._fileURL); } catch {} }
     }
 
-    // Optional: hover preloading for any <a data-preload>
+    // Optional hover preloading for <a data-preload>
     addEventListener('mouseover', (e) => {
         const a = e.target.closest?.('a[data-preload][href]');
         if (!a) return;
@@ -218,17 +201,16 @@ export function createRouter({
         if (!local) return;
         const hit = matchRoute(local, compiled);
         if (!hit) return;
-        // fire and forget
-        preload(u.toString());
+        preload(u.toString()); // fire & forget
     }, { passive: true });
 
-    // Intercept internal links for known routes
+    // Intercept internal links safely
     addEventListener('click', (e) => {
         const a = e.target.closest?.('a[href]');
         if (!a || isModifiedClick(e)) return;
 
         const u = new URL(a.href, location.href);
-        if (!/^https?:$/.test(u.protocol)) return; // allow mailto:, tel:
+        if (!/^https?:$/.test(u.protocol)) return;
 
         const local = localizePath(u.pathname, BASE);
         const isLocal = u.origin === location.origin && local !== null;
@@ -251,13 +233,13 @@ export function createRouter({
     return api;
 }
 
-// Manual boot helper if you prefer (still no inline JS in HTML)
+// Optional manual boot helper
 export async function bootFromNav(navUrl, opts = {}) {
     const nav = await fetchJSON(navUrl);
     return createRouter({ nav, ...opts }).start();
 }
 
-// Auto-boot from the script tag’s data-* attributes
+// --- Auto-boot & expose global instance -------------------------------------
 (async function autobootFromScriptTag() {
     if (typeof document === 'undefined') return;
     const scriptEl = document.currentScript || [...document.scripts].slice(-1)[0];
@@ -273,7 +255,9 @@ export async function bootFromNav(navUrl, opts = {}) {
 
     try {
         const nav = await fetchJSON(navUrl);
-        createRouter({
+        // Expose the running router so pages can call navigate()/preload() without inline JS
+        // e.g., window.PicoRouter.navigate('/docs/dev/api')
+        window.PicoRouter = createRouter({
             nav,
             main: mainSel,
             aside: asideSel,
