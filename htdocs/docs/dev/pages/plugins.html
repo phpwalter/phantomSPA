@@ -1,0 +1,22 @@
+<section class="page" aria-labelledby="title">
+    <h1>Plugins</h1>
+    <p>Extend MarkdownSPA with custom plugins.</p>
+
+
+    <div class="block">
+    <code>
+class MyPlugin {
+  install(app) {
+    app.on('ready', () => {
+      console.log('App is ready!');
+    });
+  }
+}
+
+app.use(new MyPlugin());
+    </code>
+    </div>
+
+
+
+</section>

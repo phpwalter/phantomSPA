@@ -1,0 +1,207 @@
+:root {
+    --bg: #0b0d12;
+    --text: #e6eef8;
+    --muted: #9aa5b1;
+    --panel: #2f3d5e;
+    --border: #1b2230;
+    --accent: #7dd3fc;
+}
+
+* {
+    box-sizing: border-box
+}
+
+html, body {
+    height: 100%
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* === Top badges bar === */
+.badges-bar {
+    width: 100%;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+    padding: 8px 20px; /* keep 20px from body edge */
+}
+
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    justify-content: center;
+    align-items: center;
+    min-height: 24px;
+}
+
+/* make each <section> a full-row, centered group */
+.badges > section {
+    flex: 0 0 100%; /* take full row */
+    display: flex; /* layout badges within the row */
+    justify-content: center; /* center the badges in that row */
+    flex-wrap: wrap; /* wrap badges inside the row if needed */
+    gap: 8px 10px; /* keep the same spacing */
+}
+
+.badges a {
+    display: inline-flex;
+    line-height: 0
+}
+
+.badges img {
+    height: 20px;
+    display: block
+}
+
+/* unified visual height */
+@media (max-width: 600px) {
+    .badges img {
+        height: 18px
+    }
+}
+
+/* Main */
+.wrap {
+    flex: 1 0 auto;
+    display: grid;
+    place-content: center;
+    text-align: center;
+    padding: 32px 20px
+}
+
+.banner {
+    display: block;
+    margin: 0 auto 16px;
+    width: 45%;
+    max-width: 900px;
+    height: auto
+}
+
+h1 {
+    margin: .25rem 0 .25rem;
+    font-size: clamp(28px, 4vw, 40px);
+    letter-spacing: .2px
+}
+
+p.muted {
+    color: var(--muted);
+    margin: .25rem 0 1rem
+}
+
+.cards {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 16px
+}
+
+.card {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 220px;
+    padding: 14px 18px;
+    color: var(--text);
+    text-decoration: none;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: transform .12s ease, opacity .12s ease, border-color .12s ease, box-shadow .12s ease;
+    opacity: .95;
+}
+
+.card:hover {
+    transform: translateY(-1px);
+    opacity: 1;
+    border-color: var(--accent);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .25)
+}
+
+.ms {
+    font-family: 'Material Symbols Rounded';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    display: inline-block;
+    line-height: 1;
+    vertical-align: -3px;
+    font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Footer bar — full width, 20px side padding, 20px top margin; anchored bottom by page flex */
+.footer-bar {
+    width: 100%;
+    border-top: 1px solid var(--border);
+    background: var(--panel);
+    padding: 14px 20px; /* >= 20px off body edge */
+    margin-top: 20px; /* requested top margin */
+    position: relative; /* anchors children */
+    min-height: 36px;
+    flex-shrink: 0;
+}
+
+/* Left-aligned copyright with 20px inset */
+.footer-copy {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* Centered LOGIN pill at 14px text/icon size */
+.btn-login {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 14px;
+    color: var(--text);
+    text-decoration: none;
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    transition: transform .12s, opacity .12s, border-color .12s;
+}
+
+.btn-login .icon {
+    width: 14px;
+    height: 14px;
+}
+
+.btn-login:hover {
+    transform: translate(-50%, -50%) translateY(-1px);
+    opacity: 1;
+    border-color: #7dd3fc
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card, .btn-login {
+        transition: none
+    }
+
+    .card:hover {
+        transform: none
+    }
+
+    .btn-login:hover {
+        transform: translate(-50%, -50%)
+    }
+}

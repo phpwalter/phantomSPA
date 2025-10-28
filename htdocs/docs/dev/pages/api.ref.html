@@ -1,0 +1,116 @@
+<section class="page" aria-labelledby="title">
+    <h1>API Reference</h1>
+
+    <!-- Methods Table -->
+    <div class="api-table-wrap">
+        <table class="api-table" aria-describedby="api-title">
+            <thead>
+            <tr>
+                <th scope="col">Method</th>
+                <th scope="col">Description</th>
+                <th scope="col">Parameters</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>init()</code></td>
+                <td>Initialize the application</td>
+                <td>None</td>
+            </tr>
+            <tr>
+                <td><code>navigate(path)</code></td>
+                <td>Navigate to a specific route</td>
+                <td><code>path: string</code></td>
+            </tr>
+            <tr>
+                <td><code>render(markdown)</code></td>
+                <td>Render markdown to HTML</td>
+                <td><code>markdown: string</code></td>
+            </tr>
+            <tr>
+                <td><code>on(event, handler)</code></td>
+                <td>Add event listener</td>
+                <td><code>event: string</code>, <code>handler: Function</code></td>
+            </tr>
+            <tr>
+                <td><code>use(plugin)</code></td>
+                <td>Register a plugin</td>
+                <td><code>plugin: Plugin</code></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Details & Examples -->
+    <section class="api-block" aria-labelledby="api-init">
+        <h2 id="api-init" class="api-h2"><code>init()</code></h2>
+        <p>Bootstraps MarkdownSPA, mounts into the configured root, and performs the initial render.</p>
+        <pre class="api-code"><code>
+// main.js
+import MarkdownSPA from 'markdown-spa';
+
+const app = new MarkdownSPA({ root: '#app', pages: './pages' });
+app.init();
+    </code></pre>
+    </section>
+
+    <section class="api-block" aria-labelledby="api-navigate">
+        <h2 id="api-navigate" class="api-h2"><code>navigate(path)</code></h2>
+        <p>Pushes a new URL and renders the target page. Uses the History API so back/forward works.</p>
+        <pre class="api-code"><code>
+app.navigate('/docs/getting-started'); // loads the page and updates the URL
+    </code></pre>
+    </section>
+
+    <section class="api-block" aria-labelledby="api-render">
+        <h2 id="api-render" class="api-h2"><code>render(markdown)</code></h2>
+        <p>Converts a Markdown string to HTML. Returns a string; you can insert it anywhere in the DOM.</p>
+        <pre class="api-code"><code>
+const html = app.render('# Hello **world**');
+document.querySelector('#preview').innerHTML = html;
+    </code></pre>
+    </section>
+
+    <section class="api-block" aria-labelledby="api-on">
+        <h2 id="api-on" class="api-h2"><code>on(event, handler)</code></h2>
+        <p>Subscribes to app-level events. Handlers receive an event payload object.</p>
+        <div class="api-note">
+            <strong>Events:</strong>
+            <code>ready</code>, <code>route:before</code>, <code>route:after</code>, <code>error</code>
+        </div>
+        <pre class="api-code"><code>
+app.on('route:after', ({ path }) => {
+  console.log('navigated to', path);
+});
+    </code></pre>
+    </section>
+
+    <section class="api-block" aria-labelledby="api-use">
+        <h2 id="api-use" class="api-h2"><code>use(plugin)</code></h2>
+        <p>Registers a plugin. A plugin is an object with optional lifecycle hooks:</p>
+        <pre class="api-code"><code>
+// example plugin
+const analyticsPlugin = {
+  onInit({ config }) { /* ... */ },
+  onRoute({ route }) { /* ... */ },
+  onError(err) { /* ... */ }
+};
+
+app.use(analyticsPlugin);
+    </code></pre>
+    </section>
+
+    <!-- Types quick reference -->
+    <section class="api-block" aria-labelledby="api-types">
+        <h2 id="api-types" class="api-h2">Types</h2>
+        <pre class="api-code"><code>
+type Handler = (payload: any) => void;
+
+type Plugin = {
+  onInit?: (ctx: { config: any }) => void | Promise<void>;
+  onRoute?: (ctx: { route: { path: string; params: Record&lt;string,string&gt;; query: Record&lt;string, string | string[]&gt; } }) => void | Promise<void>;
+  onError?: (err: unknown) => void;
+};
+    </code></pre>
+    </section>
+</section>

@@ -1,0 +1,103 @@
+:root{
+    /* inherit your site palette; tweak if needed */
+    --gs-bg: #0f1724;
+    --gs-panel: #101a2a;
+    --gs-line: #1e2a3f;
+    --gs-fg: #c7d0de;
+    --gs-muted: #9aa7bd;
+    --gs-title: #8fb0ff;
+    --gs-heading: #e6edf7;
+    --gs-accent: #6ea8ff;
+    --gs-radius: 12px;
+    --gs-shadow: 0 0 0 1px rgba(0,0,0,.04), 0 6px 18px rgba(0,0,0,.25);
+}
+
+/* page wrapper */
+.gs-page{
+    display:block;
+    color:var(--gs-fg);
+}
+
+/* top title */
+.gs-title{
+    margin: 0 0 12px;
+    font-size: clamp(2rem, 3vw + 1rem, 3.2rem);
+    line-height: 1.05;
+    color: var(--gs-title);
+    letter-spacing: .2px;
+}
+
+/* section block */
+.gs-block{
+    margin: 18px 0 22px;
+}
+
+/* headings */
+.gs-h2{
+    margin: 0 0 8px;
+    color: var(--gs-heading);
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+
+/* code panel */
+.gs-code{
+    margin: 10px 0 0;
+    background: var(--gs-panel);
+    border: 1px solid var(--gs-line);
+    border-radius: var(--gs-radius);
+    padding: 14px 16px;
+    overflow: auto;
+    box-shadow: var(--gs-shadow);
+}
+.gs-code code{
+    display:block;
+    color: #cde1c5;              /* pleasant “code” color */
+    font: 14px/1.45 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    white-space: pre;
+}
+
+/* tip card */
+.gs-tip{
+    display:flex;
+    align-items:flex-start;
+    gap: 12px;
+    margin: 18px 0 10px;
+    background: #0f1a2c;
+    border: 1px solid var(--gs-line);
+    border-radius: var(--gs-radius);
+    padding: 14px 16px;
+}
+.gs-tip-icon{
+    font-size: 20px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,.35));
+}
+.gs-tip-title{
+    margin: 0 0 4px;
+    color: var(--gs-heading);
+    font-size: 1rem;
+    font-weight: 800;
+}
+.gs-tip p{ margin: 0; color: var(--gs-fg); }
+
+/* CTA button */
+.gs-cta{ margin: 18px 0 6px; }
+.gs-btn{
+    display:inline-block;
+    background: #1b2a48;
+    color: #dbe7ff;
+    border: 1px solid var(--gs-line);
+    border-radius: 10px;
+    padding: 10px 14px;
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: .2px;
+    box-shadow: var(--gs-shadow);
+}
+.gs-btn:hover{ background:#223357; color:#fff; border-color:#2a3a58; }
+
+/* body copy */
+.gs-page p{ margin: 6px 0; color: var(--gs-fg); }
+.gs-page a{ color: var(--gs-accent); text-decoration: none; }
+.gs-page a:hover{ text-decoration: underline; text-underline-offset: 2px; }

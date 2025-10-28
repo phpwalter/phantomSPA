@@ -1,0 +1,86 @@
+<section class="page" aria-labelledby="title">
+    <h1>Getting Started</h1>
+
+    <!-- Installation -->
+    <section class="gs-block" aria-labelledby="gs-install">
+        <h2>Installation</h2>
+        <p>Install MarkdownSPA via npm, yarn, or use it directly from a CDN.</p>
+        <pre class="gs-code"><code>
+npm install markdown-spa
+# or
+yarn add markdown-spa
+# or use CDN
+&lt;script src="https://unpkg.com/markdown-spa/dist/markdown-spa.min.js"&gt;&lt;/script&gt;
+    </code></pre>
+    </section>
+
+    <!-- Basic Setup -->
+    <section class="gs-block" aria-labelledby="gs-setup">
+        <h2>Basic Setup</h2>
+        <p>Create a simple MarkdownSPA application with just a few lines of code.</p>
+        <pre class="gs-code"><code>
+// main.js
+import MarkdownSPA from 'markdown-spa';
+
+const app = new MarkdownSPA({
+  root: '#app',
+  pages: './pages',
+  theme: 'auto',
+  plugins: []
+});
+
+app.init();
+    </code></pre>
+    </section>
+
+    <!-- Project Structure -->
+    <section class="gs-block" aria-labelledby="gs-structure">
+        <h2 id="gs-structure" class="gs-h2">Project Structure</h2>
+        <p>MarkdownSPA uses a simple file-based routing system. Your project structure might look like this:</p>
+        <pre class="gs-code"><code>
+project/
+├─ index.html
+├─ main.js
+├─ pages/
+│  ├─ index.md
+│  ├─ about.md
+│  └─ docs/
+│     ├─ getting-started.md
+│     └─ api.md
+└─ public/
+   └─ styles.css
+    </code></pre>
+    </section>
+
+    <!-- Writing Content -->
+    <section class="gs-block" aria-labelledby="gs-writing">
+        <h2 id="gs-writing" class="gs-h2">Writing Content</h2>
+        <p>Write your content in Markdown files. MarkdownSPA will automatically convert them to HTML and handle routing.</p>
+        <pre class="gs-code"><code>
+# Welcome to My Site
+
+This is written in **Markdown** and rendered as HTML.
+
+## Features
+- Simple routing
+- Markdown support
+- Zero configuration
+
+[learn more](/docs/getting-started)
+    </code></pre>
+    </section>
+
+    <!-- Pro Tip -->
+    <aside class="gs-tip" role="note" aria-label="Pro Tip">
+        <div class="gs-tip-icon" aria-hidden="true">💡</div>
+        <div class="gs-tip-body">
+            <h3 class="gs-tip-title">Pro Tip</h3>
+            <p>You can use HTML directly in your Markdown files for more complex layouts. MarkdownSPA will render both Markdown and HTML seamlessly.</p>
+        </div>
+    </aside>
+
+    <!-- CTA -->
+    <p class="gs-cta">
+        <a class="gs-btn" href="/docs/api">API Reference →</a>
+    </p>
+</section>

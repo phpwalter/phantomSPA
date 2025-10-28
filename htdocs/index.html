@@ -1,0 +1,188 @@
+<!--
+/**
+ * Path: /phantom/index.html
+ * Description: Landing page with top badges bar (center-outward), SVG/PNG banner, Material icon cards,
+ *              and full-width footer bar (20px side padding, 20px top margin) with centered Login + dynamic year.
+ * Author: PhantomSPA Authors
+ * Version: 1.3.0
+ * Date: 2025-09-06
+ */
+-->
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PhantomSPA — Welcome</title>
+
+    <!-- Favicon (mapped via .htaccess to /phantom/docs/assets/icon.ico) -->
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+
+    <!-- Apple touch icons -->
+    <link rel="apple-touch-icon"                 href="/library/assets/images/apple/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/library/assets/images/apple/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/library/assets/images/apple/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/library/assets/images/apple/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/library/assets/images/apple/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/library/assets/images/apple/apple-touch-icon-180x180.png">
+
+
+    <!-- Preconnects for faster Shield Icons -->
+    <link rel="preconnect" href="https://img.shields.io">
+
+    <!-- Preconnects for faster Material Symbols -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Material Symbols (Rounded) — with display=swap -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL@1&display=swap" />
+
+    <link rel="stylesheet" href="assets/css/index.css">
+
+    <script src="assets/js/index.js"></script>
+
+
+</head>
+<body>
+
+<!-- === Badges header bar (first badge = center) === -->
+<div class="badges-bar" role="banner" hidden>
+    <nav id="badges" class="badges" aria-label="Project badges">
+        <!-- First badge sits at center (your script arranges center-outward) -->
+
+        <section>
+            <!-- Stars -->
+            <a href="https://github.com/phpwalter/phantom" target="_blank" rel="noopener external" title="GitHub Stars">
+                <img alt="GitHub stars" src="https://img.shields.io/github/stars/phpwalter/phantom?style=flat&logo=github" />
+            </a>
+
+            <a href="https://github.com/phpwalter/phantom/network/members"
+               target="_blank" rel="noopener external" title="Forks">
+                <img alt="Forks"
+                     src="https://img.shields.io/github/forks/phpwalter/phantom?style=flat&logo=github" />
+            </a>
+
+            <a href="https://github.com/phpwalter/phantom/tree/main"
+               target="_blank" rel="noopener external" title="Checks: main">
+                <img alt="Checks: main"
+                     src="https://img.shields.io/github/checks-status/phpwalter/phantom/main?style=flat&label=Main" />
+            </a>
+
+            <!-- If you also have a 'dev' branch -->
+            <a href="https://github.com/phpwalter/phantom/tree/dev"
+               target="_blank" rel="noopener external" title="Checks: dev">
+                <img alt="Checks: dev"
+                     src="https://img.shields.io/github/checks-status/phpwalter/phantom/dev?style=flat&label=Dev" />
+            </a>
+        </section>
+
+        <section>
+            <!-- CI badge -->
+            <a href="https://github.com/phpwalter/phantom/actions" target="_blank" rel="noopener external" title="CI">
+                <img alt="CI" src="https://img.shields.io/github/actions/workflow/status/phpwalter/phantom/ci.yml?label=ci&logo=githubactions&logoColor=white" />
+            </a>
+
+            <!-- Release badge -->
+            <a href="https://github.com/phpwalter/phantom/actions" target="_blank" rel="noopener external" title="Release">
+                <img alt="Release" src="https://img.shields.io/github/actions/workflow/status/phpwalter/phantom/release.yml?label=release&logo=rocket&logoColor=white" />
+            </a>
+
+            <!-- Version badge -->
+            <a href="https://github.com/phpwalter/phantom/releases" target="_blank" rel="noopener external" title="Latest Version">
+                <img alt="Version" src="https://img.shields.io/github/v/release/phpwalter/phantom?label=version&logo=semantic-release&logoColor=white" />
+            </a>
+        </section>
+
+        <section>
+            <!-- Code coverage badge -->
+            <a href="https://app.codecov.io/gh/phpwalter/phantom" target="_blank" rel="noopener external" title="Coverage">
+                <img alt="Coverage" src="https://img.shields.io/codecov/c/github/phpwalter/phantom?logo=codecov&logoColor=white" />
+            </a>
+
+            <!-- Security badge -->
+            <a href="https://github.com/phpwalter/phantom/security" target="_blank" rel="noopener external" title="Security">
+                <img alt="Security" src="https://img.shields.io/badge/security-passing-brightgreen?logo=auth0&logoColor=white" />
+            </a>
+
+            <!-- Licence badge -->
+            <a href="https://github.com/phpwalter/phantom/blob/main/htdocs/LICENSE" target="_blank" rel="noopener external" title="License">
+                <img alt="License" src="https://img.shields.io/github/license/phpwalter/phantom?logo=opensourceinitiative&logoColor=white" />
+            </a>
+
+            <!-- Last commit badge -->
+            <a href="https://github.com/phpwalter/phantom/commits" target="_blank" rel="noopener external" title="Last Commit">
+                <img alt="🗳 Last Commit" src="https://img.shields.io/github/last-commit/phpwalter/phantom?label=%F0%9F%97%93%20Last%20Commit&color=007ec6" />
+            </a>
+
+            <!-- Maintenance badge -->
+            <a href="https://github.com/phpwalter/phantom" target="_blank" rel="noopener external" title="Maintenance">
+                <img alt="🛠️ Maintenance" src="https://img.shields.io/badge/%F0%9F%9B%A0%EF%B8%8F%20Maintenance-active-brightgreen" />
+            </a>
+
+        </section>
+
+        <section>
+            <!-- JavaScript -->
+            <img alt="JavaScript"
+                 src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fphpwalter%2Fphantom%2Fmaster%2Fhtdocs%2Fphantom%2Fdocs%2Fassets%2Fbadges%2Fjs.json&cacheSeconds=60">
+
+            <img alt="JavaScript"
+                 src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fphpwalter%2Fphantom%2Fmaster%2Fhtdocs%2Fphantom%2Fdocs%2Fassets%2Fbadges%2Fjs.json&cacheSeconds=60">
+            <img alt="HTML"
+                 src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fphpwalter%2Fphantom%2Fmaster%2Fhtdocs%2Fphantom%2Fdocs%2Fassets%2Fbadges%2Fhtml.json&cacheSeconds=60">
+            <img alt="CSS"
+                 src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fphpwalter%2Fphantom%2Fmaster%2Fhtdocs%2Fphantom%2Fdocs%2Fassets%2Fbadges%2Fcss.json&cacheSeconds=60">
+            <img alt="JSON"
+                 src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fphpwalter%2Fphantom%2Fmaster%2Fhtdocs%2Fphantom%2Fdocs%2Fassets%2Fbadges%2Fjson.json&cacheSeconds=60">
+            <img alt="Python"
+                 src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fphpwalter%2Fphantom%2Fmaster%2Fhtdocs%2Fphantom%2Fdocs%2Fassets%2Fbadges%2Fpy.json&cacheSeconds=60">
+        </section>
+    </nav>
+
+</div>
+
+<div class="wrap">
+    <!-- Vector-first banner with PNG fallback -->
+    <picture>
+        <source srcset="assets/images/pSPA.banner.png" type="image/svg+xml">
+        <source srcset="/phantom/docs/assets/img/banner.png 1x, /phantom/docs/assets/img/banner@2x.png 2x" type="image/png">
+        <img class="banner" src="library/assets/images/spa-banner.png" alt="PhantomSPA — Invisible, configurable, plug-in SPA engine.">
+    </picture>
+
+    <div class="cards" role="navigation" aria-label="Documentation and App">
+        <a class="card" href="/docs/user/" data-space="user" aria-label="User Documentation">
+            <span class="ms" aria-hidden="true">menu_book</span>
+            <span>User Docs</span>
+        </a>
+        <a class="card" href="/docs/dev" data-space="dev" aria-label="Developer Documentation">
+            <span class="ms" aria-hidden="true">code</span>
+            <span>Developer Docs</span>
+        </a>
+        <a class="card" href="/phantom/app/" aria-label="Sample App">
+            <span class="ms" aria-hidden="true">rocket_launch</span>
+            <span>Sample App</span>
+        </a>
+    </div>
+</div>
+
+<!-- Full-width footer bar -->
+<div class="footer-bar" role="contentinfo">
+    <span class="footer-copy">Copyright © <span id="year"></span> · Built with PhantomSPA&trade;</span>
+    <a class="btn-login" href="/phantom/app/login" data-hardnav="true" aria-label="Login">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill="currentColor"
+                  d="M10.09 15.59 11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3h-8v2h8v14h-8v2h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/>
+        </svg>
+        <span>Login</span>
+    </a>
+</div>
+
+<!-- Auto-update year -->
+<script>
+    (function(){
+        var y=document.getElementById('year');
+        if(y) y.textContent=new Date().getFullYear();
+    }());
+</script>
+</body>
+</html>

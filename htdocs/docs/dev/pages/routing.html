@@ -1,0 +1,114 @@
+<section class="page" aria-labelledby="title">
+    <h1>Routing</h1>
+    <p>MarkdownSPA provides flexible routing with support for static paths, dynamic parameters, and a catch-all fallback.</p>
+
+    <!-- Quick example (matches your screenshot vibe) -->
+    <div class="rt-block">
+    <pre class="rt-code"><code>
+// Define routes (nav.json excerpt)
+{
+  "basePath": "/docs/dev/",
+  "contentRoot": "/docs/dev/pages/",
+  "routes": [
+    { "path": "/",          "file": "intro.html",            "title": "Introduction" },
+    { "path": "/about",     "file": "about.html",            "title": "About" },
+    { "path": "/blog/:slug","file": "blog/[slug].html",      "title": "Blog Post"   },
+    { "path": "*",          "file": "404.html",              "title": "Not found"   }
+  ]
+}
+    </code></pre>
+    </div>
+
+    <!-- Patterns -->
+    <section class="rt-block" aria-labelledby="rt-patterns">
+        <h2 id="rt-patterns" class="rt-h2">Route Patterns</h2>
+        <ul class="rt-list">
+            <li><code>/</code> — Static root path.</li>
+            <li><code>/about</code> — Static page.</li>
+            <li><code>/users/:id</code> — Dynamic segment (captures one path part).</li>
+            <li><code>*</code> — Catch-all (404) route; keep it last.</li>
+        </ul>
+        <p>Each route’s <code>file</code> is resolved relative to <code>contentRoot</code> in <code>nav.json</code>. In production you can point <code>contentRoot</code> to <code>/pages/</code>.</p>
+    </section>
+
+    <!-- Params -->
+    <section class="rt-block" aria-labelledby="rt-params">
+        <h2 id="rt-params" class="rt-h2">Parameters</h2>
+        <p>Dynamic segments like <code>:id</code> are decoded and exposed to renderers through your application state (or accessible to scripts that listen to router events).</p>
+        <pre class="rt-code"><code>
+// URL: /docs/dev/users/42
+// Matched route: { "path": "/users/:id", "file": "users/detail.html" }
+params = { "id": "42" }
+    </code></pre>
+    </section>
+
+    <!-- Query -->
+    <section class="rt-block" aria-labelledby="rt-query">
+        <h2 id="rt-query" class="rt-h2">Query Strings</h2>
+        <p>Queries are parsed into an object. Repeated keys may be collected as arrays depending on the router’s <code>queryMode</code> (default: <code>array</code>).</p>
+        <pre class="rt-code"><code>
+// URL: /docs/dev/search?q=spa&q=router&page=2
+// queryMode = "array"
+query = { "q": ["spa","router"], "page": "2" }
+    </code></pre>
+    </section>
+
+    <!-- Base path -->
+    <section class="rt-block" aria-labelledby="rt-base">
+        <h2 id="rt-base" class="rt-h2">Base Path</h2>
+        <p>The router normalizes and strips <code>basePath</code> (e.g., <code>/docs/dev/</code>) before matching routes so the same fragments work in dev and prod.</p>
+        <pre class="rt-code"><code>
+// nav.json
+{ "basePath": "/docs/dev/", "contentRoot": "/docs/dev/pages/", ... }
+    </code></pre>
+    </section>
+
+    <!-- Linking -->
+    <section class="rt-block" aria-labelledby="rt-linking">
+        <h2 id="rt-linking" class="rt-h2">Linking</h2>
+        <p>Use normal anchors; the router intercepts internal links and updates the History API.</p>
+        <pre class="rt-code"><code>&lt;a href="/docs/dev/getting-started"&gt;Getting Started&lt;/a&gt;</code></pre>
+        <ul class="rt-list">
+            <li>Modifier clicks (Cmd/Ctrl), <code>target</code> other than <code>_self</code>, <code>download</code>, and <code>rel="external"</code> bypass interception.</li>
+            <li><code>mailto:</code> / <code>tel:</code> are left alone.</li>
+        </ul>
+    </section>
+
+    <!-- Navigation API -->
+    <section class="rt-block" aria-labelledby="rt-api">
+        <h2 id="rt-api" class="rt-h2">Navigation API</h2>
+        <p>You can trigger navigation programmatically or preload fragments for snappier UX.</p>
+        <pre class="rt-code"><code>
+// navigate to a route
+window.PicoRouter?.navigate('/docs/dev/api');
+
+// preload on hover (example)
+document.querySelectorAll('a[data-preload]').forEach(a =&gt; {
+  a.addEventListener('mouseenter', () =&gt; window.PicoRouter?.preload(a.href));
+});
+    </code></pre>
+    </section>
+
+    <!-- 404 behavior -->
+    <section class="rt-block" aria-labelledby="rt-404">
+        <h2 id="rt-404" class="rt-h2">404 Fallback</h2>
+        <p>If a path does not match any route, or a matched route’s file is missing, the router renders the <code>*</code> route’s fragment (your <code>404.html</code>).</p>
+        <pre class="rt-code"><code>
+// nav.json
+{ "path": "*", "title": "Not found", "file": "404.html" }
+    </code></pre>
+    </section>
+
+    <!-- Tips -->
+    <section class="rt-tip" role="note" aria-label="Tips">
+        <div class="rt-tip-icon" aria-hidden="true">💡</div>
+        <div class="rt-tip-body">
+            <h3 class="rt-tip-title">Tips</h3>
+            <ul class="rt-list">
+                <li>Keep the wildcard route last.</li>
+                <li>Use relative <code>file</code> names; switch only <code>contentRoot</code> between dev and prod.</li>
+                <li>Add <code>data-preload</code> to important links for instant navigation.</li>
+            </ul>
+        </div>
+    </section>
+</section>

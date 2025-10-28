@@ -1,0 +1,19 @@
+{
+  "$schema": "https://example.com/phantom/nav.schema.json",
+  "basePath": "/docs/dev/",
+  "contentRoot": "/docs/dev/pages/",
+  "routes": [
+    { "path": "/",                "title": "Introduction",     "icon": "📖", "file": "intro.html" },
+    { "path": "/getting-started", "title": "Getting Started",  "icon": "🚀", "file": "getting-started.html" },
+    { "path": "/api",             "title": "API Reference",    "icon": "📚", "file": "api.ref.html" },
+
+    { "path": "/routing",         "title": "Routing",          "icon": "🛣️", "file": "routing.html"},
+    { "path": "/html-injection",  "title": "HTML Injection",   "icon": "💉", "file": "html-injection.html"},
+    { "path": "/events",          "title": "Events",           "icon": "💡", "file": "events.html"},
+    { "path": "/plugins",         "title": "Plugins",          "icon": "🧩", "file": "plugins.html"},
+    { "path": "/examples",        "title": "Examples",         "icon": "💡", "file": "examples.html"},
+    { "path": "/advanced",        "title": "Advanced",         "icon": "🎮", "file": "advanced.html"},
+
+    { "path": "*",                "title": "Not found",        "icon": "❓", "file": "404.html" }
+  ]
+}

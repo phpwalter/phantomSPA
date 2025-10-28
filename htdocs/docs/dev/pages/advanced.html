@@ -1,0 +1,83 @@
+<section class="adv-page" aria-labelledby="adv-title">
+    <h1 id="adv-title" class="adv-title">Advanced Topics</h1>
+    <p class="adv-lead">Level up your MarkdownSPA with server-side rendering and custom theming.</p>
+
+    <!-- SSR -->
+    <section class="adv-block" aria-labelledby="adv-ssr">
+        <h2 id="adv-ssr" class="adv-h2">✅ Server-Side Rendering</h2>
+        <p>Pre-render pages to static HTML for faster first paint and improved SEO. Generate your fragments at build time and serve them via <code>contentRoot</code>.</p>
+
+        <h3>Strategy</h3>
+        <ol class="adv-steps">
+            <li>Read all Markdown files (or HTML sources).</li>
+            <li>Transform to HTML using your parser or pipeline.</li>
+            <li>Emit to the fragment folder used by <code>contentRoot</code> (dev: <code>/docs/dev/pages/</code>, prod: <code>/pages/</code>).</li>
+            <li>Ensure each route in <code>nav.json</code> points to the emitted fragment.</li>
+        </ol>
+
+        <h3>Pseudo build script</h3>
+        <code>// build-ssr.mjs (example)
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { globby } from 'globby';
+import { marked } from 'marked';
+
+const src = 'content/**/*.md';
+const out = 'htdocs/pages';          // prod output (dev: htdocs/docs/dev/pages)
+await mkdir(out, { recursive: true });
+
+for (const file of await globby(src)) {
+  const md = await readFile(file, 'utf8');
+  const html = marked.parse(md);
+  const rel = file.replace(/^content\//,'').replace(/\.md$/,'.html');
+  await writeFile(`${out}/${rel}`, wrap(html), 'utf8');
+}
+
+function wrap(body){
+  return &grave;&lt;section class="doc-page"&gt;${body}&lt;/section&gt;&grave;;
+}
+    </code>
+
+        <p class="adv-note">Tip: keep the same <code>file</code> names in <code>nav.json</code>; switch only <code>contentRoot</code> between dev and prod.</p>
+    </section>
+
+    <!-- Custom Themes -->
+    <section class="adv-block" aria-labelledby="adv-themes">
+        <h2 id="adv-themes" class="adv-h2">✅ Custom Themes</h2>
+        <p>Create a theme by defining CSS custom properties and toggling a root class or <code>data-theme</code> attribute.</p>
+
+        <h3>Theme tokens</h3>
+        <pre class="adv-code"><code>/* tokens.css */
+:root{
+  --bg:#0b1220; --fg:#c7d0de; --card:#101a2a; --line:#1e2a3f; --accent:#8fb0ff;
+}
+:root[data-theme="light"]{
+  --bg:#ffffff; --fg:#23303f; --card:#f6f8fb; --line:#e5e9f1; --accent:#335cff;
+}
+    </code></pre>
+
+        <h3>Applying tokens</h3>
+        <pre class="adv-code"><code>/* app.css */
+body{ background:var(--bg); color:var(--fg); }
+.card{ background:var(--card); border:1px solid var(--line); border-radius:12px; }
+a{ color:var(--accent); }
+    </code></pre>
+
+        <h3>Runtime toggle (tiny helper)</h3>
+        <pre class="adv-code"><code>// theme.js
+export function setTheme(name){ document.documentElement.setAttribute('data-theme', name); }
+// usage: setTheme('light') or setTheme('dark')
+    </code></pre>
+
+        <p class="adv-note">Persist with <code>localStorage</code> if desired and initialize on page load.</p>
+    </section>
+
+    <!-- Extras -->
+    <section class="adv-block" aria-labelledby="adv-extras">
+        <h2 id="adv-extras" class="adv-h2">Other Ideas</h2>
+        <ul class="adv-list">
+            <li><strong>Link Preloading:</strong> add <code>data-preload</code> to important links; the router prefetches fragments on hover.</li>
+            <li><strong>Partial Hydration:</strong> keep pages static; attach small, isolated JS widgets where needed.</li>
+            <li><strong>Search Index:</strong> generate a JSON index at build time for client-side search.</li>
+        </ul>
+    </section>
+</section>

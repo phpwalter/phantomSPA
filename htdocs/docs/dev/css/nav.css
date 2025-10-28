@@ -1,0 +1,8 @@
+/* htdocs/docs/dev/css/styles.css (or your global) */
+.toc-list { list-style: none; padding: 0; margin: 0; }
+.toc-list li { margin: .2rem 0; }
+.toc-list a { display: block; text-decoration: none; padding: .5rem .6rem; border-radius: 8px; }
+.toc-list li.active > a { background: #1a2540; border: 1px solid #2a3552; color: #cfe1ff; }
+.toc-list a:hover { background: #101a2a; border: 1px solid #1e2a3f; }
+
+.toc-list li.disabled > span { opacity: .55; cursor: default; }

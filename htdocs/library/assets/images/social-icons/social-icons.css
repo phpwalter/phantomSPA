@@ -1,0 +1,276 @@
+/* social-icons.css
+   – PNG sprite-based social icons (32×32px grid)
+--------------------------------------------- */
+
+/* 1) Tweakable globals */
+:root {
+    --social-icon-png:  "url('./social-icons.png')";
+
+    --social-icon-size:  32px;          /* width & height of each icon */
+    --social-icon-gap:   10px;          /* space between icons */
+    --social-sprite-cols: 15;           /* total columns in the sprite */
+    --social-sprite-rows: 10;           /* total rows in the sprite */
+
+    /* CELL SIZE IN THE SOURCE SPRITE (not the display size) */
+    --cell: 32px;
+    --display: var(--cell);
+
+    /* Vars referenced later */
+    --gutter: 0;
+    --transition-fast: .2s;
+
+    /* Helper to compute positions */
+    --row4-y: calc(-3 * var(--display)); /* row index 3 = “row 4” */
+
+
+/* 4) Individual icon positions (row 1..10) */
+/* Column offsets (32px per col):
+   0: facebook, 1: messenger, 2: youtube, 3: instagram, 4: x, 5: pinterest,
+   6: linkedin, 7: discord, 8: tiktoc, 9: whatsapp, 10: telegram,
+   11: snapchat, 12: reddit, 13: rss, 14: github
+   Row offsets: 1..10 => 0, -32, -64, -96, -128, -160, -192, -224, -256, -288
+*/
+/* Helper: row offset (1..10) => 0, -32, -64, ... */
+
+    --r1:     0px;
+    --r2:   -32px;
+    --r3:   -64px;
+    --r4:   -96px;
+    --r5:  -128px;
+    --r6:  -160px;
+    --r7:  -192px;
+    --r8:  -224px;
+    --r9:  -256px;
+    --r10: -288px;
+
+    /* Column X offsets for platforms you use */
+    /* Column X offsets (0..14) */
+    --facebook-x:      0px;   /* col 0 */
+    --messenger-x:   -32px;   /* col 1 */
+    --youtube-x:     -64px;   /* col 2 */
+    --instagram-x:   -96px;   /* col 3 */
+    --x-x:          -128px;   /* col 4 */
+    --pinterest-x:  -160px;   /* col 5 */
+    --linkedin-x:   -192px;   /* col 6 */
+    --discord-x:    -224px;   /* col 7 */
+    --tiktok-x:     -256px;   /* col 8 */
+    --whatsapp-x:   -288px;   /* col 9 */
+    --telegram-x:   -320px;   /* col 10 */
+    --snapchat-x:   -352px;   /* col 11 */
+    --reddit-x:     -384px;   /* col 12 */
+    --rss-x:        -416px;   /* col 13 */
+    --github-x:     -448px;   /* col 14 */
+}
+
+/* 2) Container wrapper */
+.social-container {
+    display: flex;
+    gap: var(--social-icon-gap);
+    justify-content: center;
+    align-items: center;
+    padding: var(--gutter) 0;
+}
+
+/* 3) Base icon rule */
+.social-icon {
+    width: var(--social-icon-size);
+    height: var(--social-icon-size);
+    display: inline-block;
+
+    /* your PNG sprite */
+    background-image: url('social-icons.png');
+    background-repeat: no-repeat;
+
+    /* size the sheet so each cell remains 32px */
+    background-size:
+            calc(var(--social-sprite-cols) * var(--social-icon-size))
+            calc(var(--social-sprite-rows) * var(--social-icon-size));
+
+    transition: opacity var(--transition-fast);
+}
+.social-icon:hover,
+.social-icon:focus {
+    opacity: 0.7;
+    outline: none;
+}
+
+
+/* 0. Facebook (col 0 => 0px) */
+.facebook-1  { background-position: var(--facebook-x) var(--r1); }
+.facebook-2  { background-position: var(--facebook-x) var(--r2); }
+.facebook-3  { background-position: var(--facebook-x) var(--r3); }
+.facebook-4  { background-position: var(--facebook-x) var(--r4); }
+.facebook-5  { background-position: var(--facebook-x) var(--r5); }
+.facebook-6  { background-position: var(--facebook-x) var(--r6); }
+.facebook-7  { background-position: var(--facebook-x) var(--r7); }
+.facebook-8  { background-position: var(--facebook-x) var(--r8); }
+.facebook-9  { background-position: var(--facebook-x) var(--r9); }
+.facebook-10 { background-position: var(--facebook-x) var(--r10); }
+
+/* 1. Messenger (col 1 => -32px) */
+.messenger-1  { background-position: var(--messenger-x) var(--r1); }
+.messenger-2  { background-position: var(--messenger-x) var(--r2); }
+.messenger-3  { background-position: var(--messenger-x) var(--r3); }
+.messenger-4  { background-position: var(--messenger-x) var(--r4); }
+.messenger-5  { background-position: var(--messenger-x) var(--r5); }
+.messenger-6  { background-position: var(--messenger-x) var(--r6); }
+.messenger-7  { background-position: var(--messenger-x) var(--r7); }
+.messenger-8  { background-position: var(--messenger-x) var(--r8); }
+.messenger-9  { background-position: var(--messenger-x) var(--r9); }
+.messenger-10 { background-position: var(--messenger-x) var(--r10); }
+
+/* 2. YouTube (col 2 => -64px) */
+.youtube-1  { background-position: var(--youtube-x) var(--r1); }
+.youtube-2  { background-position: var(--youtube-x) var(--r2); }
+.youtube-3  { background-position: var(--youtube-x) var(--r3); }
+.youtube-4  { background-position: var(--youtube-x) var(--r4); }
+.youtube-5  { background-position: var(--youtube-x) var(--r5); }
+.youtube-6  { background-position: var(--youtube-x) var(--r6); }
+.youtube-7  { background-position: var(--youtube-x) var(--r7); }
+.youtube-8  { background-position: var(--youtube-x) var(--r8); }
+.youtube-9  { background-position: var(--youtube-x) var(--r9); }
+.youtube-10 { background-position: var(--youtube-x) var(--r10); }
+
+/* 3. instagram-x (col 3 => -96px) */
+.instagram-1  { background-position: var(--instagram-x) var(--r1); }
+.instagram-2  { background-position: var(--instagram-x) var(--r2); }
+.instagram-3  { background-position: var(--instagram-x) var(--r3); }
+.instagram-4  { background-position: var(--instagram-x) var(--r4); }
+.instagram-5  { background-position: var(--instagram-x) var(--r5); }
+.instagram-6  { background-position: var(--instagram-x) var(--r6); }
+.instagram-7  { background-position: var(--instagram-x) var(--r7); }
+.instagram-8  { background-position: var(--instagram-x) var(--r8); }
+.instagram-9  { background-position: var(--instagram-x) var(--r9); }
+.instagram-10 { background-position: var(--instagram-x) var(--r10); }
+
+/* 4. X-Twitter (col 1 => -128px) */
+.x-1  { background-position: var(--x-x) var(--r1); }
+.x-2  { background-position: var(--x-x) var(--r2); }
+.x-3  { background-position: var(--x-x) var(--r3); }
+.x-4  { background-position: var(--x-x) var(--r4); }
+.x-5  { background-position: var(--x-x) var(--r5); }
+.x-6  { background-position: var(--x-x) var(--r6); }
+.x-7  { background-position: var(--x-x) var(--r7); }
+.x-8  { background-position: var(--x-x) var(--r8); }
+.x-9  { background-position: var(--x-x) var(--r9); }
+.x-10 { background-position: var(--x-x) var(--r10); }
+
+/* 5. Pinterest (col 4 => -160px) */
+.pinterest-1  { background-position: var(--pinterest-x) var(--r1); }
+.pinterest-2  { background-position: var(--pinterest-x) var(--r2); }
+.pinterest-3  { background-position: var(--pinterest-x) var(--r3); }
+.pinterest-4  { background-position: var(--pinterest-x) var(--r4); }
+.pinterest-5  { background-position: var(--pinterest-x) var(--r5); }
+.pinterest-6  { background-position: var(--pinterest-x) var(--r6); }
+.pinterest-7  { background-position: var(--pinterest-x) var(--r7); }
+.pinterest-8  { background-position: var(--pinterest-x) var(--r8); }
+.pinterest-9  { background-position: var(--pinterest-x) var(--r9); }
+.pinterest-10 { background-position: var(--pinterest-x) var(--r10); }
+
+/* 6. LinkedIn (col 6 => -192px) */
+.linkedin-1  { background-position: var(--linkedin-x) var(--r1); }
+.linkedin-2  { background-position: var(--linkedin-x) var(--r2); }
+.linkedin-3  { background-position: var(--linkedin-x) var(--r3); }
+.linkedin-4  { background-position: var(--linkedin-x) var(--r4); }
+.linkedin-5  { background-position: var(--linkedin-x) var(--r5); }
+.linkedin-6  { background-position: var(--linkedin-x) var(--r6); }
+.linkedin-7  { background-position: var(--linkedin-x) var(--r7); }
+.linkedin-8  { background-position: var(--linkedin-x) var(--r8); }
+.linkedin-9  { background-position: var(--linkedin-x) var(--r9); }
+.linkedin-10 { background-position: var(--linkedin-x) var(--r10); }
+
+/* 7. Discord (col 7 => -224px) */
+.discord-1  { background-position: var(--discord-x) var(--r1); }
+.discord-2  { background-position: var(--discord-x) var(--r2); }
+.discord-3  { background-position: var(--discord-x) var(--r3); }
+.discord-4  { background-position: var(--discord-x) var(--r4); }
+.discord-5  { background-position: var(--discord-x) var(--r5); }
+.discord-6  { background-position: var(--discord-x) var(--r6); }
+.discord-7  { background-position: var(--discord-x) var(--r7); }
+.discord-8  { background-position: var(--discord-x) var(--r8); }
+.discord-9  { background-position: var(--discord-x) var(--r9); }
+.discord-10 { background-position: var(--discord-x) var(--r10); }
+
+/* 8. TikTok */
+.tiktok-1  { background-position: var(--tiktok-x) var(--r1); }
+.tiktok-2  { background-position: var(--tiktok-x) var(--r2); }
+.tiktok-3  { background-position: var(--tiktok-x) var(--r3); }
+.tiktok-4  { background-position: var(--tiktok-x) var(--r4); }
+.tiktok-5  { background-position: var(--tiktok-x) var(--r5); }
+.tiktok-6  { background-position: var(--tiktok-x) var(--r6); }
+.tiktok-7  { background-position: var(--tiktok-x) var(--r7); }
+.tiktok-8  { background-position: var(--tiktok-x) var(--r8); }
+.tiktok-9  { background-position: var(--tiktok-x) var(--r9); }
+.tiktok-10 { background-position: var(--tiktok-x) var(--r10); }
+
+/* 9. WhatsApp */
+.whatsapp-1  { background-position: var(--whatsapp-x) var(--r1); }
+.whatsapp-2  { background-position: var(--whatsapp-x) var(--r2); }
+.whatsapp-3  { background-position: var(--whatsapp-x) var(--r3); }
+.whatsapp-4  { background-position: var(--whatsapp-x) var(--r4); }
+.whatsapp-5  { background-position: var(--whatsapp-x) var(--r5); }
+.whatsapp-6  { background-position: var(--whatsapp-x) var(--r6); }
+.whatsapp-7  { background-position: var(--whatsapp-x) var(--r7); }
+.whatsapp-8  { background-position: var(--whatsapp-x) var(--r8); }
+.whatsapp-9  { background-position: var(--whatsapp-x) var(--r9); }
+.whatsapp-10 { background-position: var(--whatsapp-x) var(--r10); }
+
+/* 10. Telegram */
+.telegram-1  { background-position: var(--telegram-x) var(--r1); }
+.telegram-2  { background-position: var(--telegram-x) var(--r2); }
+.telegram-3  { background-position: var(--telegram-x) var(--r3); }
+.telegram-4  { background-position: var(--telegram-x) var(--r4); }
+.telegram-5  { background-position: var(--telegram-x) var(--r5); }
+.telegram-6  { background-position: var(--telegram-x) var(--r6); }
+.telegram-7  { background-position: var(--telegram-x) var(--r7); }
+.telegram-8  { background-position: var(--telegram-x) var(--r8); }
+.telegram-9  { background-position: var(--telegram-x) var(--r9); }
+.telegram-10 { background-position: var(--telegram-x) var(--r10); }
+
+/* 11. Snapchat */
+.snapchat-1  { background-position: var(--snapchat-x) var(--r1); }
+.snapchat-2  { background-position: var(--snapchat-x) var(--r2); }
+.snapchat-3  { background-position: var(--snapchat-x) var(--r3); }
+.snapchat-4  { background-position: var(--snapchat-x) var(--r4); }
+.snapchat-5  { background-position: var(--snapchat-x) var(--r5); }
+.snapchat-6  { background-position: var(--snapchat-x) var(--r6); }
+.snapchat-7  { background-position: var(--snapchat-x) var(--r7); }
+.snapchat-8  { background-position: var(--snapchat-x) var(--r8); }
+.snapchat-9  { background-position: var(--snapchat-x) var(--r9); }
+.snapchat-10 { background-position: var(--snapchat-x) var(--r10); }
+
+/* 12. Reddit */
+.reddit-1  { background-position: var(--reddit-x) var(--r1); }
+.reddit-2  { background-position: var(--reddit-x) var(--r2); }
+.reddit-3  { background-position: var(--reddit-x) var(--r3); }
+.reddit-4  { background-position: var(--reddit-x) var(--r4); }
+.reddit-5  { background-position: var(--reddit-x) var(--r5); }
+.reddit-6  { background-position: var(--reddit-x) var(--r6); }
+.reddit-7  { background-position: var(--reddit-x) var(--r7); }
+.reddit-8  { background-position: var(--reddit-x) var(--r8); }
+.reddit-9  { background-position: var(--reddit-x) var(--r9); }
+.reddit-10 { background-position: var(--reddit-x) var(--r10); }
+
+/* 13. RSS */
+.rss-1  { background-position: var(--rss-x) var(--r1); }
+.rss-2  { background-position: var(--rss-x) var(--r2); }
+.rss-3  { background-position: var(--rss-x) var(--r3); }
+.rss-4  { background-position: var(--rss-x) var(--r4); }
+.rss-5  { background-position: var(--rss-x) var(--r5); }
+.rss-6  { background-position: var(--rss-x) var(--r6); }
+.rss-7  { background-position: var(--rss-x) var(--r7); }
+.rss-8  { background-position: var(--rss-x) var(--r8); }
+.rss-9  { background-position: var(--rss-x) var(--r9); }
+.rss-10 { background-position: var(--rss-x) var(--r10); }
+
+/* 14. GitHub */
+.github-1  { background-position: var(--github-x) var(--r1); }
+.github-2  { background-position: var(--github-x) var(--r2); }
+.github-3  { background-position: var(--github-x) var(--r3); }
+.github-4  { background-position: var(--github-x) var(--r4); }
+.github-5  { background-position: var(--github-x) var(--r5); }
+.github-6  { background-position: var(--github-x) var(--r6); }
+.github-7  { background-position: var(--github-x) var(--r7); }
+.github-8  { background-position: var(--github-x) var(--r8); }
+.github-9  { background-position: var(--github-x) var(--r9); }
+.github-10 { background-position: var(--github-x) var(--r10); }
