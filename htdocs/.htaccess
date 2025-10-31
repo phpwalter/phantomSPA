@@ -1,58 +1,73 @@
-### ----------------------------------------
-### .htaccess — SPA Routing + SSI + Security + Caching (Improved)
-### ----------------------------------------
+# ------------------------------------------------------------------
+# Path: /phantom/.htaccess
+# Description: Portable SPA setup for PhantomSPA (landing, headers, caching, SPA fallbacks, friendly redirects)
+# Author: PhantomSPA Authors
+# Version: 1.1.0
+# Date: 2025-09-05
+# ------------------------------------------------------------------
 
-# SSI
-AddType text/html .shtml
-AddOutputFilter INCLUDES .shtml
-Options +Includes
-
-# Directory Index
-DirectoryIndex index.shtml index.html
-
-# Charset & MIME
 AddDefaultCharset utf-8
-AddType application/javascript .js .mjs
-AddType image/svg+xml .svg
 
-# Rewrite Engine
-RewriteEngine On
+# Use the landing page at /phantom/index.html
+DirectoryIndex index.html
 
-# Bypass real files/dirs
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
-
-# Bypass static asset mounts
-RewriteCond %{REQUEST_URI} ^/(vendor|sites/phantom/shared)/ [OR]
-RewriteCond %{REQUEST_URI} \.(js|mjs|css|svg|png|jpe?g|webp|woff2?|map)$ [NC]
-RewriteRule ^ - [L]
-
-# SPA Routing
-RewriteRule ^phantom(/.*)?$ apps/phantom/index.shtml [L]
-RewriteRule ^apps/(consumer|phantom|spa-docs)(/.*)?$ apps/$1/index.shtml [L]
-
-# Caching
-SetEnvIf Request_URI "^/framework/(core|modules)/" IS_RUNTIME=1
-
+# Security headers
 <IfModule mod_headers.c>
-  # Cache-busting for hashed assets
-  <FilesMatch "\.[0-9a-f]{8,}\.(js|css|woff2?|svg|png|jpe?g|ico|webmanifest)$">
-    Header always set Cache-Control "public, max-age=31536000, immutable"
-  </FilesMatch>
-
-  # Disable cache for runtime
-  Header always set Cache-Control "no-store" env=IS_RUNTIME
-
-  # Strict security headers
   Header always set X-Content-Type-Options "nosniff"
-  Header always set X-Frame-Options "DENY"
-  Header always set X-XSS-Protection "1; mode=block"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
-  Header always set Permissions-Policy "fullscreen=(), geolocation=(), microphone=(), camera=()"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  # HTTPS only:
+  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  # Optional CSP (tighten if you wish):
+  # Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'"
 </IfModule>
 
-# Sensitive files
-<FilesMatch "^(\.env|\.git|\.htaccess|\.htpasswd|\.DS_Store|\.svn|\.idea|composer\.(json|lock)|package(-lock)?\.json|yarn\.lock|.*\.bak|.*\.swp)$">
+# Caching
+<IfModule mod_headers.c>
+  <FilesMatch "\.(ico|jpg|jpeg|png|gif|webp|svg|woff2|woff|ttf|otf)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(js|css)$">
+    Header set Cache-Control "public, max-age=604800, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(json)$">
+    Header set Cache-Control "no-store, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+# Protect hidden/sensitive files
+<FilesMatch "^(\.env|\.ht.*|.*\.log)$">
   Require all denied
 </FilesMatch>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # 0) Canonical redirects for friendly roots (case-insensitive)
+  #    Fixes clicks that end up at /user or /USER, etc.
+  RewriteRule ^user/?$ docs/user/ [R=302,L,NC]
+  RewriteRule ^dev/?$  docs/dev/  [R=302,L,NC]
+
+  # 1) Serve existing files/directories as-is
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 2) Map /phantom/apple-touch-icon*.png → /phantom/docs/assets/img/apple/
+  # Handles: apple-touch-icon.png, apple-touch-icon-precomposed.png,
+  #          apple-touch-icon-180x180.png, etc.
+  RewriteRule ^apple-touch-icon(.*\.png)$ docs/assets/img/apple/apple-touch-icon$1 [L,NC]
+
+  # 3) SPA fallbacks (scoped by base path)
+  # /app SPA
+  RewriteRule ^app/(?!index\.html$).+ app/index.html [L]
+  # /docs/user SPA
+  RewriteRule ^docs/user/(?!index\.html$).+ docs/user/index.html [L]
+  # /docs/dev SPA
+  RewriteRule ^docs/dev/(?!index\.html$).+ docs/dev/index.html [L]
+  # /favicon
+  RewriteRule ^favicon\.ico$ docs/assets/icon.ico [L]
+</IfModule>

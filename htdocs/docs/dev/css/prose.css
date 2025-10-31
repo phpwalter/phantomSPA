@@ -1,0 +1,128 @@
+
+/* Hero banner image at 50% width, centered */
+/* First image in the Markdown page = hero banner */
+.doc-page.md img:first-of-type {
+    display: block;
+    width: 50%;
+    max-width: 50%;
+    height: auto;
+    margin: 6px auto 10px;
+}
+
+/* All pages EXCEPT the intro page */
+.doc-page.md:not(.page-intro) h1 img[src$="pSPA.icon.png"] {
+    height: 40px;         /* target size */
+    width: auto;          /* keep aspect ratio */
+    vertical-align: middle;
+    margin-right: 10px;   /* space before the title text */
+    display: inline-block;
+}
+
+/* (Optional) only affect the first image in the H1, if you prefer */
+.doc-page.md:not(.page-intro) h1 > img:first-of-type[src$="pSPA.icon.png"] {
+    height: 50px;
+}
+
+/* (Optional) tiny bump on small screens */
+@media (max-width: 480px) {
+    .doc-page.md:not(.page-intro) h1 img[src$="pSPA.icon.png"] {
+        height: 44px;
+    }
+}
+
+
+
+/* ---------- HERO from pure MD ---------- */
+.doc-page.md > h1:first-child {
+    /* match your intro title color/scale */
+    margin: 0 0 10px;
+    font-size: clamp(2.4rem, 3.2vw + 1rem, 3.5rem);
+    line-height: 1.05;
+    color: #8fb0ff;
+    letter-spacing: .2px;
+}
+.doc-page.md > h1 + p > img:first-child,
+.doc-page.md > h1 + img:first-of-type {
+    /* be forgiving if renderer wraps image in <p> */
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 6px 0 10px;
+}
+.doc-page.md > h1 + * + p:first-of-type,
+.doc-page.md > h1 + p:first-of-type {
+    /* subtitle line under the hero image */
+    margin: 0;
+    color: var(--muted);
+    font-size: 20px;
+}
+
+/* ---------- PANEL from blockquote ---------- */
+.doc-page.md blockquote {
+    margin: 22px 0 0;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 14px;
+    padding: 18px 18px 16px;
+    box-shadow: var(--shadow);
+}
+.doc-page.md blockquote p { margin: 8px 0; }
+.doc-page.md blockquote p strong { color: var(--heading); }
+
+/* ---------- SECTION TITLES ---------- */
+.doc-page.md h2 {
+    margin: 30px 0 12px;
+    color: var(--heading);
+    font-size: 22px;
+}
+
+/* ---------- CARDS  ---------- */
+/* Panel lists driven by <!-- as:panels --> marker */
+.doc-page.md ul.as-panels,
+.doc-page.md ol.as-panels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+@media (max-width: 880px) {
+    .doc-page.md ul.as-panels,
+    .doc-page.md ol.as-panels {
+        grid-template-columns: 1fr;
+    }
+}
+
+.doc-page.md ul.as-panels > li,
+.doc-page.md ol.as-panels > li {
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.doc-page.md ul.as-panels > li:hover,
+.doc-page.md ol.as-panels > li:hover {
+    transform: translateY(-2px);
+    border-color: #2b3c5c;
+    box-shadow: 0 10px 24px rgba(0,0,0,.32);
+}
+
+.doc-page.md ul.as-panels > li strong,
+.doc-page.md ol.as-panels > li strong {
+    display: block;
+    margin: 0 0 4px;
+    color: var(--heading);
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.doc-page.md ul.as-panels > li p,
+.doc-page.md ol.as-panels > li p {
+    margin: 0;
+    color: var(--muted);
+}

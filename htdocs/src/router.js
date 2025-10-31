@@ -1,13 +1,25 @@
 // /src/router.js
-// SPA fragment router driven by nav.json (same file your TOC uses).
-// Auto-boot from <script type="module" src="/src/router.js" data-* ...> (no inline JS).
+// SPA fragment router driven by nav.json. Auto-boots from its <script data-*>.
 //
-// Data attributes on the script tag:
-//   data-nav="/docs/dev/conf/nav.json"   (required)
+// Script tag example:
+// <script type="module"
+//   src="/src/router.js"
+//   data-nav="/docs/dev/conf/nav.json"
 //   data-main="main.site-main"
 //   data-aside="#site-nav"
 //   data-active-class="active"
-//   data-query-mode="array"              ("array" | "single")
+//   data-query-mode="array"
+//   defer></script>
+
+// /src/router.js
+// PhantomSPA router: nav.json-driven SPA with Markdown + per-page CSS injection.
+
+// /src/router.js
+// PhantomSPA router: nav.json-driven SPA with Markdown + per-page CSS injection.
+
+import { markdownToHtml } from '/src/utilities/markdown.js';
+
+/* -------------------------- small utilities -------------------------- */
 
 function isModifiedClick(e) {
     return e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
@@ -19,9 +31,9 @@ function normalizeBase(p = '/') {
     return out.replace(/\/+/g, '/');
 }
 function localizePath(pathname, base) {
-    const norm = ('/' + pathname).replace(/\/+/g, '/');
-    if (norm === base.slice(0, -1)) return '/';
-    return norm.startsWith(base) ? norm.slice(base.length - 1) || '/' : null;
+    const n = ('/' + pathname).replace(/\/+/g, '/');
+    if (n === base.slice(0, -1)) return '/';
+    return n.startsWith(base) ? n.slice(base.length - 1) || '/' : null;
 }
 function parseQuery(qs, mode = 'array') {
     if (mode === 'single') {
@@ -29,12 +41,12 @@ function parseQuery(qs, mode = 'array') {
         for (const [k, v] of new URLSearchParams(qs)) o[k] = v;
         return o;
     }
-    const out = {};
+    const o = {};
     for (const [k, v] of new URLSearchParams(qs)) {
-        if (k in out) out[k] = Array.isArray(out[k]) ? out[k].concat(v) : [out[k], v];
-        else out[k] = v;
+        if (k in o) o[k] = Array.isArray(o[k]) ? o[k].concat(v) : [o[k], v];
+        else o[k] = v;
     }
-    return out;
+    return o;
 }
 async function fetchJSON(url) {
     const r = await fetch(url, { credentials: 'same-origin', cache: 'no-store' });
@@ -46,14 +58,12 @@ async function fetchTEXT(url) {
     if (!r.ok) throw new Error(`Failed to load ${url}: ${r.status}`);
     return r.text();
 }
-
-// Build route regexes
 function compile(routes) {
-    return routes.map((r) => {
+    return routes.map((def) => {
         const keys = [];
         const rx = new RegExp(
             '^' +
-            r.path
+            def.path
                 .replace(/\/:\w+/g, (m) => {
                     keys.push(m.slice(2));
                     return '/([^/]+)';
@@ -61,7 +71,7 @@ function compile(routes) {
                 .replace(/\*/g, '.*') +
             '$'
         );
-        return { def: r, rx, keys };
+        return { def, rx, keys };
     });
 }
 function matchRoute(pathname, compiled) {
@@ -75,22 +85,129 @@ function matchRoute(pathname, compiled) {
     }
     return null;
 }
-
-// Resolve contentRoot + file; guard against double final segment (e.g., "pages/pages")
 function resolveFileURL(contentRoot, file) {
     if (!file) return null;
     if (/^https?:\/\//i.test(file)) return file;
     if (file.startsWith('/')) return file;
     let root = contentRoot || '/';
     root = root.replace(/\/+$/,'') + '/';
-    let f = file.replace(/^\.\/+/,'').replace(/^\/+/,'');
+    let f = file.replace(/^\.\/+/, '').replace(/^\/+/, '');
     const lastSeg = root.replace(/\/+$/,'').split('/').filter(Boolean).pop(); // e.g., "pages"
-    if (lastSeg && f.startsWith(lastSeg + '/')) f = f.slice(lastSeg.length + 1);
+    if (lastSeg && f.startsWith(lastSeg + '/')) f = f.slice(lastSeg.length + 1); // avoid /pages/pages
     return (root + f).replace(/\/+/g,'/');
 }
+function looksLikeMarkdown(url) {
+    return typeof url === 'string' && /\.md(?:\?.*)?$/i.test(url);
+}
+function pageClassFromURL(fileUrl) {
+    try {
+        const p = new URL(fileUrl, location.origin).pathname;
+        const base = p.split('/').pop().split('?')[0] || '';
+        const stem = base.replace(/\.(md|html)$/i, '');
+        const slug = stem.replace(/[^a-z0-9_-]+/gi, '-').toLowerCase();
+        return slug ? `page-${slug}` : '';
+    } catch {
+        return '';
+    }
+}
+function pageSlugFromURL(fileUrl) {
+    return (pageClassFromURL(fileUrl) || '').replace(/^page-/, '');
+}
+function dedupe(arr = []) {
+    const seen = new Set(); const out = [];
+    for (const x of arr) { if (!seen.has(x)) { seen.add(x); out.push(x); } }
+    return out;
+}
+
+/* ------------------------- page-style injection ------------------------- */
+
+function computePageStyleHrefs(routeMeta, nav) {
+    const out = [];
+    if (Array.isArray(routeMeta.styles) && routeMeta.styles.length) {
+        out.push(...routeMeta.styles);
+    } else if (nav.stylesRoot && routeMeta.file) {
+        const slug = pageSlugFromURL(routeMeta.file);
+        if (slug) out.push(`${nav.stylesRoot.replace(/\/+$/,'')}/${slug}.css`);
+    }
+    return dedupe(out);
+}
+
+function applyPageStyles(hrefs = [], pageKey = '') {
+    const HEAD = document.head || document.getElementsByTagName('head')[0];
+
+    // Remove only styles we previously injected (base assets stay in place)
+    [...document.querySelectorAll('link[rel="stylesheet"][data-owned="router"]')].forEach((link) => {
+        const keep = hrefs.includes(link.getAttribute('href') || '');
+        if (!keep) link.remove();
+    });
+
+    // Add any missing styles for this page
+    hrefs.forEach((href) => {
+        if (!href) return;
+        const existing = document.querySelector(`link[rel="stylesheet"][href="${href}"]`);
+        if (existing) {
+            if (!existing.hasAttribute('data-owned')) existing.setAttribute('data-owned', 'router');
+            existing.setAttribute('data-page-style', pageKey);
+            return;
+        }
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = href;
+        link.setAttribute('data-owned', 'router');
+        link.setAttribute('data-page-style', pageKey);
+        HEAD.appendChild(link);
+    });
+}
+
+/* ----------------------- fragment fetch + caching ----------------------- */
+
+const HTML_CACHE = new Map(); // url -> html
+const PENDING = new Map();    // url -> Promise<html>
+
+function isAlreadyWrapped(html) {
+    return /^\s*<section[^>]*\bclass=["'][^"']*\bdoc-page\b/i.test(html);
+}
+
+async function getFragmentHTML(url) {
+    if (url == null) return `<section class="doc-page"><h1>Not found</h1></section>`;
+    if (HTML_CACHE.has(url)) return HTML_CACHE.get(url);
+    if (PENDING.has(url)) return await PENDING.get(url);
+
+    const p = (async () => {
+        const raw = await fetchTEXT(url);
+        // Markdown → HTML
+        if (looksLikeMarkdown(url)) {
+            const body = await markdownToHtml(raw);
+            const cls = pageClassFromURL(url);
+            // ensure code blocks without class default to plaintext
+            const sanitized = body.replace(/<pre><code(?![^>]*class=)/g, '<pre><code class="language-plaintext"');
+            return `<section class="doc-page md ${cls}" data-src="${url}" data-page="${cls}">${sanitized}</section>`;
+        }
+        // Raw HTML fragment → wrap if needed
+        if (!isAlreadyWrapped(raw)) {
+            const cls = pageClassFromURL(url);
+            return `<section class="doc-page ${cls}" data-src="${url}" data-page="${cls}">${raw}</section>`;
+        }
+        return raw;
+    })()
+        .then((html) => {
+            HTML_CACHE.set(url, html);
+            PENDING.delete(url);
+            return html;
+        })
+        .catch((e) => {
+            PENDING.delete(url);
+            throw e;
+        });
+
+    PENDING.set(url, p);
+    return await p;
+}
+
+/* ------------------------------ router core ----------------------------- */
 
 export function createRouter({
-                                 nav,                 // { basePath, contentRoot, routes[] }
+                                 nav,                 // { basePath, contentRoot, stylesRoot?, routes[] }
                                  main = 'main',
                                  aside = 'aside',
                                  activeClass = 'active',
@@ -100,51 +217,64 @@ export function createRouter({
 
     const BASE = normalizeBase(nav.basePath || '/');
     const CONTENT_ROOT = nav.contentRoot || '/';
+    const STYLES_ROOT = nav.stylesRoot || null;
+
     const MAIN = typeof main === 'string' ? document.querySelector(main) : main;
     const ASIDE = typeof aside === 'string' ? document.querySelector(aside) : aside;
     if (!MAIN) throw new Error('router: <main> element not found (check data-main)');
 
-    const routeDefs = (nav.routes || []).filter(r => !r.disabled).map(r => ({
-        ...r, _fileURL: resolveFileURL(CONTENT_ROOT, r.file || null)
-    }));
+    const routeDefs = (nav.routes || [])
+        .filter((r) => !r.disabled)
+        .map((r) => ({ ...r, _fileURL: resolveFileURL(CONTENT_ROOT, r.file || null) }));
     const compiled = compile(routeDefs);
-    const notFound = routeDefs.find(r => r.path === '*') || { path: '*', title: 'Not found', _fileURL: null };
-
-    const HTML_CACHE = new Map();  // url -> html
-    const PENDING = new Map();     // url -> Promise<html>
-
-    async function getHTML(url) {
-        if (url == null) return `<section class="not-found"><h1>Not found</h1></section>`;
-        if (HTML_CACHE.has(url)) return HTML_CACHE.get(url);
-        if (PENDING.has(url)) return await PENDING.get(url);
-        const p = fetchTEXT(url).then((txt) => {
-            HTML_CACHE.set(url, txt);
-            PENDING.delete(url);
-            return txt;
-        }).catch((e) => { PENDING.delete(url); throw e; });
-        PENDING.set(url, p);
-        return await p;
-    }
+    const notFound = routeDefs.find((r) => r.path === '*') || { path: '*', title: 'Not found', _fileURL: null };
 
     function setActive(path) {
         if (!ASIDE) return;
         const links = ASIDE.querySelectorAll('a[href]');
-        links.forEach(a => a.parentElement?.classList.remove(activeClass));
-        const match = [...links].find(a => {
+        links.forEach((a) => a.parentElement?.classList.remove(activeClass));
+        const hit = [...links].find((a) => {
             const u = new URL(a.href, location.href);
             const lp = localizePath(u.pathname, BASE);
             return (lp || '/') === path;
         });
-        if (match) match.parentElement?.classList.add(activeClass);
+        if (hit) {
+            hit.parentElement?.classList.add(activeClass);
+            hit.setAttribute('aria-current', 'page');
+        }
     }
 
-    async function render(html, { title }) {
+    async function render(html, { title, meta }) {
         MAIN.innerHTML = html;
         if (title) document.title = title;
-        const target = MAIN.querySelector('h1, [role="heading"]') || MAIN;
+
+        // Mirror page class onto <main> for easy scoping
+        const section = MAIN.querySelector('.doc-page');
+        if (section) {
+            const pageClass = [...section.classList].find((c) => c.startsWith('page-')) || '';
+            MAIN.setAttribute('data-page', pageClass);
+            MAIN.classList.forEach((c) => { if (c.startsWith('page-')) MAIN.classList.remove(c); });
+            if (pageClass) MAIN.classList.add(pageClass);
+
+            // Inject page-specific CSS (from route.styles[] or stylesRoot)
+            const metaWithStyles = meta ? { ...meta } : null;
+            if (metaWithStyles) {
+                // attach stylesRoot so compute can use it
+                const navWithStyles = STYLES_ROOT ? { ...nav, stylesRoot: STYLES_ROOT } : nav;
+                const hrefs = computePageStyleHrefs(metaWithStyles, navWithStyles);
+                applyPageStyles(hrefs, pageClass);
+            }
+        }
+
+        const target = MAIN.querySelector('h1,[role="heading"]') || MAIN;
         target.setAttribute('tabindex','-1');
         target.focus({ preventScroll: true });
         window.scrollTo(0, 0);
+
+        // Prism highlight if available
+        if (window.Prism && typeof window.Prism.highlightAllUnder === 'function') {
+            window.Prism.highlightAllUnder(MAIN);
+        }
     }
 
     async function load(url, replace = false) {
@@ -156,16 +286,27 @@ export function createRouter({
         const meta = hit ? hit.route : notFound;
         const params = hit ? hit.params : {};
 
-        let html, titleToUse = meta.title;
+        // Route without file → immediate 404 fragment
+        if (!meta._fileURL) {
+            const html404 = await getFragmentHTML(notFound._fileURL);
+            const title404 = notFound.title || 'Not found';
+            if (replace) history.replaceState({ path: local, params, q }, '', u.toString());
+            else history.pushState({ path: local, params, q }, '', u.toString());
+            await render(html404, { title: title404, meta: notFound });
+            setActive(local || '/');
+            document.dispatchEvent(new CustomEvent('route:after', { detail: { path: local || '/', params, query: q, meta: notFound } }));
+            return;
+        }
 
+        let html, titleToUse = meta.title;
         try {
-            html = await getHTML(meta._fileURL);        // try normal fragment
+            html = await getFragmentHTML(meta._fileURL);
         } catch (err) {
             try {
-                html = await getHTML(notFound._fileURL);  // fallback to 404 fragment
+                html = await getFragmentHTML(notFound._fileURL);
                 titleToUse = notFound.title || 'Not found';
             } catch {
-                html = `<section class="not-found"><h1>Not found</h1><p>${String(err)}</p></section>`;
+                html = `<section class="doc-page"><h1>Not found</h1><p>${String(err)}</p></section>`;
                 titleToUse = 'Not found';
             }
         }
@@ -173,7 +314,7 @@ export function createRouter({
         if (replace) history.replaceState({ path: local, params, q }, '', u.toString());
         else history.pushState({ path: local, params, q }, '', u.toString());
 
-        await render(html, { title: titleToUse });
+        await render(html, { title: titleToUse, meta });
         setActive(local || '/');
 
         document.dispatchEvent(new CustomEvent('route:after', {
@@ -188,10 +329,10 @@ export function createRouter({
         const local = localizePath(u.pathname, BASE);
         const hit = local && matchRoute(local, compiled);
         const meta = hit ? hit.route : notFound;
-        if (meta._fileURL) { try { await getHTML(meta._fileURL); } catch {} }
+        if (meta._fileURL) { try { await getFragmentHTML(meta._fileURL); } catch {} }
     }
 
-    // Optional hover preloading for <a data-preload>
+    // Hover preloading for <a data-preload>
     addEventListener('mouseover', (e) => {
         const a = e.target.closest?.('a[data-preload][href]');
         if (!a) return;
@@ -201,26 +342,23 @@ export function createRouter({
         if (!local) return;
         const hit = matchRoute(local, compiled);
         if (!hit) return;
-        preload(u.toString()); // fire & forget
+        preload(u.toString());
     }, { passive: true });
 
-    // Intercept internal links safely
+    // Intercept navigation clicks
     addEventListener('click', (e) => {
         const a = e.target.closest?.('a[href]');
         if (!a || isModifiedClick(e)) return;
-
         const u = new URL(a.href, location.href);
-        if (!/^https?:$/.test(u.protocol)) return;
-
+        if (!/^https?:$/.test(u.protocol)) return;        // ignore mailto:, tel:, etc.
         const local = localizePath(u.pathname, BASE);
         const isLocal = u.origin === location.origin && local !== null;
         const target = a.getAttribute('target');
         const rel = (a.getAttribute('rel') || '').split(/\s+/);
         const isExternalRel = rel.includes('external');
-
         const hit = local && matchRoute(local, compiled);
-        if (!isLocal || !hit || a.hasAttribute('download') || (target && target !== '_self') || isExternalRel) return;
 
+        if (!isLocal || !hit || a.hasAttribute('download') || (target && target !== '_self') || isExternalRel) return;
         e.preventDefault();
         navigate(u.toString());
     });
@@ -229,23 +367,43 @@ export function createRouter({
 
     function start() { navigate(location.href, true); return api; }
 
-    const api = { start, navigate, preload, setActive, load, basePath: BASE, contentRoot: CONTENT_ROOT };
+    const api = { start, navigate, preload, setActive, load, basePath: BASE, contentRoot: CONTENT_ROOT, stylesRoot: STYLES_ROOT };
     return api;
 }
 
-// Optional manual boot helper
+/* ---------------------------- manual boot API --------------------------- */
+
 export async function bootFromNav(navUrl, opts = {}) {
     const nav = await fetchJSON(navUrl);
     return createRouter({ nav, ...opts }).start();
 }
 
-// --- Auto-boot & expose global instance -------------------------------------
+/* -------------------------- robust auto-boot ---------------------------- */
+
+function findOwnScriptElement() {
+    try {
+        const selfUrl = new URL(import.meta.url, location.href).href;
+        const scripts = document.querySelectorAll('script[type="module"][src]');
+        for (const s of scripts) {
+            const srcUrl = new URL(s.getAttribute('src'), location.href).href;
+            if (srcUrl === selfUrl) return s;
+        }
+    } catch {}
+    // Fallbacks
+    return (
+        document.querySelector('script[type="module"][src$="/src/router.js"]') ||
+        document.querySelector('script[type="module"][src$="router.js"]') ||
+        document.scripts[document.scripts.length - 1] ||
+        null
+    );
+}
+
 (async function autobootFromScriptTag() {
     if (typeof document === 'undefined') return;
-    const scriptEl = document.currentScript || [...document.scripts].slice(-1)[0];
+    const scriptEl = findOwnScriptElement();
     if (!scriptEl || !scriptEl.dataset) return;
 
-    const navUrl = scriptEl.dataset.nav;
+    const navUrl   = scriptEl.dataset.nav;
     if (!navUrl) return;
 
     const mainSel   = scriptEl.dataset.main || 'main';
@@ -255,8 +413,7 @@ export async function bootFromNav(navUrl, opts = {}) {
 
     try {
         const nav = await fetchJSON(navUrl);
-        // Expose the running router so pages can call navigate()/preload() without inline JS
-        // e.g., window.PicoRouter.navigate('/docs/dev/api')
+        // Expose router for programmatic calls (navigate/preload)
         window.PicoRouter = createRouter({
             nav,
             main: mainSel,
@@ -266,7 +423,7 @@ export async function bootFromNav(navUrl, opts = {}) {
         }).start();
     } catch (e) {
         const main = document.querySelector(mainSel);
-        if (main) main.innerHTML = `<section class="error"><h1>Router error</h1><p>${String(e)}</p></section>`;
+        if (main) main.innerHTML = `<section class="doc-page"><h1>Router error</h1><p>${String(e)}</p></section>`;
         console.error('router autoboot error:', e);
     }
 })();

@@ -6,7 +6,46 @@
     <title>MarkdownSPA — Docs</title>
     <link rel="icon" href="/assets/images/favicon.ico" />
 
-    <link rel="stylesheet" href="css/styles.css" />
+    <!-- @TODO make these load when page needing them loads -->
+    <link rel="stylesheet" href="/library/vendor/prism/themes/prism-tomorrow.min.css" data-owned="base">
+    <script src="/library/vendor/prism/prism.js" defer></script>
+    <script src="/src/integrations/prism-directives.js" defer></script>
+
+    <!-- Load the languages -->
+    <script src="/library/vendor/prism/components/prism-apacheconf.min.js"  defer></script>
+    <script src="/library/vendor/prism/components/prism-css.min.js"         defer></script>
+    <script src="/library/vendor/prism/components/prism-git.min.js"         defer></script>
+    <script src="/library/vendor/prism/components/prism-http.min.js"        defer></script>
+    <script src="/library/vendor/prism/components/prism-javascript.min.js"  defer></script>
+    <script src="/library/vendor/prism/components/prism-json.min.js"        defer></script>
+    <script src="/library/vendor/prism/components/prism-markdown.min.js"    defer></script>
+    <script src="/library/vendor/prism/components/prism-markup.min.js"      defer></script>
+    <script src="/library/vendor/prism/components/prism-python.min.js"      defer></script>
+
+    <!-- Load Features -->
+    <!-- toolbar-->
+    <link rel="stylesheet" href="/library/vendor/prism/plugins/toolbar/prism-toolbar.min.css">
+    <script                 src="/library/vendor/prism/plugins/toolbar/prism-toolbar.min.js" defer></script>
+
+    <!-- line-numbers-->
+    <link rel="stylesheet" href="/library/vendor/prism/plugins/line-numbers/prism-line-numbers.min.css">
+    <script                 src="/library/vendor/prism/plugins/line-numbers/prism-line-numbers.min.js" defer></script>
+
+    <!-- line-highlight-->
+    <link rel="stylesheet" href="/library/vendor/prism/plugins/line-highlight/prism-line-highlight.min.css">
+    <script                 src="/library/vendor/prism/plugins/line-highlight/prism-line-highlight.min.js" defer></script>
+
+    <!-- download-button-->
+    <script                 src="/library/vendor/prism/plugins/download-button/prism-download-button.min.js" defer></script>
+
+    <!-- copy-to-clipboard-->
+    <script                 src="/library/vendor/prism/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js" defer></script>
+
+    <!-- show-language-->
+    <script                 src="/library/vendor/prism/plugins/show-language/prism-show-language.min.js" defer></script>
+
+    <link rel="stylesheet" href="css/styles.css" data-owned="base" />
+    <link rel="stylesheet" href="css/prose.css" data-owned="base" />
 </head>
 <body>
 <!-- ===== HEADER ===== -->
@@ -99,6 +138,7 @@
         defer
 ></script>
 
+
 <script
         type="module"
         src="/src/router.js"
@@ -109,6 +149,8 @@
         data-query-mode="array"
         defer
 ></script>
+
+<script type="module" src="/src/enhancers/panels.js" defer></script>
 
 </body>
 </html>
