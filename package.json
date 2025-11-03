@@ -48,8 +48,8 @@
   },
   "dependencies": {
     "dompurify": "^3.3.0",
-    "jsdom": "^27.0.1",
-    "snarkdown": "^2.0.0",
-    "prismjs": "^1.30.0"
+    "jsdom": "^27.1.0",
+    "prismjs": "^1.30.0",
+    "snarkdown": "^2.0.0"
   }
 }

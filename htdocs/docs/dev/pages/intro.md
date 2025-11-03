@@ -1,4 +1,4 @@
-# ![PhantomSPA Title Banner](../../../assets/images/pSPA.title-banner.png)
+# ![PhantomSPA Title Banner](/src/assets/images/pSPA.title-banner.png)
 
 *The simplest way to build single-page applications with Markdown.*
 

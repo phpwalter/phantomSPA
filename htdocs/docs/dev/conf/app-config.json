@@ -1,0 +1,42 @@
+{
+  "plugins": {
+    "prism": {
+      "path": "/src/plugins/prism-directives.js",
+      "options": {
+        "theme": "tomorrow",
+        "languages": [
+          "css",
+          "markup",
+          "javascript",
+          "python"
+        ],
+        "toolbar": { "active": true },
+        "line-numbers": { "active": true },
+        "copy-to-clipboard": { "active": true },
+        "line-highlight": { "active": false },
+        "download": {
+          "active": true,
+          "label": "Save",
+          "shortcut": "Ctrl+S"
+        },
+        "show-language": { "active": true },
+        "language": { "active": true, "default": "javascript" },
+        "title": { "active": true, "default": "Code Sample" }
+      }
+    },
+
+    "nav-tree": {
+      "path": "/src/plugins/nav-tree.js",
+      "options": {
+        "nav": "/docs/dev/conf/nav.json",
+        "template": "/docs/dev/pages/nav.html",
+        "container": "#site-nav",
+        "activeClass": "active"
+      }
+    }
+  },
+
+  "basePath": "/docs/dev/",
+  "contentRoot": "/docs/dev/pages/",
+  "nav": "/docs/dev/conf/nav.json"
+}

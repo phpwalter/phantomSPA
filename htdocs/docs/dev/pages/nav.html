@@ -1,3 +1,26 @@
-<nav class="toc" data-nav-src="/docs/dev/conf/nav.json" aria-label="Table of contents">
-    <ul class="toc-list" data-toc></ul>
-</nav>
+<ul class="nav-list">
+    {{#each this}}
+    {{#if children}}
+    <li>
+        <details {{#if lazy}}data-lazy="true"{{/if}}>
+        <summary>
+            <span class="icon">{{icon}}</span>
+            <span class="title">{{title}}</span>
+        </summary>
+        {{#unless lazy}}
+        {{> nav-partial children }}
+        {{/unless}}
+        </details>
+    </li>
+    {{else if path}}
+    {{#unless (eq path "*") }}
+    <li>
+        <a class="nav-link" href="{{path}}">
+            <span class="icon">{{icon}}</span>
+            <span class="title">{{title}}</span>
+        </a>
+    </li>
+    {{/unless}}
+    {{/if}}
+    {{/each}}
+</ul>

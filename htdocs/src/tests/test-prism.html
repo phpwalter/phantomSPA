@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="tomorrow">
+<head>
+    <meta charset="UTF-8" />
+    <title>PhantomSPA Prism Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link id="prism-theme-link" rel="stylesheet" href="" />
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+            background: #2d2d2d;
+            color: #f8f8f2;
+        }
+        pre {
+            margin: 1em 0;
+        }
+        h2 {
+            margin-top: 2rem;
+        }
+    </style>
+    <script type="module">
+        import { setup } from '/src/plugins/prism-directives.js';
+
+        setup({}, {
+            theme: 'tomorrow',
+            languages: ['javascript', 'css', 'markup'],
+            extensions: {
+                'toolbar': { active: true },
+                'line-numbers': { active: true },
+                'copy-to-clipboard': { active: true },
+                'show-language': { active: true }
+            }
+        });
+    </script>
+</head>
+<body>
+
+<h1>🧪 Prism Plugin Test</h1>
+
+<h2>✅ JavaScript</h2>
+<pre class="line-numbers"><code class="language-javascript">
+function greet(name) {
+  return `Hello, ${name}`;
+}
+  </code></pre>
+
+<h2>✅ HTML (markup)</h2>
+<pre><code class="language-markup">
+<!DOCTYPE html>
+<html>
+  <body>Hello!</body>
+</html>
+  </code></pre>
+
+<h2>✅ CSS</h2>
+<pre><code class="language-css">
+body {
+  background: #333;
+  color: #fff;
+}
+  </code></pre>
+
+<h2>⚠️ No Language Class (Should Trigger Warning)</h2>
+<pre><code>
+This code block is missing a "language-*" class.
+  </code></pre>
+
+</body>
+</html>

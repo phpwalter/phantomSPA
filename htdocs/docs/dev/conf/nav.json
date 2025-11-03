@@ -4,8 +4,21 @@
   "contentRoot": "/docs/dev/pages/",
   "stylesRoot": "/docs/dev/css/",
   "routes": [
-    { "path": "/",                "title": "Introduction",     "icon": "📖", "file": "intro.md" },
-    { "path": "/getting-started", "title": "Getting Started",  "icon": "🚀", "file": "getting-started.md" },
+
+    { "path": "/", "file": "intro.md", "title": "Intro", "icon": "📖" },
+
+    {
+      "path": "/getting-started",
+      "title": "Getting Started",
+      "icon": "🚀",
+      "file": "getting-started.md",
+      "lazy": false,
+      "children": [
+        { "path": "/setup", "title": "Setup",         "file": "setup.md" },
+        { "path": "/cli",   "title": "Using the CLI", "file": "cli.md" }
+      ]
+    },
+
     { "path": "/api",             "title": "API Reference",    "icon": "📚", "file": "api-ref.md" },
 
     { "path": "/routing",         "title": "Routing",          "icon": "🛣️", "file": "routing.md"},

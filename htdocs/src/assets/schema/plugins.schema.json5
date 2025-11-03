@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:plugins-config-schema",
+  "title": "Plugins Config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["plugins"],
+  "properties": {
+    "plugins": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prism"],
+      "properties": {
+        "prism": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["theme", "languages", "extensions"],
+          "properties": {
+            "theme": { "type": "string" },
+            "languages": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "extensions": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "toolbar": { "$ref": "#/$defs/toggle" },
+                "line-numbers": { "$ref": "#/$defs/toggle" },
+                "copy-to-clipboard": { "$ref": "#/$defs/toggle" },
+                "line-highlight": { "$ref": "#/$defs/toggle" },
+                "download": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["active"],
+                  "properties": {
+                    "active": { "type": "boolean" },
+                    "label": { "type": "string" },
+                    "shortcut": { "type": "string" }
+                  }
+                },
+                "show-language": { "$ref": "#/$defs/toggle" },
+                "language": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["active"],
+                  "properties": {
+                    "active": { "type": "boolean" },
+                    "default": { "type": "string" }
+                  }
+                },
+                "title": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["active"],
+                  "properties": {
+                    "active": { "type": "boolean" },
+                    "default": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "toggle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["active"],
+      "properties": {
+        "active": { "type": "boolean" }
+      }
+    }
+  }
+}

@@ -266,3 +266,34 @@ code {
 .doc-page.md code {
     font-size: 14px;
 }
+
+.nav-list ul {
+    padding-left: 1.25em;
+    border-left: 2px solid var(--nav-indent-border, #ccc);
+    margin-top: 0.5em;
+}
+.nav-link {
+    display: inline-block;
+    padding: 0.25em 0;
+}
+
+.toc summary {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0.25em 0;
+}
+
+.toc details[open] > summary::after {
+    content: "▾";
+    float: right;
+}
+
+.toc details:not([open]) > summary::after {
+    content: "▸";
+    float: right;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    color: var(--accent-color, #e91e63);
+}
