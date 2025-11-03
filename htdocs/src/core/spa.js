@@ -6,7 +6,7 @@ async function loadJSON(url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Failed to load config: ${url}`);
     const text = await res.text();
-    return eval(`(${text})`); // Replace with JSON5.parse if desired
+    return JSON.parse(text);  // Fixed: Use JSON.parse instead of eval for security
 }
 
 async function loadScript(path) {
@@ -44,7 +44,11 @@ async function bootstrap(configUrl) {
             ? plugin
             : plugin.path || `/src/plugins/${name}.js`; // ✅ Smart fallback
 
-        const options = isPathOnly ? {} : plugin.options || plugin;
+        // Pass both plugin options AND appConfig to plugins
+        const options = isPathOnly ? { config: appConfig } : {
+            ...plugin.options,
+            config: appConfig
+        };
 
         const mod = await loadScript(path);
         if (mod?.setup) {

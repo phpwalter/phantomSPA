@@ -1,4 +1,4 @@
-# ![pSPA.icon.png](../../../assets/images/pSPA.icon.png) API Reference
+# ![pSPA.icon.png](/src/assets/images/pSPA.icon.png) API Reference
 
 ## Methods
 

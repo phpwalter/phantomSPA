@@ -95,6 +95,36 @@ export async function setup(spa, options = {}) {
     });
 }
 
+// Self-initialization when loaded as standalone script
+if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', () => {
+        const script = document.currentScript || document.querySelector('script[src*="router.js"]');
+
+        // Only self-initialize if loaded as standalone script (has data attributes)
+        if (script && script.hasAttribute('data-nav')) {
+            const nav = script.getAttribute('data-nav');
+
+            // Wait for window.spa to be initialized by spa.js
+            const initRouter = () => {
+                if (window.spa && window.spa.renderMarkdown) {
+                    const options = {
+                        nav: nav,
+                        config: window.spa.config || {}
+                    };
+                    setup(window.spa, options).catch(err => {
+                        console.error('[router.js] Standalone initialization failed:', err);
+                    });
+                } else {
+                    // Retry after a short delay if spa not ready yet
+                    setTimeout(initRouter, 50);
+                }
+            };
+
+            initRouter();
+        }
+    });
+}
+
 // Auto-initialize when loaded as standalone script
 if (typeof document !== 'undefined') {
     document.addEventListener('DOMContentLoaded', async () => {
