@@ -1,4 +1,4 @@
-# ![pSPA.icon.png](../../../assets/images/pSPA.icon.png) Getting Started
+# ![pSPA.icon.png](/src/assets/images/pSPA.icon.png)  Getting Started
 
 ## Installation
 

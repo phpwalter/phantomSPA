@@ -1,4 +1,4 @@
-# # ![pSPA.icon.png](../../../assets/images/pSPA.icon.png) Routing
+# ![pSPA.icon.png](/src/assets/images/pSPA.icon.png) Routing
 
 PhantomSPA provides flexible routing with support for static paths, dynamic parameters, and a catch-all fallback.
 

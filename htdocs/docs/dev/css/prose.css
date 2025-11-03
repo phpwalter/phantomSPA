@@ -1,7 +1,7 @@
 
-/* Hero banner image at 50% width, centered */
-/* First image in the Markdown page = hero banner */
-.doc-page.md img:first-of-type {
+/* Hero banner image (title banner on intro page) */
+/* Target the banner image specifically, NOT the pSPA icon */
+.doc-page.md > h1:first-child img[src$="pSPA.title-banner.png"] {
     display: block;
     width: 50%;
     max-width: 50%;
@@ -9,25 +9,30 @@
     margin: 6px auto 10px;
 }
 
-/* All pages EXCEPT the intro page */
-.doc-page.md:not(.page-intro) h1 img[src$="pSPA.icon.png"] {
-    height: 40px;         /* target size */
-    width: auto;          /* keep aspect ratio */
-    vertical-align: middle;
-    margin-right: 10px;   /* space before the title text */
+/* ============================================
+   HEADING ICONS
+   ============================================ */
+
+/* pSPA icon in PAGE TITLE (first H1 only) - applies to ALL pages */
+.doc-page.md > h1:first-child img[src$="pSPA.icon.png"] {
+    height: 0.9em;             /* font-relative: scales with H1 font-size */
+    width: auto;               /* maintain aspect ratio */
+    vertical-align: middle;    /* align with text baseline */
+    margin-right: 0.3em;       /* proportional spacing */
     display: inline-block;
 }
 
-/* (Optional) only affect the first image in the H1, if you prefer */
-.doc-page.md:not(.page-intro) h1 > img:first-of-type[src$="pSPA.icon.png"] {
-    height: 50px;
-}
-
-/* (Optional) tiny bump on small screens */
-@media (max-width: 480px) {
-    .doc-page.md:not(.page-intro) h1 img[src$="pSPA.icon.png"] {
-        height: 44px;
-    }
+/* pSPA icon in H2-H6 headings (if used) */
+.doc-page.md h2 img[src$="pSPA.icon.png"],
+.doc-page.md h3 img[src$="pSPA.icon.png"],
+.doc-page.md h4 img[src$="pSPA.icon.png"],
+.doc-page.md h5 img[src$="pSPA.icon.png"],
+.doc-page.md h6 img[src$="pSPA.icon.png"] {
+    height: 0.9em;             /* font-relative: scales with heading font-size */
+    width: auto;
+    vertical-align: middle;
+    margin-right: 0.3em;
+    display: inline-block;
 }
 
 

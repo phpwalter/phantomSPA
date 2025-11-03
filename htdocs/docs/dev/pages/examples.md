@@ -1,4 +1,4 @@
-# Examples
+# ![pSPA.icon.png](/src/assets/images/pSPA.icon.png) Examples
 
 <!-- as:panels -->
 - **Blog** — A simple blog with categories and tags.  

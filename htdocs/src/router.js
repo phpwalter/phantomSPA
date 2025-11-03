@@ -1,6 +1,7 @@
 /**
  * PhantomSPA Router Plugin
  * Handles navigation and content loading with basePath awareness.
+ * Supports dynamic CSS loading per route.
  */
 
 export async function setup(spa, options = {}) {
@@ -10,6 +11,10 @@ export async function setup(spa, options = {}) {
     const contentRoot = config.contentRoot || '/docs/dev/pages/';
     let routes = [];
 
+    // Track loaded page-specific CSS
+    const loadedPageCSS = new Set();
+    let currentPageCSSId = null;
+
     /**
      * Loads and parses the navigation config.
      */
@@ -18,6 +23,53 @@ export async function setup(spa, options = {}) {
         if (!res.ok) throw new Error(`[router.js] Failed to load nav config: ${navPath}`);
         const data = await res.json();
         routes = data.routes || [];
+    }
+
+    /**
+     * Dynamically load a CSS file
+     * @param {string} href - CSS file path
+     * @param {string} id - Unique ID for the link element
+     * @returns {Promise} Resolves when CSS is loaded
+     */
+    function loadCSS(href, id) {
+        return new Promise((resolve, reject) => {
+            // Check if already loaded
+            if (document.getElementById(id)) {
+                console.log(`[router] CSS already loaded: ${id}`);
+                resolve();
+                return;
+            }
+
+            const link = document.createElement('link');
+            link.id = id;
+            link.rel = 'stylesheet';
+            link.href = href;
+            link.onload = () => {
+                loadedPageCSS.add(id);
+                console.log(`[router] CSS loaded: ${href}`);
+                resolve();
+            };
+            link.onerror = () => {
+                console.warn(`[router] Failed to load CSS: ${href}`);
+                reject(new Error(`Failed to load CSS: ${href}`));
+            };
+            document.head.appendChild(link);
+        });
+    }
+
+    /**
+     * Unload the current page-specific CSS
+     */
+    function unloadCurrentPageCSS() {
+        if (currentPageCSSId) {
+            const link = document.getElementById(currentPageCSSId);
+            if (link) {
+                link.remove();
+                loadedPageCSS.delete(currentPageCSSId);
+                console.log(`[router] CSS unloaded: ${currentPageCSSId}`);
+            }
+            currentPageCSSId = null;
+        }
     }
 
     /**
@@ -46,6 +98,20 @@ export async function setup(spa, options = {}) {
             return;
         }
 
+        // Unload previous page-specific CSS
+        unloadCurrentPageCSS();
+
+        // Load page-specific CSS if specified
+        if (route.css) {
+            const cssId = `page-css-${route.path.replace(/\//g, '-')}`;
+            try {
+                await loadCSS(route.css, cssId);
+                currentPageCSSId = cssId;
+            } catch (err) {
+                console.warn(`[router] CSS loading failed, continuing anyway:`, err);
+            }
+        }
+
         const fileURL = contentRoot + route.file;
         console.log('[router] loading:', fileURL);
 
@@ -62,8 +128,10 @@ export async function setup(spa, options = {}) {
         // Render markdown or HTML
         if (route.file.endsWith('.md')) {
             const html = await spa.renderMarkdown(content);
-            main.innerHTML = html;
+            // Wrap markdown content in .doc-page.md container for styling
+            main.innerHTML = `<div class="doc-page md">${html}</div>`;
         } else {
+            // HTML files may already have their own wrapper
             main.innerHTML = content;
         }
 

@@ -1,54 +1,41 @@
-.hero{
+/*
+ * Intro Page Styles
+ *
+ * Page-specific styles for the intro/home page.
+ * Uses global CSS variables from styles.css.
+ *
+ * Note: Most card and panel styles are already in styles.css.
+ * This file contains only intro-specific overrides and unique components.
+ */
+
+/* Intro-specific hero (larger than default) */
+.page-intro .hero{
     padding: 6px 4px 10px;
 }
-.hero h1{
+
+.page-intro .hero h1{
     margin: 0 0 10px;
     font-size: 56px;
     line-height:1.05;
     color:#8fb0ff;
     letter-spacing:.2px;
 }
-.subtitle{
+
+.page-intro .subtitle{
     margin:0;
     color:var(--muted);
     font-size: 20px;
 }
 
-.panel{
-    margin-top: 22px;
-    background: var(--panel);
-    border:1px solid var(--panel-line);
-    border-radius: 14px;
-    padding: 18px 18px 16px;
-    box-shadow: var(--shadow);
-}
-.panel h2{
-    margin:0 0 8px;
-    color:var(--heading);
-    font-size: 22px;
-}
-.panel p{ margin: 8px 0; }
-
-.section-title{
-    margin: 30px 0 12px;
-    color: var(--heading);
-    font-size: 22px;
-}
-
-.cards{
+/* Intro-specific 3-column card grid */
+.page-intro .cards{
     display:grid;
     grid-template-columns: repeat(3, minmax(0,1fr));
     gap: 16px;
 }
-.card{
-    background: var(--panel);
-    border:1px solid var(--panel-line);
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: var(--shadow);
+
+@media (max-width: 880px){
+    .page-intro .cards{
+        grid-template-columns: 1fr;
+    }
 }
-.card-icon{ font-size: 28px; margin-bottom: 8px; }
-.card h3{
-    margin: 0 0 4px; color: var(--heading); font-size: 18px; font-weight: 800;
-}
-.card p{ margin: 0; color: var(--muted); }

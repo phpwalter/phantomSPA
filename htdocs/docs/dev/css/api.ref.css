@@ -1,33 +1,31 @@
-:root{
-    --api-panel:#101a2a;
-    --api-line:#1e2a3f;
-    --api-fg:#c7d0de;
-    --api-muted:#9aa7bd;
-    --api-heading:#e6edf7;
-    --api-title:#8fb0ff;
-    --api-radius:12px;
-    --api-shadow:0 0 0 1px rgba(0,0,0,.04), 0 6px 18px rgba(0,0,0,.25);
+/*
+ * API Reference Page Styles
+ * 
+ * Page-specific styles for the API reference documentation.
+ * Uses global CSS variables from styles.css.
+ */
+
+/* Page wrapper */
+.api-page{ 
+    color:var(--fg); 
 }
 
-/* page wrapper */
-.api-page{ color:var(--api-fg); }
-
-/* title */
+/* Title */
 .api-title{
     margin:0 0 14px;
     font-size: clamp(2rem, 3vw + 1rem, 3rem);
     line-height:1.05;
-    color: var(--api-title);
+    color: #8fb0ff;
     letter-spacing:.2px;
 }
 
-/* table */
+/* API Table - unique to this page */
 .api-table-wrap{
-    background: var(--api-panel);
-    border: 1px solid var(--api-line);
-    border-radius: var(--api-radius);
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius);
     overflow:hidden;
-    box-shadow: var(--api-shadow);
+    box-shadow: var(--shadow);
     margin: 10px 0 18px;
 }
 .api-table{
@@ -37,14 +35,14 @@
 }
 .api-table thead th{
     text-align:left;
-    color: var(--api-heading);
+    color: var(--heading);
     padding: 12px 14px;
     background: #0f1a2c;
-    border-bottom: 1px solid var(--api-line);
+    border-bottom: 1px solid var(--panel-line);
 }
 .api-table tbody td{
     padding: 12px 14px;
-    border-top: 1px solid var(--api-line);
+    border-top: 1px solid var(--panel-line);
     vertical-align: top;
 }
 .api-table code{
@@ -53,53 +51,70 @@
     padding:2px 6px;
     border-radius:6px;
     border:1px solid rgba(255,255,255,.06);
-    font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    font-family: var(--font-mono);
     font-size: .92em;
 }
 
-/* sections */
-.api-block{ margin: 22px 0 10px; }
+/* Sections */
+.api-block{ 
+    margin: 22px 0 10px; 
+}
 .api-h2{
     margin:0 0 8px;
-    color: var(--api-heading);
+    color: var(--heading);
     font-weight: 800;
     font-size: 1.25rem;
 }
 
-/* code blocks */
+/* Code blocks (uses global variables) */
 .api-code{
     margin: 10px 0 0;
-    background: var(--api-panel);
-    border: 1px solid var(--api-line);
-    border-radius: var(--api-radius);
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius);
     padding: 14px 16px;
     overflow:auto;
-    box-shadow: var(--api-shadow);
+    box-shadow: var(--shadow);
 }
 .api-code code{
     display:block;
     color:#cde1c5;
     white-space: pre;
-    font: 14px/1.45 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    font: 14px/1.45 var(--font-mono);
 }
 
-/* notes */
+/* Notes */
 .api-note{
     margin: 6px 0 8px;
-    color: var(--api-muted);
+    color: var(--muted);
 }
-.api-note code{ color:#e3edff; }
+.api-note code{ 
+    color:#e3edff; 
+}
 
-/* responsiveness */
+/* Responsive table */
 @media (max-width: 760px){
-    .api-table thead{ display:none; }
-    .api-table tr{ display:block; border-top:1px solid var(--api-line); }
+    .api-table thead{ 
+        display:none; 
+    }
+    .api-table tr{ 
+        display:block; 
+        border-top:1px solid var(--panel-line); 
+    }
     .api-table tbody td{
         display:block;
         border:none;
         padding: 10px 14px;
     }
-    .api-table tbody td + td{ padding-top: 4px; }
-    .api-table tbody tr{ padding: 10px 0; }
-    .api-table tbody td:first-child{ font-weight:700; color: var(--api-heading); }
+    .api-table tbody td + td{ 
+        padding-top: 4px; 
+    }
+    .api-table tbody tr{ 
+        padding: 10px 0; 
+    }
+    .api-table tbody td:first-child{ 
+        font-weight:700; 
+        color: var(--heading); 
+    }
 }
+

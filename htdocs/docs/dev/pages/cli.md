@@ -1,4 +1,4 @@
-# ![pSPA.icon.png](../../../src/assets/images/pSPA.icon.png) Using the CLI
+# ![pSPA.icon.png](/src/assets/images/pSPA.icon.png)  Using the CLI
 
 ## Overview
 
@@ -221,4 +221,3 @@ For more information:
 ---
 
 [← Back to Getting Started](/docs/dev/getting-started) | [Advanced Topics →](/docs/dev/advanced)
-

@@ -1,4 +1,4 @@
-# Plugins
+# ![pSPA.icon.png](/src/assets/images/pSPA.icon.png) Plugins
 
 Extend MarkdownSPA with custom plugins.
 

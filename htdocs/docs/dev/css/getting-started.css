@@ -1,71 +1,64 @@
-:root{
-    /* inherit your site palette; tweak if needed */
-    --gs-bg: #0f1724;
-    --gs-panel: #101a2a;
-    --gs-line: #1e2a3f;
-    --gs-fg: #c7d0de;
-    --gs-muted: #9aa7bd;
-    --gs-title: #8fb0ff;
-    --gs-heading: #e6edf7;
-    --gs-accent: #6ea8ff;
-    --gs-radius: 12px;
-    --gs-shadow: 0 0 0 1px rgba(0,0,0,.04), 0 6px 18px rgba(0,0,0,.25);
-}
+/*
+ * Getting Started Page Styles
+ * 
+ * Page-specific styles for the getting started guide.
+ * Uses global CSS variables from styles.css.
+ */
 
-/* page wrapper */
+/* Page wrapper */
 .gs-page{
     display:block;
-    color:var(--gs-fg);
+    color:var(--fg);
 }
 
-/* top title */
+/* Top title */
 .gs-title{
     margin: 0 0 12px;
     font-size: clamp(2rem, 3vw + 1rem, 3.2rem);
     line-height: 1.05;
-    color: var(--gs-title);
+    color: #8fb0ff;
     letter-spacing: .2px;
 }
 
-/* section block */
+/* Section block */
 .gs-block{
     margin: 18px 0 22px;
 }
 
-/* headings */
+/* Headings */
 .gs-h2{
     margin: 0 0 8px;
-    color: var(--gs-heading);
+    color: var(--heading);
     font-size: 1.35rem;
     font-weight: 800;
 }
 
-/* code panel */
+/* Code panel (uses global variables) */
 .gs-code{
     margin: 10px 0 0;
-    background: var(--gs-panel);
-    border: 1px solid var(--gs-line);
-    border-radius: var(--gs-radius);
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius);
     padding: 14px 16px;
     overflow: auto;
-    box-shadow: var(--gs-shadow);
+    box-shadow: var(--shadow);
 }
 .gs-code code{
     display:block;
-    color: #cde1c5;              /* pleasant “code” color */
-    font: 14px/1.45 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: #cde1c5;
+    font: 14px/1.45 var(--font-mono);
     white-space: pre;
 }
 
-/* tip card */
+/* Tip card - unique to getting started */
 .gs-tip{
     display:flex;
     align-items:flex-start;
     gap: 12px;
     margin: 18px 0 10px;
     background: #0f1a2c;
-    border: 1px solid var(--gs-line);
-    border-radius: var(--gs-radius);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius);
     padding: 14px 16px;
 }
 .gs-tip-icon{
@@ -75,29 +68,53 @@
 }
 .gs-tip-title{
     margin: 0 0 4px;
-    color: var(--gs-heading);
+    color: var(--heading);
     font-size: 1rem;
     font-weight: 800;
 }
-.gs-tip p{ margin: 0; color: var(--gs-fg); }
+.gs-tip p{ 
+    margin: 0; 
+    color: var(--fg); 
+}
 
-/* CTA button */
-.gs-cta{ margin: 18px 0 6px; }
+/* CTA button - unique to getting started */
+.gs-cta{ 
+    margin: 18px 0 6px; 
+}
 .gs-btn{
     display:inline-block;
     background: #1b2a48;
     color: #dbe7ff;
-    border: 1px solid var(--gs-line);
+    border: 1px solid var(--panel-line);
     border-radius: 10px;
     padding: 10px 14px;
     text-decoration: none;
     font-weight: 700;
     letter-spacing: .2px;
-    box-shadow: var(--gs-shadow);
+    box-shadow: var(--shadow);
+    transition: background .15s ease, border-color .15s ease;
 }
-.gs-btn:hover{ background:#223357; color:#fff; border-color:#2a3a58; }
+.gs-btn:hover{ 
+    background:#223357; 
+    color:#fff; 
+    border-color:#2a3a58; 
+}
+.gs-btn:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
 
-/* body copy */
-.gs-page p{ margin: 6px 0; color: var(--gs-fg); }
-.gs-page a{ color: var(--gs-accent); text-decoration: none; }
-.gs-page a:hover{ text-decoration: underline; text-underline-offset: 2px; }
+/* Body copy */
+.gs-page p{ 
+    margin: 6px 0; 
+    color: var(--fg); 
+}
+.gs-page a{ 
+    color: var(--accent); 
+    text-decoration: none; 
+}
+.gs-page a:hover{ 
+    text-decoration: underline; 
+    text-underline-offset: 2px; 
+}
+

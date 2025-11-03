@@ -1,55 +1,60 @@
-:root{
-    --rt-panel:#101a2a;
-    --rt-line:#1e2a3f;
-    --rt-fg:#c7d0de;
-    --rt-muted:#9aa7bd;
-    --rt-heading:#e6edf7;
-    --rt-title:#8fb0ff;
-    --rt-radius:12px;
-    --rt-shadow:0 0 0 1px rgba(0,0,0,.04), 0 6px 18px rgba(0,0,0,.25);
+/*
+ * Routing Page Styles
+ * 
+ * Page-specific styles for the routing documentation page.
+ * Uses global CSS variables from styles.css.
+ */
+
+/* Page wrapper */
+.rt-page{ 
+    color:var(--fg); 
 }
 
-/* page wrapper */
-.rt-page{ color:var(--rt-fg); }
-
-/* title + lead */
+/* Title + lead */
 .rt-title{
     margin:0 0 10px;
     font-size: clamp(2rem, 3vw + 1rem, 3rem);
     line-height:1.05;
-    color: var(--rt-title);
+    color: #8fb0ff;
     letter-spacing:.2px;
 }
-.rt-lead{ margin: 6px 0 12px; color: var(--rt-fg); }
+.rt-lead{ 
+    margin: 6px 0 12px; 
+    color: var(--fg); 
+}
 
-/* blocks + headings */
-.rt-block{ margin: 20px 0 14px; }
+/* Blocks + headings */
+.rt-block{ 
+    margin: 20px 0 14px; 
+}
 .rt-h2{
     margin:0 0 8px;
-    color: var(--rt-heading);
+    color: var(--heading);
     font-weight: 800;
     font-size: 1.25rem;
 }
 
-/* code panels */
+/* Code panels (uses global variables) */
 .rt-code{
     margin: 8px 0 0;
-    background: var(--rt-panel);
-    border: 1px solid var(--rt-line);
-    border-radius: var(--rt-radius);
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius);
     padding: 14px 16px;
     overflow:auto;
-    box-shadow: var(--rt-shadow);
+    box-shadow: var(--shadow);
 }
 .rt-code code{
     display:block;
     color:#cde1c5;
     white-space: pre;
-    font: 14px/1.45 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    font: 14px/1.45 var(--font-mono);
 }
 
-/* lists */
-.rt-list{ margin: 8px 0 0 1.1rem; }
+/* Lists */
+.rt-list{ 
+    margin: 8px 0 0 1.1rem; 
+}
 .rt-list code{
     color:#d4e2ff;
     background: rgba(255,255,255,.04);
@@ -58,27 +63,35 @@
     border: 1px solid rgba(255,255,255,.06);
 }
 
-/* tip card */
+/* Tip card - unique to routing page */
 .rt-tip{
     display:flex;
     gap:12px;
     align-items:flex-start;
     margin: 18px 0 10px;
     background:#0f1a2c;
-    border:1px solid var(--rt-line);
-    border-radius: var(--rt-radius);
+    border:1px solid var(--panel-line);
+    border-radius: var(--radius);
     padding: 14px 16px;
 }
-.rt-tip-icon{ font-size:20px; line-height:1; }
+.rt-tip-icon{ 
+    font-size:20px; 
+    line-height:1; 
+}
 .rt-tip-title{
     margin:0 0 4px;
-    color: var(--rt-heading);
+    color: var(--heading);
     font-weight:800;
     font-size:1rem;
 }
 
-/* responsive niceties */
+/* Responsive */
 @media (max-width: 760px){
-    .rt-title{ font-size: clamp(1.8rem, 5vw, 2.2rem); }
-    .rt-code{ padding: 12px 12px; }
+    .rt-title{ 
+        font-size: clamp(1.8rem, 5vw, 2.2rem); 
+    }
+    .rt-code{ 
+        padding: 12px 12px; 
+    }
 }
+

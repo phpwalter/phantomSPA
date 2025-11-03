@@ -5,13 +5,20 @@
   "stylesRoot": "/docs/dev/css/",
   "routes": [
 
-    { "path": "/", "file": "intro.md", "title": "Intro", "icon": "📖" },
+    {
+      "path": "/",
+      "file": "intro.md",
+      "title": "Intro",
+      "icon": "📖",
+      "css": "/docs/dev/css/intro.css"
+    },
 
     {
       "path": "/getting-started",
       "title": "Getting Started",
       "icon": "🚀",
       "file": "getting-started.md",
+      "css": "/docs/dev/css/getting-started.css",
       "lazy": false,
       "children": [
         { "path": "/setup", "title": "Setup",         "file": "setup.md" },
@@ -19,9 +26,21 @@
       ]
     },
 
-    { "path": "/api",             "title": "API Reference",    "icon": "📚", "file": "api-ref.md" },
+    {
+      "path": "/api",
+      "title": "API Reference",
+      "icon": "📚",
+      "file": "api-ref.md",
+      "css": "/docs/dev/css/api.ref.css"
+    },
 
-    { "path": "/routing",         "title": "Routing",          "icon": "🛣️", "file": "routing.md"},
+    {
+      "path": "/routing",
+      "title": "Routing",
+      "icon": "🛣️",
+      "file": "routing.md",
+      "css": "/docs/dev/css/routing.css"
+    },
     { "path": "/html-injection",  "title": "HTML Injection",   "icon": "💉", "file": "html-injection.md"},
     { "path": "/events",          "title": "Events",           "icon": "💡", "file": "events.md"},
     { "path": "/plugins",         "title": "Plugins",          "icon": "🧩", "file": "plugins.md"},
