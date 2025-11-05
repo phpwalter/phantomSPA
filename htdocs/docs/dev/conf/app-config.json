@@ -13,9 +13,65 @@
       "path": "/src/plugins/prism/prism-syntax-highlighter.js",
       "options": {
         "theme": "tomorrow",
-        "languages": ["markup", "css", "javascript", "json", "bash", "markdown", "typescript", "jsx", "python"],
-        "plugins": ["line-numbers", "line-highlight", "command-line"],
-        "cdnVersion": "1.29.0"
+        "cdnVersion": "1.29.0",
+        "cdnBase": "https://cdn.jsdelivr.net/npm/prismjs@{version}",
+        "languages": [
+          "markup",
+          "css",
+          "javascript",
+          "json",
+          "bash",
+          "markdown",
+          "typescript",
+          "jsx",
+          "python"
+        ],
+        "plugins": [
+          {
+            "name": "line-numbers",
+            "jsPath": "/plugins/line-numbers/prism-line-numbers.min.js",
+            "cssPath": "/plugins/line-numbers/prism-line-numbers.min.css",
+            "dependencies": []
+          },
+          {
+            "name": "line-highlight",
+            "jsPath": "/plugins/line-highlight/prism-line-highlight.min.js",
+            "cssPath": "/plugins/line-highlight/prism-line-highlight.min.css",
+            "dependencies": []
+          },
+          {
+            "name": "command-line",
+            "jsPath": "/plugins/command-line/prism-command-line.min.js",
+            "cssPath": "/plugins/command-line/prism-command-line.min.css",
+            "dependencies": []
+          }
+        ],
+        "availablePlugins": [
+          {
+            "name": "toolbar",
+            "jsPath": "/plugins/toolbar/prism-toolbar.min.js",
+            "cssPath": "/plugins/toolbar/prism-toolbar.min.css",
+            "dependencies": []
+          },
+          {
+            "name": "copy-to-clipboard",
+            "jsPath": "/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js",
+            "cssPath": null,
+            "dependencies": ["toolbar"]
+          },
+          {
+            "name": "download-button",
+            "jsPath": "/plugins/download-button/prism-download-button.min.js",
+            "cssPath": null,
+            "dependencies": ["toolbar"]
+          },
+          {
+            "name": "show-language",
+            "jsPath": "/plugins/show-language/prism-show-language.min.js",
+            "cssPath": null,
+            "dependencies": ["toolbar"]
+          }
+        ]
       }
     }
   },

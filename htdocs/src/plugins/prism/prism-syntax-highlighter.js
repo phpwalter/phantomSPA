@@ -26,13 +26,15 @@ import { loadPrismPlugins } from './prism-plugin-loader.js';
 export async function setup(spa, options = {}) {
     console.group('[prism-syntax-highlighter] init');
 
-    const config = {
-        theme: 'tomorrow',
-        languages: ['markup', 'css', 'javascript', 'json', 'bash', 'markdown', 'typescript', 'jsx', 'python'],
-        plugins: ['line-numbers', 'line-highlight', 'command-line'],
-        cdnVersion: '1.29.0',
-        ...options
-    };
+    // All configuration comes from app-config.json via options parameter
+    // No hardcoded defaults - config must be provided
+    if (!options.theme || !options.cdnVersion || !options.cdnBase) {
+        console.error('[prism-syntax-highlighter] ERROR: Missing required configuration (theme, cdnVersion, cdnBase)');
+        console.groupEnd();
+        return;
+    }
+
+    const config = options;
 
     try {
         // Step 1: Initialize Prism.manual mode to prevent auto-highlighting
@@ -45,7 +47,8 @@ export async function setup(spa, options = {}) {
         await loadPluginCSS();
 
         // Step 4: Load Prism plugins dynamically (only the ones in config)
-        await loadPrismPlugins(config.plugins, config.cdnVersion);
+        const cdnBase = config.cdnBase.replace('{version}', config.cdnVersion);
+        await loadPrismPlugins(config.plugins, cdnBase);
 
         // Step 5: Inject critical CSS fixes
         injectCSSFixes();
@@ -99,36 +102,34 @@ function initializePrismManualMode() {
 
 /**
  * Load Prism CDN resources (core, languages, plugin CSS)
+ * All paths come from config - no hardcoded values
  */
 async function loadPrismCDNResources(config) {
-    const CDN = `https://cdn.jsdelivr.net/npm/prismjs@${config.cdnVersion}`;
+    const cdnBase = config.cdnBase.replace('{version}', config.cdnVersion);
 
     // Load theme CSS
-    await loadStylesheet(`${CDN}/themes/prism-${config.theme}.min.css`, 'prism-theme');
+    await loadStylesheet(`${cdnBase}/themes/prism-${config.theme}.min.css`, 'prism-theme');
 
-    // Load plugin CSS (only for plugins in config)
-    const pluginCSSMap = {
-        'line-numbers': `${CDN}/plugins/line-numbers/prism-line-numbers.min.css`,
-        'line-highlight': `${CDN}/plugins/line-highlight/prism-line-highlight.min.css`,
-        'command-line': `${CDN}/plugins/command-line/prism-command-line.min.css`,
-        'toolbar': `${CDN}/plugins/toolbar/prism-toolbar.min.css`,
-        'copy-to-clipboard': null, // No CSS file
-        'download-button': null, // No CSS file
-        'show-language': null // No CSS file
-    };
-
-    for (const plugin of config.plugins) {
-        if (pluginCSSMap[plugin]) {
-            await loadStylesheet(pluginCSSMap[plugin], `prism-plugin-${plugin}`);
+    // Load plugin CSS (only for plugins that have CSS files)
+    // CSS paths come from plugin config objects
+    if (config.plugins && Array.isArray(config.plugins)) {
+        for (const plugin of config.plugins) {
+            // Plugin can be either a string (legacy) or an object (new format)
+            if (typeof plugin === 'object' && plugin.cssPath) {
+                const cssUrl = cdnBase + plugin.cssPath;
+                await loadStylesheet(cssUrl, `prism-plugin-${plugin.name}`);
+            }
         }
     }
 
     // Load Prism core
-    await loadScript(`${CDN}/prism.min.js`, 'prism-core');
+    await loadScript(`${cdnBase}/prism.min.js`, 'prism-core');
 
     // Load languages
-    for (const lang of config.languages) {
-        await loadScript(`${CDN}/components/prism-${lang}.min.js`, `prism-lang-${lang}`);
+    if (config.languages && Array.isArray(config.languages)) {
+        for (const lang of config.languages) {
+            await loadScript(`${cdnBase}/components/prism-${lang}.min.js`, `prism-lang-${lang}`);
+        }
     }
 }
 

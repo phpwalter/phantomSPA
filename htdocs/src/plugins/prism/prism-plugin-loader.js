@@ -1,8 +1,8 @@
 /**
  * Prism Plugin Loader
- * 
+ *
  * Loads Prism.js plugins in the correct order to ensure dependencies are satisfied.
- * This bypasses issues with defer/async script loading.
+ * All configuration is driven by app-config.json - no hardcoded paths or dependencies.
  */
 
 /**
@@ -22,13 +22,13 @@ function loadScript(url) {
 
 /**
  * Load Prism plugins in the correct order based on config
- * @param {Array} pluginsToLoad - Array of plugin names to load
- * @param {string} cdnVersion - Prism CDN version
+ * @param {Array} pluginConfigs - Array of plugin configuration objects from app-config.json
+ * @param {string} cdnBase - CDN base URL with {version} placeholder
  * @returns {Promise} - Resolves when all plugins are loaded
  */
-export async function loadPrismPlugins(pluginsToLoad = [], cdnVersion = '1.29.0') {
+export async function loadPrismPlugins(pluginConfigs = [], cdnBase = '') {
     console.log('[prism-loader] Starting plugin load...');
-    console.log('[prism-loader] Plugins to load:', pluginsToLoad);
+    console.log('[prism-loader] Plugin configs:', pluginConfigs);
     console.log('[prism-loader] Prism exists:', !!window.Prism);
     console.log('[prism-loader] Current plugins:', Object.keys(window.Prism?.plugins || {}));
 
@@ -39,78 +39,63 @@ export async function loadPrismPlugins(pluginsToLoad = [], cdnVersion = '1.29.0'
     }
 
     // If no plugins to load, exit early
-    if (!pluginsToLoad || pluginsToLoad.length === 0) {
+    if (!pluginConfigs || pluginConfigs.length === 0) {
         console.log('[prism-loader] No plugins to load');
         return;
     }
 
     console.log('[prism-loader] Loading plugins...');
 
-    const CDN_BASE = `https://cdn.jsdelivr.net/npm/prismjs@${cdnVersion}/plugins`;
-
-    // Map of plugin names to their CDN paths and dependencies
-    const pluginMap = {
-        'toolbar': {
-            path: `${CDN_BASE}/toolbar/prism-toolbar.min.js`,
-            dependencies: []
-        },
-        'copy-to-clipboard': {
-            path: `${CDN_BASE}/copy-to-clipboard/prism-copy-to-clipboard.min.js`,
-            dependencies: ['toolbar']
-        },
-        'download-button': {
-            path: `${CDN_BASE}/download-button/prism-download-button.min.js`,
-            dependencies: ['toolbar']
-        },
-        'show-language': {
-            path: `${CDN_BASE}/show-language/prism-show-language.min.js`,
-            dependencies: ['toolbar']
-        },
-        'line-numbers': {
-            path: `${CDN_BASE}/line-numbers/prism-line-numbers.min.js`,
-            dependencies: []
-        },
-        'line-highlight': {
-            path: `${CDN_BASE}/line-highlight/prism-line-highlight.min.js`,
-            dependencies: []
-        },
-        'command-line': {
-            path: `${CDN_BASE}/command-line/prism-command-line.min.js`,
-            dependencies: []
-        }
-    };
-
     try {
-        // Collect all plugins including dependencies
-        const allPluginsToLoad = new Set();
-        for (const plugin of pluginsToLoad) {
-            const pluginInfo = pluginMap[plugin];
-            if (pluginInfo) {
-                // Add dependencies first
-                for (const dep of pluginInfo.dependencies) {
-                    allPluginsToLoad.add(dep);
-                }
-                // Add the plugin itself
-                allPluginsToLoad.add(plugin);
-            }
+        // Build a map of plugin name -> config for easy lookup
+        const pluginMap = {};
+        for (const plugin of pluginConfigs) {
+            pluginMap[plugin.name] = plugin;
         }
 
-        // Load plugins in dependency order
-        const loadOrder = ['toolbar', 'copy-to-clipboard', 'download-button', 'show-language', 'line-numbers', 'line-highlight', 'command-line'];
-        const pluginsToLoadInOrder = loadOrder.filter(p => allPluginsToLoad.has(p));
+        // Collect all plugins including dependencies
+        const allPluginsToLoad = new Map(); // name -> config
 
-        console.log('[prism-loader] Load order:', pluginsToLoadInOrder);
+        function addPluginWithDeps(pluginName) {
+            if (allPluginsToLoad.has(pluginName)) {
+                return; // Already added
+            }
+
+            const pluginConfig = pluginMap[pluginName];
+            if (!pluginConfig) {
+                console.warn(`[prism-loader] Plugin "${pluginName}" not found in config`);
+                return;
+            }
+
+            // Add dependencies first (recursive)
+            if (pluginConfig.dependencies && pluginConfig.dependencies.length > 0) {
+                for (const dep of pluginConfig.dependencies) {
+                    addPluginWithDeps(dep);
+                }
+            }
+
+            // Add the plugin itself
+            allPluginsToLoad.set(pluginName, pluginConfig);
+        }
+
+        // Add all requested plugins with their dependencies
+        for (const plugin of pluginConfigs) {
+            addPluginWithDeps(plugin.name);
+        }
+
+        // Load plugins in the order they were added (dependencies first)
+        const pluginsToLoadInOrder = Array.from(allPluginsToLoad.values());
+
+        console.log('[prism-loader] Load order:', pluginsToLoadInOrder.map(p => p.name));
 
         for (const plugin of pluginsToLoadInOrder) {
-            const pluginInfo = pluginMap[plugin];
-            if (pluginInfo) {
-                try {
-                    console.log(`[prism-loader] Loading ${plugin}...`);
-                    await loadScript(pluginInfo.path);
-                    console.log(`[prism-loader] ${plugin} loaded ✓`);
-                } catch (err) {
-                    console.error(`[prism-loader] Failed to load ${plugin}:`, err);
-                }
+            try {
+                const url = cdnBase + plugin.jsPath;
+                console.log(`[prism-loader] Loading ${plugin.name} from ${url}...`);
+                await loadScript(url);
+                console.log(`[prism-loader] ${plugin.name} loaded ✓`);
+            } catch (err) {
+                console.error(`[prism-loader] Failed to load ${plugin.name}:`, err);
             }
         }
 
