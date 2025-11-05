@@ -1,6 +1,4 @@
 {
-  "_comment_prism": "REMOVED: prism-directives plugin was reloading Prism core and wiping out plugins loaded by router.js. Prism is now managed by router.js instead.",
-
   "plugins": {
     "nav-tree": {
       "path": "/src/plugins/nav-tree.js",
@@ -9,6 +7,15 @@
         "template": "/docs/dev/pages/nav.html",
         "container": "#site-nav",
         "activeClass": "active"
+      }
+    },
+    "prism-syntax-highlighter": {
+      "path": "/src/plugins/prism/prism-syntax-highlighter.js",
+      "options": {
+        "theme": "tomorrow",
+        "languages": ["markup", "css", "javascript", "json", "bash", "markdown", "typescript", "jsx", "python"],
+        "plugins": ["line-numbers", "line-highlight", "command-line"],
+        "cdnVersion": "1.29.0"
       }
     }
   },

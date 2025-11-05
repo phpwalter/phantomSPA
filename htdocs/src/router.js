@@ -4,17 +4,6 @@
  * Supports dynamic CSS loading per route.
  */
 
-import {
-    loadPrismConfig,
-    applyPrismConfig,
-    highlightCode,
-    createPrismSettingsPanel,
-    createPrismSettingsButton,
-    applyPerBlockPrismConfig
-} from './utilities/prism-config.js';
-
-import { loadPrismPlugins } from './utilities/prism-plugin-loader.js';
-
 export async function setup(spa, options = {}) {
     const config = options.config || spa.config || {};
     const navPath = options.nav || config.nav || '/docs/dev/conf/nav.json';
@@ -25,31 +14,6 @@ export async function setup(spa, options = {}) {
     // Track loaded page-specific CSS
     const loadedPageCSS = new Set();
     let currentPageCSSId = null;
-
-    // Load Prism plugins first (must happen before configuration)
-    await loadPrismPlugins();
-
-    // Inject critical Prism CSS fixes to override CDN CSS
-    // Note: Prism.js actively resets overflow, so we reposition line numbers instead
-    const prismCSSFix = document.createElement('style');
-    prismCSSFix.id = 'prism-css-fix';
-    prismCSSFix.textContent = `
-        /* Reposition line numbers inside padding area (Prism resets overflow) */
-        .line-numbers .line-numbers-rows {
-            left: 0 !important;
-            margin-left: 0px !important;
-        }
-
-        /* Ensure line highlight is visible */
-        .line-highlight {
-            z-index: 1 !important;
-        }
-    `;
-    document.head.appendChild(prismCSSFix);
-
-    // Load Prism configuration
-    let prismConfig = loadPrismConfig();
-    applyPrismConfig(prismConfig);
 
     /**
      * Loads and parses the navigation config.
@@ -174,13 +138,6 @@ export async function setup(spa, options = {}) {
         document.title = route.title || 'Untitled';
         history.replaceState({}, route.title, location.pathname);
 
-        // Apply per-block Prism configuration from HTML comment directives
-        // This must run BEFORE highlightCode() so that per-block classes are in place
-        applyPerBlockPrismConfig(main);
-
-        // Apply Prism.js syntax highlighting with user configuration
-        highlightCode(main, prismConfig);
-
         // Emit route:after event for enhancers
         if (spa.events) {
             spa.events.dispatchEvent(new CustomEvent('route:after', { detail: { route } }));
@@ -205,49 +162,6 @@ export async function setup(spa, options = {}) {
         }
     });
 
-    /**
-     * Initialize Prism settings UI
-     */
-    function initPrismSettingsUI() {
-        // Wait for navigation to be rendered
-        const checkNav = setInterval(() => {
-            const nav = document.querySelector('.site-nav');
-            if (nav) {
-                clearInterval(checkNav);
-
-                // Create settings panel
-                const panel = createPrismSettingsPanel(prismConfig, (newConfig) => {
-                    prismConfig = newConfig;
-                    // Re-apply highlighting to current page
-                    const main = document.querySelector(options.main || '#app-shell');
-                    if (main) {
-                        highlightCode(main, prismConfig);
-                    }
-                });
-
-                // Create settings button
-                const button = createPrismSettingsButton(panel);
-
-                // Find or create nav controls container
-                let controlsContainer = nav.querySelector('.nav-controls');
-                if (!controlsContainer) {
-                    controlsContainer = document.createElement('div');
-                    controlsContainer.classList.add('nav-controls');
-                    nav.insertBefore(controlsContainer, nav.firstChild);
-                }
-
-                // Add button and panel to controls
-                controlsContainer.appendChild(button);
-                controlsContainer.appendChild(panel);
-            }
-        }, 100);
-
-        // Timeout after 5 seconds
-        setTimeout(() => clearInterval(checkNav), 5000);
-    }
-
-    // Initialize Prism settings UI
-    initPrismSettingsUI();
 }
 
 // Auto-initialize when loaded as standalone script
