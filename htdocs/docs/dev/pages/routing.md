@@ -5,7 +5,7 @@ PhantomSPA provides flexible routing with support for static paths, dynamic para
 
 ## Quick Example
 
-<!-- prism: toolbar line-numbers highlight=2,4-6 copy-to-clipboard download-button show-language -->
+<!-- prism: toolbar line-numbers highlight=2,4-6 copy-to-clipboard download-button show-language title="nav.json (excerpt)" -->
 ```json
 // nav.json (excerpt)
 {
@@ -47,7 +47,7 @@ const params = { "id": "42" };
 
 ## Query Strings
 
-Queries are parsed into an object. Repeated keys may be collected as arrays depending on the router’s `queryMode` (default: `array`).
+Queries are parsed into an object. Repeated keys may be collected as arrays depending on the router’s 'queryMode' (default: 'array').
 
 ```js
 // URL: /docs/dev/search?q=spa&q=router&page=2
