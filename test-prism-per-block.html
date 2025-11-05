@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Prism Per-Block Configuration</title>
+
+    <!-- Prism CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-highlight/prism-line-highlight.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/command-line/prism-command-line.min.css">
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+
+        h1, h2 {
+            color: #4ec9b0;
+        }
+
+        .test-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            background: #252526;
+            border-radius: 8px;
+        }
+
+        .expected {
+            background: #1e3a1e;
+            padding: 0.5rem;
+            border-left: 3px solid #4ec9b0;
+            margin: 1rem 0;
+        }
+
+        /* Simulate global config body classes */
+        body.prism-no-line-numbers pre[class*="language-"]:not([data-prism-configured]) .line-numbers-rows {
+            display: none !important;
+        }
+
+        body.prism-no-copy pre[class*="language-"]:not([data-prism-configured]) .toolbar-item button[data-copy-state] {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Prism.js Per-Block Configuration Test</h1>
+
+    <div class="test-section">
+        <h2>Test 1: Line Numbers + Line Highlight</h2>
+        <div class="expected">
+            <strong>Expected:</strong> Line numbers visible, lines 2, 4-6 highlighted
+        </div>
+
+        <!-- prism: line-numbers highlight=2,4-6 -->
+        <pre class="language-javascript line-numbers" data-line="2,4-6" data-prism-configured="true"><code>const x = 1;
+const y = 2;
+const z = 3;
+const a = 4;
+const b = 5;
+const c = 6;</code></pre>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Full Toolbar (Copy + Download + Language)</h2>
+        <div class="expected">
+            <strong>Expected:</strong> Line numbers, copy button, download button, language label "JAVASCRIPT"
+        </div>
+
+        <pre class="language-javascript line-numbers" data-prism-configured="true" data-prism-copy="true" data-prism-download="true" data-prism-language="true"><code>function greet(name) {
+    console.log(`Hello, ${name}!`);
+}
+
+greet('World');</code></pre>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Highlight Only (No Line Numbers)</h2>
+        <div class="expected">
+            <strong>Expected:</strong> Lines 1 and 3 highlighted, NO line numbers
+        </div>
+
+        <pre class="language-css" data-line="1,3" data-prism-configured="true"><code>.container { background: #fff; }
+.header { color: #333; }
+.footer { padding: 1rem; }</code></pre>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Global Config Block (No Per-Block Config)</h2>
+        <div class="expected">
+            <strong>Expected:</strong> Should respect global body classes (currently no line numbers due to body.prism-no-line-numbers)
+        </div>
+
+        <pre class="language-json"><code>{
+    "name": "test",
+    "version": "1.0.0"
+}</code></pre>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: Per-Block Config Should Override Global</h2>
+        <div class="expected">
+            <strong>Expected:</strong> Line numbers SHOULD show even though body has prism-no-line-numbers class
+        </div>
+
+        <pre class="language-python line-numbers" data-prism-configured="true"><code>class Example:
+    def __init__(self):
+        self.value = 42
+
+    def get_value(self):
+        return self.value</code></pre>
+    </div>
+
+    <!-- Prism.js Core + Languages -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+
+    <!-- Prism.js Plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/download-button/prism-download-button.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/show-language/prism-show-language.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+
+    <script>
+        // Simulate global config being disabled for line numbers and copy button
+        document.body.classList.add('prism-no-line-numbers');
+        document.body.classList.add('prism-no-copy');
+
+        console.log('Body classes:', document.body.className);
+        console.log('Prism loaded:', !!window.Prism);
+        console.log('Prism plugins:', window.Prism?.plugins ? Object.keys(window.Prism.plugins) : 'none');
+
+        // Check if code blocks are highlighted
+        setTimeout(() => {
+            const codeBlocks = document.querySelectorAll('pre[class*="language-"]');
+            console.log('Total code blocks:', codeBlocks.length);
+
+            codeBlocks.forEach((pre, index) => {
+                const wrapper = pre.parentElement;
+                console.log(`Block ${index + 1}:`, {
+                    classes: pre.className,
+                    hasDataLine: pre.hasAttribute('data-line'),
+                    dataLine: pre.getAttribute('data-line'),
+                    configured: pre.getAttribute('data-prism-configured'),
+                    hasLineNumbersRows: !!pre.querySelector('.line-numbers-rows'),
+                    wrapperClasses: wrapper?.className,
+                    hasToolbar: !!wrapper?.querySelector('.toolbar'),
+                    toolbarItems: wrapper?.querySelectorAll('.toolbar-item').length || 0,
+                    hasLineHighlight: !!document.querySelector('.line-highlight')
+                });
+            });
+
+            // Check for line-highlight elements
+            const lineHighlights = document.querySelectorAll('.line-highlight');
+            console.log('Line highlight elements found:', lineHighlights.length);
+            lineHighlights.forEach((el, i) => {
+                console.log(`Line highlight ${i + 1}:`, {
+                    dataStart: el.getAttribute('data-start'),
+                    dataEnd: el.getAttribute('data-end'),
+                    parent: el.parentElement?.tagName,
+                    parentClasses: el.parentElement?.className
+                });
+            });
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -6,12 +6,29 @@
     <title>PhantomSPA Developer Docs</title>
     <link rel="icon" href="/src/assets/images/favicon.ico" />
 
-    <!-- Base Styles -->
-    <link rel="stylesheet" href="/docs/dev/css/styles.css">
-    <link rel="stylesheet" href="/docs/dev/css/prose.css">
-
-    <!-- Prism Theme (loaded via JS too) -->
+    <!-- Prism.js Theme (Okaidia - Dark theme) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-okaidia.min.css" />
+
+    <!-- Prism.js Plugins CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-highlight/prism-line-highlight.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/command-line/prism-command-line.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css" />
+
+    <!-- Base Styles (AFTER Prism CSS to override) -->
+    <link rel="stylesheet" href="/docs/dev/css/prose.css">
+    <link rel="stylesheet" href="/docs/dev/css/styles.css?v=8">
+
+    <!-- Disable Prism.js automatic highlighting -->
+    <!-- We'll manually trigger highlighting after applying per-block configuration -->
+    <!-- CRITICAL: Only set manual flag, don't initialize the whole Prism object -->
+    <script>
+        // Only set the manual flag - let Prism.js initialize everything else
+        window.Prism = window.Prism || {};
+        window.Prism.manual = true;
+        // Ensure plugins object exists for plugins to register
+        window.Prism.plugins = window.Prism.plugins || {};
+    </script>
 
 </head>
 <body>
@@ -44,6 +61,22 @@
 <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 </script>
+
+<!-- Prism.js Core + Languages -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markup.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markdown.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-typescript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-jsx.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+
+<!-- Prism.js Plugins -->
+<!-- REMOVED: Plugins are now loaded dynamically by router.js via prism-plugin-loader.js -->
+<!-- This ensures correct load order and prevents caching issues -->
 
 <!-- 📦 Load Kernel -->
 <script type="module" src="/src/core/spa.js"></script>

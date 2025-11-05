@@ -641,3 +641,425 @@ code {
 .doc-page.md code {
     font-size: 14px;
 }
+
+/* ============================================
+   10. PRISM.JS SYNTAX HIGHLIGHTING OVERRIDES
+   ============================================ */
+
+/* Code block container */
+pre[class*="language-"] {
+    background: var(--card) !important;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    margin: 1.5em 0;
+    padding: 1em;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Note: Prism.js actively resets overflow, so we can't use overflow-y: visible.
+   Instead, we reposition line numbers inside the padding area. */
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+    background: var(--panel) !important;
+    color: var(--accent) !important;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-size: 0.875em;
+    border: 1px solid var(--panel-line);
+}
+
+/* Line numbers plugin */
+pre.line-numbers {
+    position: relative;
+    padding-left: 3.8em;
+    counter-reset: linenumber;
+}
+
+pre.line-numbers > code {
+    position: relative;
+    white-space: inherit;
+}
+
+.line-numbers .line-numbers-rows {
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    font-size: 100%;
+    left: 0 !important;
+    padding-left: 0.5em;
+    width: 3em;
+    letter-spacing: -1px;
+    border-right: 1px solid var(--line-strong) !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    user-select: none;
+}
+
+.line-numbers-rows > span {
+    display: block;
+    counter-increment: linenumber;
+}
+
+.line-numbers-rows > span:before {
+    content: counter(linenumber);
+    color: var(--muted) !important;
+    display: block;
+    padding-right: 0.8em;
+    text-align: right;
+}
+
+/* Line highlight plugin */
+.line-highlight {
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding: inherit 0;
+    margin-top: 1em;
+    pointer-events: none;
+    line-height: inherit;
+    white-space: pre;
+    z-index: 1;
+    background: rgba(110, 168, 255, 0.15) !important;
+    background: linear-gradient(to right, rgba(110, 168, 255, 0.2) 70%, rgba(110, 168, 255, 0)) !important;
+}
+
+.line-highlight:before,
+.line-highlight[data-end]:after {
+    content: attr(data-start);
+    position: absolute;
+    top: 0.4em;
+    left: 0.6em;
+    min-width: 1em;
+    padding: 0 0.5em;
+    background-color: var(--accent) !important;
+    color: #fff !important;
+    font: bold 65%/1.5 sans-serif;
+    text-align: center;
+    vertical-align: 0.3em;
+    border-radius: 999px;
+    text-shadow: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.line-highlight[data-end]:after {
+    content: attr(data-end);
+    top: auto;
+    bottom: 0.4em;
+}
+
+/* Toolbar plugin */
+div.code-toolbar {
+    position: relative;
+}
+
+div.code-toolbar > .toolbar {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+div.code-toolbar:hover > .toolbar,
+div.code-toolbar:focus-within > .toolbar {
+    opacity: 1;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item {
+    display: inline-block;
+    margin-left: 0.5em;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+    background: var(--panel) !important;
+    color: var(--fg) !important;
+    border: 1px solid var(--line-strong) !important;
+    border-radius: 6px;
+    padding: 0.4em 0.8em;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover {
+    background: var(--card) !important;
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Copy button success state */
+div.code-toolbar > .toolbar > .toolbar-item > button[data-copy-state="copy-success"] {
+    background: var(--accent) !important;
+    color: #fff !important;
+    border-color: var(--accent) !important;
+}
+
+/* Command line plugin */
+.command-line-prompt {
+    border-right: 1px solid var(--line-strong) !important;
+}
+
+.command-line-prompt > span:before {
+    color: var(--muted) !important;
+}
+
+.command-line-prompt > span[data-user]:before {
+    color: var(--accent) !important;
+}
+
+.command-line-prompt > span[data-prompt]:before {
+    color: var(--heading) !important;
+}
+
+/* Show language plugin */
+div.code-toolbar > .toolbar > .toolbar-item > span.language-label {
+    background: transparent !important;
+    color: var(--muted) !important;
+    border: none !important;
+    padding: 0.4em 0.6em;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+/* Responsive code blocks */
+@media (max-width: 720px) {
+    pre[class*="language-"] {
+        font-size: 0.8rem;
+        padding: 0.8em;
+        border-radius: 8px;
+    }
+
+    div.code-toolbar > .toolbar {
+        opacity: 1; /* Always show on mobile */
+    }
+
+    div.code-toolbar > .toolbar > .toolbar-item > button,
+    div.code-toolbar > .toolbar > .toolbar-item > a,
+    div.code-toolbar > .toolbar > .toolbar-item > span {
+        font-size: 0.7rem;
+        padding: 0.3em 0.6em;
+    }
+}
+
+/* ============================================
+   11. PRISM.JS CONFIGURATION UI
+   ============================================ */
+
+/* Prism settings button */
+.prism-settings-btn {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--fg);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 0.5rem;
+}
+
+.prism-settings-btn .icon {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.prism-settings-btn:hover {
+    background: var(--card);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.prism-settings-btn:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Prism settings panel */
+.prism-settings-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--panel);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-top: 0.5rem;
+    box-shadow: var(--shadow);
+    z-index: 1000;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: all 0.3s ease;
+}
+
+.prism-settings-panel.open {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.prism-settings-panel h4 {
+    margin: 0 0 1rem 0;
+    color: var(--heading);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Setting option */
+.prism-setting-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.prism-setting-option:last-of-type {
+    border-bottom: none;
+}
+
+.prism-setting-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--accent);
+}
+
+.prism-setting-option label {
+    flex: 1;
+    color: var(--fg);
+    font-size: 0.875rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.prism-setting-option label:hover {
+    color: var(--heading);
+}
+
+/* Action buttons */
+.prism-settings-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+}
+
+.prism-reset-btn,
+.prism-close-btn {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--fg);
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.prism-reset-btn:hover {
+    background: var(--panel);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.prism-close-btn:hover {
+    background: var(--panel);
+    border-color: var(--line-strong);
+}
+
+.prism-reset-btn:focus,
+.prism-close-btn:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.prism-reset-btn.clicked {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+/* Feature toggle classes */
+/* Note: These rules only apply to blocks WITHOUT per-block configuration */
+/* Blocks with data-prism-configured="true" are excluded from global settings */
+
+body.prism-no-highlighting pre[class*="language-"]:not([data-prism-configured]) code {
+    color: var(--fg) !important;
+    text-shadow: none !important;
+}
+
+body.prism-no-highlighting pre[class*="language-"]:not([data-prism-configured]) .token {
+    color: inherit !important;
+    background: none !important;
+}
+
+body.prism-no-line-numbers pre[class*="language-"]:not([data-prism-configured]) .line-numbers-rows {
+    display: none !important;
+}
+
+/* Hide copy button when global setting is disabled (except for per-block configured blocks) */
+/* Note: We add .prism-block-configured class to the wrapper div after Prism runs */
+body.prism-no-copy div.code-toolbar:not(.prism-block-configured) .toolbar-item button[data-copy-state] {
+    display: none !important;
+}
+
+/* Hide download button when global setting is disabled (except for per-block configured blocks) */
+body.prism-no-download div.code-toolbar:not(.prism-block-configured) .toolbar-item a[download] {
+    display: none !important;
+}
+
+/* Hide language label when global setting is disabled (except for per-block configured blocks) */
+body.prism-no-language div.code-toolbar:not(.prism-block-configured) .toolbar-item .language-label {
+    display: none !important;
+}
+
+body.prism-no-line-highlight pre[class*="language-"]:not([data-prism-configured]) .line-highlight {
+    display: none !important;
+}
+
+body.prism-no-command-line pre[class*="language-"]:not([data-prism-configured]) .command-line-prompt {
+    display: none !important;
+}
+
+/* Responsive */
+@media (max-width: 720px) {
+    .prism-settings-btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .prism-settings-panel {
+        left: -1rem;
+        right: -1rem;
+        border-radius: 0;
+    }
+}
