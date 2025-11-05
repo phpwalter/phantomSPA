@@ -37,7 +37,7 @@ export async function setup(spa, options = {}) {
         /* Reposition line numbers inside padding area (Prism resets overflow) */
         .line-numbers .line-numbers-rows {
             left: 0 !important;
-            padding-left: 0.5em !important;
+            margin-left: 0px !important;
         }
 
         /* Ensure line highlight is visible */

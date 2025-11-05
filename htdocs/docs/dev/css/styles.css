@@ -675,22 +675,25 @@ pre[class*="language-"] {
 /* Line numbers plugin */
 pre.line-numbers {
     position: relative;
-    padding-left: 3.8em;
+    padding-left: 14px;
     counter-reset: linenumber;
 }
 
 pre.line-numbers > code {
     position: relative;
     white-space: inherit;
+    padding-left: 50px;
+    margin-left: 0px;
 }
 
 .line-numbers .line-numbers-rows {
     position: absolute;
     pointer-events: none;
-    top: 0;
+    top: 1em;
     font-size: 100%;
+    /* Position in the left padding area, not overlaying the code */
     left: 0 !important;
-    padding-left: 0.5em;
+    margin-left: 0px;
     width: 3em;
     letter-spacing: -1px;
     border-right: 1px solid var(--line-strong) !important;
