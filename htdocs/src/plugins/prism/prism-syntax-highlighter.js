@@ -23,6 +23,25 @@ import {
 
 import { loadPrismPlugins } from './prism-plugin-loader.js';
 
+/**
+ * Plugin initialization function called by the plugin manager
+ * @param {PluginManager} pluginManager - The plugin manager instance
+ * @param {Object} options - Plugin options from app-config.json
+ */
+export async function init(pluginManager, options = {}) {
+    // For compatibility with the plugin manager, we need to access the eventBus
+    // The pluginManager is passed as the first argument, but we need the eventBus
+    // We'll create a wrapper object that has the events property
+    const spa = {
+        events: pluginManager.events || window.eventBus || {
+            addEventListener: (event, handler) => {
+                document.addEventListener(event, handler);
+            }
+        }
+    };
+    await setup(spa, options);
+}
+
 export async function setup(spa, options = {}) {
     console.group('[prism-syntax-highlighter] init');
 

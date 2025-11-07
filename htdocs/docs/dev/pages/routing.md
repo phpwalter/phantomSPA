@@ -5,7 +5,7 @@ PhantomSPA provides flexible routing with support for static paths, dynamic para
 
 ## Quick Example
 
-<!-- prism: toolbar line-numbers highlight=2,4-6 copy-to-clipboard download-button show-language title="nav.json (excerpt)" -->
+<!-- prism: toolbar line-numbers highlight=2,4-6 copy-to-clipboard download-button show-language -->
 ```json
 // nav.json (excerpt)
 {

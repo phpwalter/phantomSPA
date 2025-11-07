@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routing Debug Test</title>
+    <style>
+        body { font-family: monospace; margin: 20px; }
+        .section { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
+        .link-info { background: #f0f0f0; padding: 5px; margin: 5px 0; }
+        code { background: #ffe0e0; padding: 2px 5px; }
+    </style>
+</head>
+<body>
+    <h1>PhantomSPA Routing Debug Test</h1>
+    
+    <div class="section">
+        <h2>1. Navigation Links in DOM</h2>
+        <div id="nav-links"></div>
+    </div>
+
+    <div class="section">
+        <h2>2. Router State</h2>
+        <div id="router-state"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. Click Interception Test</h2>
+        <p>Click a link below and check console for interception logs:</p>
+        <div id="test-links"></div>
+    </div>
+
+    <div class="section">
+        <h2>4. Console Output</h2>
+        <pre id="console-output"></pre>
+    </div>
+
+    <script type="module">
+        // Capture console logs
+        const logs = [];
+        const originalLog = console.log;
+        const originalDebug = console.debug;
+        const originalInfo = console.info;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+
+        function captureLog(level, args) {
+            const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+            logs.push(`[${level}] ${msg}`);
+            document.getElementById('console-output').textContent = logs.join('\n');
+        }
+
+        console.log = (...args) => { captureLog('LOG', args); originalLog(...args); };
+        console.debug = (...args) => { captureLog('DEBUG', args); originalDebug(...args); };
+        console.info = (...args) => { captureLog('INFO', args); originalInfo(...args); };
+        console.warn = (...args) => { captureLog('WARN', args); originalWarn(...args); };
+        console.error = (...args) => { captureLog('ERROR', args); originalError(...args); };
+
+        // Wait for page to load
+        await new Promise(resolve => {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', resolve);
+            } else {
+                resolve();
+            }
+        });
+
+        // Give plugins time to initialize
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // 1. Inspect navigation links
+        const navLinks = document.querySelectorAll('a.nav-link');
+        const navLinksDiv = document.getElementById('nav-links');
+        navLinksDiv.innerHTML = `<p>Found ${navLinks.length} navigation links:</p>`;
+        navLinks.forEach((link, i) => {
+            const div = document.createElement('div');
+            div.className = 'link-info';
+            div.innerHTML = `
+                <strong>Link ${i + 1}:</strong><br>
+                href: <code>${link.href}</code><br>
+                pathname: <code>${new URL(link.href).pathname}</code><br>
+                text: <code>${link.textContent.trim()}</code>
+            `;
+            navLinksDiv.appendChild(div);
+        });
+
+        // 2. Inspect router state
+        const routerStateDiv = document.getElementById('router-state');
+        if (window.router) {
+            const routes = Array.from(window.router.routes.keys());
+            routerStateDiv.innerHTML = `
+                <p><strong>Router found!</strong></p>
+                <p>Base path: <code>${window.router.options.base}</code></p>
+                <p>Registered routes (${routes.length}):</p>
+                <ul>${routes.map(r => `<li><code>${r}</code></li>`).join('')}</ul>
+            `;
+        } else {
+            routerStateDiv.innerHTML = '<p style="color: red;">Router not found on window!</p>';
+        }
+
+        // 3. Add test links
+        const testLinksDiv = document.getElementById('test-links');
+        const testLinks = [
+            { text: 'Home (/)', href: '/docs/dev/' },
+            { text: 'Getting Started', href: '/docs/dev/getting-started' },
+            { text: 'API', href: '/docs/dev/api' }
+        ];
+        testLinks.forEach(link => {
+            const a = document.createElement('a');
+            a.href = link.href;
+            a.textContent = link.text;
+            a.style.display = 'block';
+            a.style.margin = '5px 0';
+            a.style.color = 'blue';
+            a.style.textDecoration = 'underline';
+            a.style.cursor = 'pointer';
+            testLinksDiv.appendChild(a);
+        });
+
+        // 4. Intercept link clicks
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (link && link.href) {
+                console.log(`[TEST] Link clicked: ${link.href}`);
+                console.log(`[TEST] pathname: ${new URL(link.href).pathname}`);
+                console.log(`[TEST] origin matches: ${link.origin === location.origin}`);
+            }
+        }, true);
+
+        console.log('[TEST] Page loaded and ready for testing');
+    </script>
+</body>
+</html>
+

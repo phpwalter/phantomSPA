@@ -6,6 +6,24 @@
  * Supports basePath-aware links, <details> persistence, lazy-loading, and active highlighting.
  */
 
+/**
+ * Plugin initialization function called by the plugin manager
+ * @param {PluginManager} pluginManager - The plugin manager instance
+ * @param {Object} options - Plugin options from app-config.json
+ */
+export async function init(pluginManager, options = {}) {
+    // The setup function expects a spa object with an events property
+    // We'll create a wrapper that provides the necessary interface
+    const spa = {
+        events: pluginManager.events || {
+            addEventListener: (event, handler) => {
+                document.addEventListener(event, handler);
+            }
+        }
+    };
+    await setup(spa, options);
+}
+
 export async function setup(spa, options = {}) {
     // Load saved config from localStorage
     const savedConfig = JSON.parse(localStorage.getItem('navTreeConfig') || '{}');
@@ -87,7 +105,15 @@ function buildNavTree(routes = [], basePath = '/') {
 
             // If parent route has a path, create a clickable link
             if (route.path) {
-                const fullPath = `${basePath.replace(/\/$/, '')}/${route.path.replace(/^\/+/, '')}`;
+                // Special case: if route.path is '/', navigate to global home '/'
+                // Otherwise, construct path relative to basePath
+                let fullPath;
+                if (route.path === '/') {
+                    fullPath = '/';
+                } else {
+                    fullPath = `${basePath.replace(/\/$/, '')}${route.path}`;
+                }
+                console.debug(`[nav-tree] Generated link for "${route.title}": basePath="${basePath}", route.path="${route.path}", fullPath="${fullPath}"`);
                 const a = document.createElement('a');
                 a.classList.add('nav-link');
                 a.href = fullPath;
@@ -140,7 +166,15 @@ function buildNavTree(routes = [], basePath = '/') {
         else if (route.path) {
             const a = document.createElement('a');
             a.classList.add('nav-link');
-            const fullPath = `${basePath.replace(/\/$/, '')}/${route.path.replace(/^\/+/, '')}`;
+            // Special case: if route.path is '/', navigate to global home '/'
+            // Otherwise, construct path relative to basePath
+            let fullPath;
+            if (route.path === '/') {
+                fullPath = '/';
+            } else {
+                fullPath = `${basePath.replace(/\/$/, '')}${route.path}`;
+            }
+            console.debug(`[nav-tree] Generated link for "${route.title}": basePath="${basePath}", route.path="${route.path}", fullPath="${fullPath}"`);
             a.href = fullPath;
             a.innerHTML = `<span class="icon">${route.icon || ''}</span><span class="title">${route.title || ''}</span>`;
             li.appendChild(a);

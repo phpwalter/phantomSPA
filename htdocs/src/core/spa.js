@@ -1,89 +1,196 @@
-// spa.js — PhantomSPA Kernel Bootstrapper with fallback path support
+/**
+ * @file spa.js
+ * @path htdocs/src/core/spa.js
+ * @description Core SPA application class
+ */
 
-import { markdownToHtml } from '../utilities/markdown.js';
+import { eventBus } from './event-bus.js';
+import { pluginManager } from './plugin-manager.js';
+import { AppError, ErrorHandler } from './error-handler.js';
+import { EVENTS } from '../config/constants.js';
 
-async function loadJSON(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Failed to load config: ${url}`);
-    const text = await res.text();
-    return JSON.parse(text);  // Fixed: Use JSON.parse instead of eval for security
-}
-
-async function loadScript(path) {
-    return import(path).catch((err) => {
-        console.error(`[spa.js] Failed to load plugin: ${path}`, err);
-    });
-}
-
-async function bootstrap(configUrl) {
-    const rootEl = document.querySelector('[data-config]');
-    if (!rootEl) {
-        console.error('[spa.js] No <main> element with data-config');
-        return;
+/**
+ * Core SPA application class
+ */
+export class SPA {
+    /**
+     * Creates a new SPA instance
+     * @param {Object} config - Application configuration
+     */
+    constructor(config) {
+        this.config = config;
+        this.router = null;
+        this.plugins = pluginManager;
+        this.events = eventBus;
+        this.initialized = false;
     }
 
-    // Initialize window.spa object with core functionality
-    window.spa = {
-        renderMarkdown: async (mdText) => {
-            return await markdownToHtml(mdText);
-        },
-        config: {},
-        plugins: [],
-        events: new EventTarget()
-    };
+    /**
+     * Initializes the SPA application
+     * @returns {Promise<void>}
+     */
+    async init() {
+        if (this.initialized) {
+            console.warn('[SPA] Already initialized');
+            return;
+        }
 
-    const appConfig = await loadJSON(configUrl);
-    window.spa.config = appConfig;
+        try {
+            console.info('[SPA] Initializing...');
+            eventBus.emit(EVENTS.APP_INIT);
 
-    const pluginDefs = appConfig.plugins || {};
-    const pluginList = [];
+            // Initialize plugins if configured
+            if (this.config.get('plugins')) {
+                await this.loadPlugins();
+            }
 
-    for (const [name, plugin] of Object.entries(pluginDefs)) {
-        const isPathOnly = typeof plugin === 'string';
-        const path = isPathOnly
-            ? plugin
-            : plugin.path || `/src/plugins/${name}.js`; // ✅ Smart fallback
+            this.initialized = true;
+            eventBus.emit(EVENTS.APP_READY);
+            console.info('[SPA] Initialization complete');
 
-        // Pass both plugin options AND appConfig to plugins
-        const options = isPathOnly ? { config: appConfig } : {
-            ...plugin.options,
-            config: appConfig
-        };
+        } catch (error) {
+            const appError = new AppError(
+                `SPA initialization failed: ${error.message}`,
+                'CRITICAL_APP_INIT',
+                { originalError: error }
+            );
 
-        const mod = await loadScript(path);
-        if (mod?.setup) {
-            mod.setup(window.spa, options);
-            pluginList.push({ name, setup: mod.setup });
-        } else {
-            console.warn(`[spa.js] Plugin "${name}" loaded but has no setup()`);
+            await ErrorHandler.handle(appError);
+            throw appError;
         }
     }
 
-    window.spa.plugins = pluginList;
+    /**
+     * Loads configured plugins
+     * @returns {Promise<void>}
+     */
+    async loadPlugins() {
+        const pluginsConfig = this.config.get('plugins');
 
-    // Optional router/nav bootstrap alignment
-    const routerScript = document.querySelector('script[src*="router.js"]');
-    if (routerScript && appConfig.nav) {
-        routerScript.setAttribute('data-nav', appConfig.nav);
+        if (!pluginsConfig || typeof pluginsConfig !== 'object') {
+            return;
+        }
+
+        const pluginEntries = Object.entries(pluginsConfig);
+
+        for (const [name, pluginConfig] of pluginEntries) {
+            try {
+                if (pluginConfig.enabled === false) {
+                    console.info(`[SPA] Skipping disabled plugin: ${name}`);
+                    continue;
+                }
+
+                console.info(`[SPA] Loading plugin: ${name}`);
+
+                // Dynamic import of plugin
+                const pluginPath = pluginConfig.path || `/src/plugins/${name}.js`;
+                const pluginModule = await import(pluginPath);
+
+                await this.plugins.register(
+                    name,
+                    pluginModule,
+                    pluginConfig.options || {}
+                );
+
+            } catch (error) {
+                console.error(`[SPA] Failed to load plugin "${name}":`, error);
+                // Don't throw - continue loading other plugins
+            }
+        }
     }
 
-    const navScript = document.querySelector('script[src*="nav.js"]');
-    if (navScript && appConfig.nav) {
-        navScript.setAttribute('data-nav', appConfig.nav);
+    /**
+     * Sets the router instance
+     * @param {Object} router - Router instance
+     */
+    setRouter(router) {
+        this.router = router;
     }
 
-    console.info('[spa.js] PhantomSPA boot complete', {
-        config: appConfig,
-        plugins: pluginList.map(p => p.name)
-    });
+    /**
+     * Gets the application configuration
+     * @returns {Object} Configuration instance
+     */
+    getConfig() {
+        return this.config;
+    }
+
+    /**
+     * Destroys the SPA instance
+     */
+    destroy() {
+        this.plugins.clear();
+        this.events.clearAll();
+        this.initialized = false;
+        console.info('[SPA] Destroyed');
+    }
 }
 
-// Boot on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-    const configPath = document.querySelector('[data-config]')?.getAttribute('data-config');
-    if (configPath) {
-        bootstrap(configPath).catch(err => {
-            console.error('[spa.js] Failed to initialize app', err);
-        });
+/**
+ * Creates and initializes a SPA instance
+ * @param {Object} config - Application configuration
+ * @returns {Promise<SPA>} Initialized SPA instance
+ */
+export async function createApp(config) {
+    const app = new SPA(config);
+    await app.init();
+    return app;
+}
+
+/**
+ * Auto-initialization when loaded as a module script
+ * Loads app-config.json and initializes the SPA
+ */
+async function autoInitializeSPA() {
+    try {
+        // Find the main element with data-config attribute
+        const mainElement = document.querySelector('[data-config]');
+        if (!mainElement) {
+            console.warn('[SPA] No element with data-config attribute found');
+            return;
+        }
+
+        const configUrl = mainElement.dataset.config;
+        if (!configUrl) {
+            console.warn('[SPA] data-config attribute is empty');
+            return;
+        }
+
+        console.info('[SPA] Auto-initializing with config:', configUrl);
+
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+            await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
+        }
+
+        // Fetch and parse the app configuration
+        const response = await fetch(configUrl);
+        if (!response.ok) {
+            throw new Error(`Failed to load config: ${configUrl} (${response.status})`);
+        }
+
+        const configData = await response.json();
+
+        // Create AppConfig instance
+        const { AppConfig } = await import('../config/app-config.js');
+        const config = new AppConfig(configData);
+
+        // Create and initialize the SPA
+        const app = await createApp(config);
+
+        // Store app globally for access
+        window.app = app;
+
+        console.info('[SPA] Auto-initialization complete');
+
+    } catch (error) {
+        console.error('[SPA] Auto-initialization failed:', error);
     }
-});
+}
+
+// Auto-initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoInitializeSPA);
+} else {
+    autoInitializeSPA();
+}

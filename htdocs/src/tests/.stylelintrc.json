@@ -1,0 +1,90 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-recommended",
+    "stylelint-config-standard-scss",
+    "stylelint-prettier/recommended"
+  ],
+  "plugins": [
+    "stylelint-order",
+    "stylelint-declaration-strict-value",
+    "stylelint-selector-bem-pattern",
+    "stylelint-use-logical"
+  ],
+  "rules": {
+    "indentation": 2,
+    "no-missing-end-of-source-newline": true,
+    "no-empty-source": true,
+    "color-named": "never",
+    "string-quotes": "single",
+    "declaration-block-trailing-semicolon": "always",
+    "declaration-colon-space-before": "never",
+    "declaration-colon-space-after": "always-single-line",
+    "block-opening-brace-space-before": "always",
+    "max-nesting-depth": 2,
+    "no-descending-specificity": null,
+    "unit-no-unknown": [true, { "ignoreUnits": ["x", "rpx"] }],
+    "selector-max-id": 0,
+    "selector-no-qualifying-type": [true, { "ignore": ["attribute"] }],
+    "selector-pseudo-element-colon-notation": "double",
+    "selector-type-case": "lower",
+    "selector-max-compound-selectors": 3,
+    "selector-max-specificity": "0,3,0",
+    "function-url-quotes": "always",
+    "value-keyword-case": "lower",
+    "font-weight-notation": "numeric",
+    "property-case": "lower",
+    "declaration-block-no-duplicate-properties": true,
+    "declaration-empty-line-before": null,
+    "custom-property-pattern": "^--md-(sys|ref|comp|theme|motion|shape|typescale|space|font)-[a-z0-9-]+$",
+    "custom-property-empty-line-before": "never",
+    "value-no-vendor-prefix": true,
+    "property-no-vendor-prefix": true,
+    "selector-class-pattern": "^(md3|u|is|has|theme)-[a-z0-9-]+$",
+    "selector-id-pattern": "^((?!.).)*$",
+    "at-rule-allowed-list": ["media", "supports", "layer", "keyframes"],
+    "at-rule-disallowed-list": ["@import"],
+    "comment-word-disallowed-list": ["/TODO:/", "/FIXME:/"],
+    "no-invalid-position-at-import-rule": true,
+    "block-no-empty": true,
+    "plugin/use-logical": [
+      true,
+      {
+        "severity": "warning",
+        "auto-fix": true,
+        "except": ["border-radius", "text-align"]
+      }
+    ],
+    "order/properties-order": [
+      [
+        { "groupName": "Positioning", "emptyLineBefore": "always", "properties": ["position", "inset", "top", "right", "bottom", "left", "z-index"] },
+        { "groupName": "Box Model", "emptyLineBefore": "always", "properties": ["display", "float", "clear", "box-sizing", "overflow", "width", "min-width", "max-width", "height", "min-height", "max-height", "margin", "margin-inline", "margin-block", "padding", "padding-inline", "padding-block", "border", "border-radius"] },
+        { "groupName": "Layout", "emptyLineBefore": "always", "properties": ["flex", "flex-grow", "flex-shrink", "flex-basis", "align-items", "justify-content", "align-content", "grid", "grid-template", "gap"] },
+        { "groupName": "Typography", "emptyLineBefore": "always", "properties": ["font", "font-family", "font-size", "font-style", "font-weight", "line-height", "letter-spacing", "text-transform", "text-decoration", "text-align", "text-wrap", "color"] },
+        { "groupName": "Visual", "emptyLineBefore": "always", "properties": ["background", "background-color", "background-image", "box-shadow", "opacity", "filter"] },
+        { "groupName": "Transform & Motion", "emptyLineBefore": "always", "properties": ["transform", "transition", "animation"] },
+        { "groupName": "Other", "emptyLineBefore": "always", "properties": ["cursor", "visibility", "content"] }
+      ],
+      { "unspecified": "bottomAlphabetical" }
+    ],
+    "scale-unlimited/declaration-strict-value": [
+      ["/color/", "font-size", "z-index", "box-shadow", "background", "border-color"],
+      {
+        "ignoreKeywords": ["inherit", "transparent", "none", "currentColor"],
+        "ignoreValues": ["initial", "unset", "var", "calc", "rgb", "rgba"]
+      }
+    ],
+    "plugin/at-rule-disallowed-list": {
+      "layer": {
+        "message": "All custom properties must be declared inside :root within @layer tokens."
+      }
+    },
+    "max-empty-lines": 1,
+    "no-eol-whitespace": true,
+    "comment-no-empty": true,
+    "no-extra-semicolons": true,
+    "no-duplicate-selectors": true,
+    "no-empty-first-line": true,
+    "selector-max-empty-lines": 0
+  }
+}
