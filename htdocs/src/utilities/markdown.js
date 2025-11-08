@@ -1,25 +1,27 @@
-// /src/markdown.js
-// Lightweight Markdown rendering helper (lazy-loads snarkdown once)
+// /src/utilitiesmarkdown.js
+// Lightweight Markdown rendering helper (lazy-loads marked.js once)
 
-let _snarkdown = null;
-const LOCAL_LIB = '/library/vendor/snarkdown/snarkdown.es.js';
-const CDN_LIB   = 'https://cdn.jsdelivr.net/npm/snarkdown@2.0.0/dist/snarkdown.es.js';
+let _marked = null;
+const LOCAL_LIB = '/library/vendor/marked/marked.esm.js';
+const CDN_LIB   = 'https://cdn.jsdelivr.net/npm/marked@14.1.3/lib/marked.esm.js';
 const USE_SANITIZE = false; // set to true if you add DOMPurify and CSP allows it
 
-async function loadSnarkdown() {
-    if (_snarkdown) return _snarkdown;
+async function loadMarked() {
+    if (_marked) return _marked;
     try {
-        _snarkdown = (await import(LOCAL_LIB)).default;
-        return _snarkdown;
+        const module = await import(LOCAL_LIB);
+        _marked = module.marked;
+        return _marked;
     } catch {
-        _snarkdown = (await import(CDN_LIB)).default; // fallback
-        return _snarkdown;
+        const module = await import(CDN_LIB); // fallback
+        _marked = module.marked;
+        return _marked;
     }
 }
 
 export async function markdownToHtml(mdText) {
-    const snark = await loadSnarkdown();
-    const html = snark(mdText || '');
+    const marked = await loadMarked();
+    const html = marked(mdText || '');
 
     if (!USE_SANITIZE) return html;
 

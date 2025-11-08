@@ -205,20 +205,20 @@ Plugins receive access to:
 
 ## 📄 Markdown Parsing
 
-PhantomSPA supports Markdown via [`snarkdown`](https://github.com/developit/snarkdown).
+PhantomSPA supports Markdown via [`marked.js`](https://github.com/markedjs/marked).
 
 ### 🧪 Usage with Sanitization
 
 ```bash
-npm install snarkdown dompurify
+npm install marked dompurify
 ```
 
 ```js
-import snarkdown from 'snarkdown';
+import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 
 export function renderMarkdown(md) {
-  const dirty = snarkdown(md);
+  const dirty = marked(md);
   return DOMPurify.sanitize(dirty);
 }
 ```
@@ -256,14 +256,15 @@ spa.onRouteChange(() => {
 
 ### 🧼 DOMPurify — Sanitize Markdown
 
-Install + wrap `snarkdown`:
+Install + wrap `marked.js`:
 
 ```bash
-npm install dompurify snarkdown
+npm install dompurify marked
 ```
 
 ```js
-DOMPurify.sanitize(snarkdown(markdown));
+import { marked } from 'marked';
+DOMPurify.sanitize(marked(markdown));
 ```
 
 ---

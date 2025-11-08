@@ -68,7 +68,8 @@ src/
 │   ├── nav/  # Navigation subsystem
 │   │   ├── nav-controller.js # Navigation orchestration
 │   │   ├── nav-renderer.js   # DOM rendering
-│   │   └── nav-service.js    # Data fetching
+│   │   ├── nav-service.js    # Data fetching
+│   │   └── nav-tree.js       # Navigation tree
 │   ├── error-handler.js      # Error handling system
 │   ├── event-bus.js          # Centralized event system
 │   ├── lifecycle.js          # Application lifecycle management
@@ -77,9 +78,6 @@ src/
 │   └── spa.js                # Core application class
 ├── enhancers/                # UI enhancers
 │   └── panels.js             # Panel layout enhancer
-├── integrations/             # Third-party integrations
-│   ├── prism-loader.js       # Prism.js plugin loader
-│   └── prism.js              # Prism.js integration
 ├── plugins/                  # Plugin modules
 │   └── prism/                # Prism.js syntax highlighting plugin
 │       ├── prism-config.js
@@ -243,7 +241,7 @@ if (isResourceLoaded('external-lib')) {
 ---
 
 #### `markdown.js`
-Markdown rendering utilities using Snarkdown library.
+Markdown rendering utilities using marked.js library.
 
 **Exports:**
  - renderMarkdown(markdown) - Convert markdown to HTML

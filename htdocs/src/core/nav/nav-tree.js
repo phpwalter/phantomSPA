@@ -1,13 +1,16 @@
 /**
  * @file nav-tree.js
  * @version 2.1.0
- * @description PhantomSPA navigation tree plugin
+ * @description PhantomSPA navigation tree module
  * Renders a recursive sidebar nav from nav.json with no dependencies.
  * Supports basePath-aware links, <details> persistence, lazy-loading, and active highlighting.
  */
 
 /**
- * Plugin initialization function called by the plugin manager
+ * Initialization entry point retained for plugin compatibility.
+ * The module lives in utilities but can still be loaded by the plugin manager
+ * for backwards compatibility with existing app-config.json files.
+ *
  * @param {PluginManager} pluginManager - The plugin manager instance
  * @param {Object} options - Plugin options from app-config.json
  */
@@ -117,7 +120,7 @@ function buildNavTree(routes = [], basePath = '/') {
                 const a = document.createElement('a');
                 a.classList.add('nav-link');
                 a.href = fullPath;
-                a.innerHTML = `<span class="icon">${route.icon || ''}</span><span class="title">${route.title || ''}</span>`;
+                appendNavLabel(a, route);
 
                 // Prevent link click from toggling details
                 a.addEventListener('click', (e) => {
@@ -133,7 +136,7 @@ function buildNavTree(routes = [], basePath = '/') {
                 summary.appendChild(marker);
             } else {
                 // No path - just show title (non-clickable parent)
-                summary.innerHTML = `<span class="icon">${route.icon || ''}</span><span class="title">${route.title || ''}</span>`;
+                appendNavLabel(summary, route);
             }
 
             details.appendChild(summary);
@@ -148,7 +151,11 @@ function buildNavTree(routes = [], basePath = '/') {
                             const slug = (route.title || '').toLowerCase().replace(/\s+/g, '-');
                             const html = await fetchText(`/docs/dev/nav-partials/${slug}.html`);
                             const wrapper = document.createElement('div');
-                            wrapper.innerHTML = html;
+                            wrapper.classList.add('nav-lazy-content');
+                            const fragment = sanitizeHtmlFragment(html);
+                            if (fragment.childNodes.length > 0) {
+                                wrapper.appendChild(fragment);
+                            }
                             details.appendChild(wrapper);
                             details.dataset.loaded = 'true';
                             console.info('[nav-tree] lazy-loaded:', slug);
@@ -176,7 +183,7 @@ function buildNavTree(routes = [], basePath = '/') {
             }
             console.debug(`[nav-tree] Generated link for "${route.title}": basePath="${basePath}", route.path="${route.path}", fullPath="${fullPath}"`);
             a.href = fullPath;
-            a.innerHTML = `<span class="icon">${route.icon || ''}</span><span class="title">${route.title || ''}</span>`;
+            appendNavLabel(a, route);
             li.appendChild(a);
         }
 
@@ -184,6 +191,18 @@ function buildNavTree(routes = [], basePath = '/') {
     }
 
     return ul;
+}
+
+function appendNavLabel(target, route = {}) {
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'icon';
+    iconSpan.textContent = route.icon || '';
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'title';
+    titleSpan.textContent = route.title || '';
+
+    target.append(iconSpan, titleSpan);
 }
 
 /* ----------------------------
@@ -282,7 +301,15 @@ function createNavControls(nav, config, spa) {
     // Collapse All button
     const collapseBtn = document.createElement('button');
     collapseBtn.classList.add('collapse-all-btn');
-    collapseBtn.innerHTML = '<span class="icon">⊟</span><span class="text">Collapse All</span>';
+    const collapseIcon = document.createElement('span');
+    collapseIcon.classList.add('icon');
+    collapseIcon.textContent = '⊟';
+
+    const collapseText = document.createElement('span');
+    collapseText.classList.add('text');
+    collapseText.textContent = 'Collapse All';
+
+    collapseBtn.append(collapseIcon, collapseText);
     collapseBtn.setAttribute('aria-label', 'Collapse all navigation sections');
     collapseBtn.setAttribute('title', 'Collapse all sections');
 
@@ -315,7 +342,10 @@ function createNavControls(nav, config, spa) {
     // Settings button
     const settingsBtn = document.createElement('button');
     settingsBtn.classList.add('settings-btn');
-    settingsBtn.innerHTML = '<span class="icon">⚙️</span>';
+    const settingsIcon = document.createElement('span');
+    settingsIcon.classList.add('icon');
+    settingsIcon.textContent = '⚙️';
+    settingsBtn.appendChild(settingsIcon);
     settingsBtn.setAttribute('aria-label', 'Navigation settings');
     settingsBtn.setAttribute('title', 'Navigation settings');
 
@@ -445,4 +475,53 @@ async function fetchText(url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Failed to fetch: ${url}`);
     return res.text();
+}
+
+function sanitizeHtmlFragment(html) {
+    const template = document.createElement('template');
+    template.innerHTML = html;
+
+    const disallowedTags = new Set(['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED']);
+    const uriAttributes = new Set(['href', 'src', 'xlink:href', 'formaction']);
+
+    const showElement = typeof NodeFilter === 'undefined' ? 1 : NodeFilter.SHOW_ELEMENT;
+    const showComment = typeof NodeFilter === 'undefined' ? 128 : NodeFilter.SHOW_COMMENT;
+
+    const walker = document.createTreeWalker(template.content, showElement, null);
+    const nodesToRemove = [];
+
+    while (walker.nextNode()) {
+        const el = walker.currentNode;
+
+        if (disallowedTags.has(el.tagName)) {
+            nodesToRemove.push(el);
+            continue;
+        }
+
+        Array.from(el.attributes).forEach(attr => {
+            if (/^on/i.test(attr.name)) {
+                el.removeAttribute(attr.name);
+                return;
+            }
+
+            if (uriAttributes.has(attr.name.toLowerCase()) && startsWithJavaScriptScheme(attr.value)) {
+                el.setAttribute(attr.name, '#');
+            }
+        });
+    }
+
+    nodesToRemove.forEach(node => node.remove());
+
+    const commentWalker = document.createTreeWalker(template.content, showComment, null);
+    const commentsToRemove = [];
+    while (commentWalker.nextNode()) {
+        commentsToRemove.push(commentWalker.currentNode);
+    }
+    commentsToRemove.forEach(comment => comment.remove());
+
+    return template.content;
+}
+
+function startsWithJavaScriptScheme(value = '') {
+    return typeof value === 'string' && value.trim().toLowerCase().startsWith('javascript:');
 }

@@ -76,11 +76,11 @@ body.prism-no-line-numbers pre[class*="language-"]:not([data-prism-configured]) 
 
 ---
 
-### **2. Snarkdown HTML Structure Mismatch**
+### **2. Marked.js HTML Structure Mismatch**
 
-**Problem**: Snarkdown (the markdown parser) generates a different HTML structure than expected:
+**Problem**: Marked.js (the markdown parser) generates a different HTML structure than expected:
 
-**Snarkdown Output**:
+**Marked.js Output**:
 ```html
 <pre class="code json"><code class="language-json">...</code></pre>
 ```
@@ -90,7 +90,7 @@ body.prism-no-line-numbers pre[class*="language-"]:not([data-prism-configured]) 
 <pre class="language-json"><code class="language-json">...</code></pre>
 ```
 
-**Key Difference**: Snarkdown puts the `language-*` class on the `<code>` element, not the `<pre>` element. However, Prism.js plugins (line-numbers, line-highlight, toolbar) look for the `language-*` class on the `<pre>` element to determine which blocks to enhance.
+**Key Difference**: Marked.js puts the `language-*` class on the `<code>` element, not the `<pre>` element. However, Prism.js plugins (line-numbers, line-highlight, toolbar) look for the `language-*` class on the `<pre>` element to determine which blocks to enhance.
 
 **Fix**: 
 1. Updated `applyPerBlockPrismConfig()` to copy the `language-*` class from `<code>` to `<pre>`
@@ -155,7 +155,7 @@ if (!code) {
     return;
 }
 
-// Snarkdown generates: <pre class="code <lang>"><code class="language-<lang>">
+// Marked.js generates: <pre class="code <lang>"><code class="language-<lang>">
 // We need to ensure the language class is on the <pre> element for Prism plugins
 const codeClass = code.className;
 const languageMatch = codeClass.match(/language-(\w+)/);
@@ -188,7 +188,7 @@ preElements.forEach(pre => {
     if (pre.className.includes('language-') || pre.querySelector('code[class*="language-"]')) {
         codeBlocks.push(pre);
         
-        // Ensure language class is on <pre> element (snarkdown puts it on <code>)
+        // Ensure language class is on <pre> element (marked.js puts it on <code>)
         const code = pre.querySelector('code[class*="language-"]');
         if (code) {
             const languageMatch = code.className.match(/language-(\w+)/);
@@ -257,9 +257,9 @@ Prism.js plugins work by:
 - Plugin-specific classes (e.g., `line-numbers`) MUST be on `<pre>` before highlighting
 - Data attributes (e.g., `data-line`) MUST be on `<pre>` before highlighting
 
-### **Snarkdown vs Prism Expectations**
+### **Marked.js vs Prism Expectations**
 
-| Aspect | Snarkdown Output | Prism Expectation |
+| Aspect | Marked.js Output | Prism Expectation |
 |--------|------------------|-------------------|
 | Language class location | `<code class="language-json">` | `<pre class="language-json">` |
 | Pre class | `<pre class="code json">` | `<pre class="language-json">` |
@@ -302,11 +302,10 @@ To verify the fix works:
 The per-block Prism.js configuration feature was not rendering visual features due to two issues:
 
 1. **Global CSS body classes** were hiding features for ALL blocks, including those with per-block configuration
-2. **Snarkdown HTML structure** put the `language-*` class on `<code>` instead of `<pre>`, preventing Prism plugins from detecting the blocks
+2. **Marked.js HTML structure** put the `language-*` class on `<code>` instead of `<pre>`, preventing Prism plugins from detecting the blocks
 
 Both issues have been fixed by:
 1. Updating CSS rules to exclude `[data-prism-configured]` blocks from global hiding
 2. Copying the `language-*` class from `<code>` to `<pre>` during directive processing
 
 The per-block configuration system now works correctly, allowing markdown authors to override global settings on a per-code-block basis! 🎉
-

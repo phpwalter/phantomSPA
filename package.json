@@ -19,6 +19,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "node build.mjs",
+    "vendor:install": "node scripts/install-vendors.mjs",
+    "postinstall": "npm run vendor:install",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "exports": {
@@ -44,12 +46,11 @@
     "README.md"
   ],
   "devDependencies": {
-    "esbuild": "^0.25.11"
+    "esbuild": "^0.25.12",
+    "jsdom": "^27.1.0"
   },
   "dependencies": {
     "dompurify": "^3.3.0",
-    "jsdom": "^27.1.0",
-    "prismjs": "^1.30.0",
-    "snarkdown": "^2.0.0"
+    "marked": "^17.0.0"
   }
 }

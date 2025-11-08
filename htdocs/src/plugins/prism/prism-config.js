@@ -99,7 +99,7 @@ export function highlightCode(container, config) {
         if (pre.className.includes('language-') || pre.querySelector('code[class*="language-"]')) {
             codeBlocks.push(pre);
 
-            // Ensure language class is on <pre> element (snarkdown puts it on <code>)
+            // Ensure language class is on <pre> element (marked.js puts it on <code>)
             const code = pre.querySelector('code[class*="language-"]');
             if (code) {
                 const languageMatch = code.className.match(/language-(\w+)/);

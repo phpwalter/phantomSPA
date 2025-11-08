@@ -70,6 +70,12 @@
             "jsPath": "/plugins/show-language/prism-show-language.min.js",
             "cssPath": null,
             "dependencies": ["toolbar"]
+          },
+          {
+            "name": "treeview",
+            "jsPath": "/plugins/prism-treeview/prism-treeview.min.js",
+            "cssPath": "/plugins/prism-treeview/prism-treeview.min.css",
+            "dependencies": []
           }
         ]
       }

@@ -14,12 +14,12 @@ After implementing the per-block Prism.js configuration system, the classes and 
 
 ## Root Causes Identified
 
-### **1. Snarkdown HTML Structure Mismatch**
+### **1. Marked.js HTML Structure Mismatch**
 
-**Problem**: Snarkdown puts the `language-*` class on `<code>` instead of `<pre>`:
+**Problem**: Marked.js puts the `language-*` class on `<code>` instead of `<pre>`:
 
 ```html
-<!-- Snarkdown Output -->
+<!-- Marked.js Output -->
 <pre class="code json"><code class="language-json">...</code></pre>
 
 <!-- Prism Expectation -->
@@ -86,7 +86,7 @@ body.prism-no-copy pre[class*="language-"] .toolbar-item button {
 **Function**: `applyPerBlockPrismConfig()`
 
 ```javascript
-// Snarkdown generates: <pre class="code <lang>"><code class="language-<lang>">
+// Marked.js generates: <pre class="code <lang>"><code class="language-<lang>">
 // We need to ensure the language class is on the <pre> element for Prism plugins
 const codeClass = code.className;
 const languageMatch = codeClass.match(/language-(\w+)/);
@@ -113,7 +113,7 @@ preElements.forEach(pre => {
     if (pre.className.includes('language-') || pre.querySelector('code[class*="language-"]')) {
         codeBlocks.push(pre);
         
-        // Ensure language class is on <pre> element (snarkdown puts it on <code>)
+        // Ensure language class is on <pre> element (marked.js puts it on <code>)
         const code = pre.querySelector('code[class*="language-"]');
         if (code) {
             const languageMatch = code.className.match(/language-(\w+)/);
@@ -195,7 +195,7 @@ body.prism-no-language div.code-toolbar:not(.prism-block-configured) .toolbar-it
 
 ### **Step 1: Markdown Rendering**
 
-Snarkdown converts markdown to HTML:
+Marked.js converts markdown to HTML:
 
 ```markdown
 <!-- prism: line-numbers highlight=2,4-6 copy-to-clipboard -->
@@ -348,10 +348,9 @@ body.prism-no-copy div.code-toolbar:not(.prism-block-configured) .toolbar-item b
 
 All issues preventing Prism.js per-block configuration from rendering visual features have been resolved:
 
-1. ✅ **Snarkdown structure mismatch** - Language class now copied to `<pre>`
+1. ✅ **Marked.js structure mismatch** - Language class now copied to `<pre>`
 2. ✅ **CSS selector issues** - Now targeting `div.code-toolbar` wrapper
 3. ✅ **Prism skipping re-highlight** - Now forcing re-highlight with `highlightElement()`
 4. ✅ **Wrapper class markers** - Now adding `.prism-block-configured` after Prism runs
 
 The per-block configuration system is now fully functional! 🎉
-
