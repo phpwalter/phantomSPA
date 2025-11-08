@@ -18,17 +18,17 @@
 :root{
     /* Color Palette - Dark Theme */
     --bg:#0f1724;
-    --panel:#101a2a;
-    --panel-line:#1e2a3f;
+    --panel: #182a45;
+    --panel-line: #123a7a;
     --fg:#c7d0de;
     --muted:#a5b4cc;          /* Improved contrast from #9aa7bd */
     --heading:#e6edf7;
     --accent:#6ea8ff;
 
     /* Component Colors */
-    --card:#162238;
-    --line:#22314c;
-    --line-strong:#2b3c5c;
+    --card: #243659;
+    --line: #2f4267;
+    --line-strong: #354c77;
     --divider:rgba(203,213,225,.16);
 
     /* Layout */
@@ -57,6 +57,8 @@ body{
     font:16px/1.55 var(--font);
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ============================================
@@ -65,9 +67,11 @@ body{
 
 /* ----- HEADER ----- */
 .site-header{
-    position:sticky; top:0; z-index:10;
-    background: #0e1623;
+    flex-shrink: 0;
+    height: 52px;
+    background: var(--panel);
     border-bottom:1px solid var(--panel-line);
+    z-index:10;
 }
 .header-inner{
     max-width: var(--maxw);
@@ -77,6 +81,7 @@ body{
     align-items:center;
     justify-content:space-between;
     gap:16px;
+    height: 100%;
 }
 .brand{
     display:flex; align-items:center; gap:12px;
@@ -103,12 +108,56 @@ body{
 
 /* ----- SHELL: aside + main ----- */
 .shell{
-    max-width: var(--maxw);
-    margin: 0 auto;
+    flex: 1;
+    overflow: hidden;
     display:grid;
     grid-template-columns: var(--sidebar) 1fr;
     gap: 18px;
-    padding: 18px 16px 32px;
+    padding: 18px 16px;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* ----- FOOTER ----- */
+.site-footer{
+    flex-shrink: 0;
+    height: 52px;
+    background: var(--panel);
+    border-top:1px solid var(--panel-line);
+    z-index:10;
+}
+.footer-inner{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.footer-grid{
+    display:grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+}
+.site-footer h3,
+.site-footer h4{
+    margin:0 0 .6rem;
+    color: var(--heading);
+}
+.site-footer p{ margin:.2rem 0 0; color: var(--muted); }
+.site-footer ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.45rem; }
+.site-footer a{ color: var(--fg); text-decoration:none; }
+.site-footer a:hover{ color:#fff; text-decoration:underline; text-underline-offset:2px; }
+
+.foot-divider{
+    margin: 24px 0 10px;
+    border: none;
+    border-top:1px solid var(--divider);
+}
+.copyright{
+    text-align:center; color: var(--muted); margin:0 0 10px;
 }
 
 /* ============================================
@@ -118,6 +167,11 @@ body{
 /* ----- SIDEBAR / ASIDE ----- */
 .site-aside{
     position:relative;
+}
+
+#site-nav{
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* ----- TABLE OF CONTENTS (TOC) ----- */
@@ -456,12 +510,13 @@ body{
 }
 
 /* ============================================
-   5. CONTENT COMPONENTS
+   6. CONTENT COMPONENTS
    ============================================ */
 
 /* ----- MAIN CONTENT AREA ----- */
 .site-main{
-    min-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* ----- GRID UTILITY ----- */
@@ -535,7 +590,7 @@ body{
 
 
 /* ============================================
-   6. CODE BLOCKS
+   7. CODE BLOCKS
    ============================================ */
 
 /* Block-style code panel (no <pre> required) */
@@ -553,43 +608,6 @@ code {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ============================================
-   7. LAYOUT - FOOTER
-   ============================================ */
-
-/* ----- FOOTER ----- */
-.site-footer{
-    border-top: 1px solid var(--divider);
-    background: var(--bg);
-}
-.footer-inner{
-    max-width: var(--maxw);
-    margin: 0 auto;
-    padding: 36px 16px 18px;
-}
-.footer-grid{
-    display:grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 3rem;
-}
-.site-footer h3,
-.site-footer h4{
-    margin:0 0 .6rem;
-    color: var(--heading);
-}
-.site-footer p{ margin:.2rem 0 0; color: var(--muted); }
-.site-footer ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.45rem; }
-.site-footer a{ color: var(--fg); text-decoration:none; }
-.site-footer a:hover{ color:#fff; text-decoration:underline; text-underline-offset:2px; }
-
-.foot-divider{
-    margin: 24px 0 10px;
-    border: none;
-    border-top:1px solid var(--divider);
-}
-.copyright{
-    text-align:center; color: var(--muted); margin:0 0 10px;
-}
 
 /* ============================================
    8. RESPONSIVE MEDIA QUERIES
