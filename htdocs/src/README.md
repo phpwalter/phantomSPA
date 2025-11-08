@@ -81,14 +81,12 @@ src/
 │   ├── prism-loader.js       # Prism.js plugin loader
 │   └── prism.js              # Prism.js integration
 ├── plugins/                  # Plugin modules
-│   ├── prism/                # Prism.js syntax highlighting plugin
-│   │   ├── prism-config.js
-│   │   ├── prism-debug.js
-│   │   ├── prism-plugin-loader.js
-│   │   ├── prism-syntax-highlighter.css
-│   │   └── prism-syntax-highlighter.js
-│   ├── lifecycle_management.js  # Lifecycle management plugin
-│   └── nav-tree.js              # Navigation tree plugin
+│   └── prism/                # Prism.js syntax highlighting plugin
+│       ├── prism-config.js
+│       ├── prism-debug.js
+│       ├── prism-plugin-loader.js
+│       ├── prism-syntax-highlighter.css
+│       └── prism-syntax-highlighter.js
 ├── tests/                    # Internal tests
 │   ├── README.md
 │   ├── debug-prism-per-block.js

@@ -84,7 +84,7 @@ greet(user.name);
     "plugins": {
         "router": "/src/router.js",
         "nav-tree": {
-            "path": "/src/plugins/nav-tree.js",
+            "path": "/src/core/nav/nav-tree.js",
             "options": {
                 "collapseByDefault": true,
                 "autoExpandActive": true
@@ -337,4 +337,3 @@ Prism.js is fully integrated with PhantomSPA documentation, providing:
 7. **Responsive design** for all devices
 
 All features work seamlessly with the PhantomSPA router and markdown rendering! 🎉
-

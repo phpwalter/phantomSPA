@@ -1,7 +1,7 @@
 {
   "plugins": {
     "nav-tree": {
-      "path": "/src/plugins/nav-tree.js",
+      "path": "/src/core/nav/nav-tree.js",
       "options": {
         "nav": "/docs/dev/conf/nav.json",
         "template": "/docs/dev/pages/nav.html",
