@@ -1,6 +1,6 @@
 /*
  * Getting Started Page Styles
- * 
+ *
  * Page-specific styles for the getting started guide.
  * Uses global CSS variables from styles.css.
  */
@@ -72,14 +72,14 @@
     font-size: 1rem;
     font-weight: 800;
 }
-.gs-tip p{ 
-    margin: 0; 
-    color: var(--fg); 
+.gs-tip p{
+    margin: 0;
+    color: var(--fg);
 }
 
 /* CTA button - unique to getting started */
-.gs-cta{ 
-    margin: 18px 0 6px; 
+.gs-cta{
+    margin: 18px 0 6px;
 }
 .gs-btn{
     display:inline-block;
@@ -94,10 +94,10 @@
     box-shadow: var(--shadow);
     transition: background .15s ease, border-color .15s ease;
 }
-.gs-btn:hover{ 
-    background:#223357; 
-    color:#fff; 
-    border-color:#2a3a58; 
+.gs-btn:hover{
+    background:#223357;
+    color:#fff;
+    border-color:#2a3a58;
 }
 .gs-btn:focus-visible{
     outline: 2px solid var(--accent);
@@ -105,16 +105,30 @@
 }
 
 /* Body copy */
-.gs-page p{ 
-    margin: 6px 0; 
-    color: var(--fg); 
+.gs-page p{
+    margin: 6px 0;
+    color: var(--fg);
 }
-.gs-page a{ 
-    color: var(--accent); 
-    text-decoration: none; 
+.gs-page a{
+    color: var(--accent);
+    text-decoration: none;
 }
-.gs-page a:hover{ 
-    text-decoration: underline; 
-    text-underline-offset: 2px; 
+.gs-page a:hover{
+    text-decoration: underline;
+    text-underline-offset: 2px;
 }
 
+
+
+/* ---------------------------- */
+
+
+/* Prism.js Overrides - Override CDN styles to align with PhantomSPA design system */
+pre[class*=language-].line-numbers {
+    padding: 5px;
+
+}
+
+pre.line-numbers > code {
+    background: black;
+}

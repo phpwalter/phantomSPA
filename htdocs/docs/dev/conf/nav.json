@@ -14,39 +14,85 @@
     },
 
     {
-      "path": "/getting-started",
-      "title": "Getting Started",
-      "icon": "🚀",
-      "file": "getting-started.md",
+      "path": "/guides",
+      "title": "Development Guides",
+      "icon": "📚",
+      "file": "guides/getting-started.md",
       "css": "/docs/dev/css/getting-started.css",
       "lazy": false,
       "children": [
-        { "path": "/setup", "title": "Setup",         "file": "setup.md" },
-        { "path": "/cli",   "title": "Using the CLI", "file": "cli.md" }
+        { "path": "/getting-started", "title": "Getting Started",  "file": "guides/getting-started.md" },
+        { "path": "/setup",           "title": "Setup",            "file": "guides/setup.md" },
+        { "path": "/cli",             "title": "Using the CLI",    "file": "guides/cli.md" },
+        { "path": "/html-injection",  "title": "HTML Injection",   "file": "guides/html-injection.md" },
+        { "path": "/advanced",        "title": "Advanced Topics",  "file": "guides/advanced.md" }
       ]
     },
 
     {
-      "path": "/api",
-      "title": "API Reference",
-      "icon": "📚",
-      "file": "api-ref.md",
-      "css": "/docs/dev/css/api.ref.css"
+      "path": "/core",
+      "title": "Core Framework",
+      "icon": "⚙️",
+      "file": "core/api-reference.md",
+      "css": "/docs/dev/css/api.ref.css",
+      "children": [
+        { "path": "/api-reference", "title": "API Reference", "file": "core/api-reference.md" },
+        { "path": "/routing",       "title": "Routing",       "file": "core/routing.md" },
+        { "path": "/events",        "title": "Events",        "file": "core/events.md" }
+      ]
     },
 
     {
-      "path": "/routing",
-      "title": "Routing",
-      "icon": "🛣️",
-      "file": "routing.md",
-      "css": "/docs/dev/css/routing.css"
+      "path": "/plugins",
+      "title": "Plugin System",
+      "icon": "🧩",
+      "file": "plugins/overview.md",
+      "children": [
+        { "path": "/plugin-overview", "title": "Plugin Overview", "file": "plugins/overview.md" },
+        {
+          "path": "/prism-plugin",
+          "title": "Prism.js Plugin",
+          "file": "plugins/prism/integration.md",
+          "children": [
+            { "path": "/prism-integration",        "title": "Integration Guide",       "file": "plugins/prism/integration.md" },
+            { "path": "/prism-examples",           "title": "Usage Examples",          "file": "plugins/prism/examples.md" },
+            { "path": "/prism-per-block-examples", "title": "Per-Block Configuration", "file": "plugins/prism/per-block-examples.md" }
+          ]
+        }
+      ]
     },
-    { "path": "/html-injection",  "title": "HTML Injection",   "icon": "💉", "file": "html-injection.md"},
-    { "path": "/events",          "title": "Events",           "icon": "💡", "file": "events.md"},
-    { "path": "/plugins",         "title": "Plugins",          "icon": "🧩", "file": "plugins.md"},
-    { "path": "/examples",        "title": "Examples",         "icon": "💡", "file": "examples.md"},
-    { "path": "/advanced",        "title": "Advanced",         "icon": "🎮", "file": "advanced.md"},
 
-    { "path": "*",                "title": "Not found",        "icon": "❓", "file": "404.html" }
+    {
+      "path": "/architecture",
+      "title": "Architecture",
+      "icon": "🏗️",
+      "file": "architecture/navigation-system.md",
+      "children": [
+        { "path": "/navigation-system", "title": "Navigation System", "file": "architecture/navigation-system.md" },
+        { "path": "/fixes-changelog",   "title": "Fixes Changelog",   "file": "architecture/fixes-changelog.md" }
+      ]
+    },
+
+    {
+      "path": "/security",
+      "title": "Security",
+      "icon": "🔒",
+      "file": "security/security-analysis.md",
+      "children": [
+        { "path": "/security-analysis", "title": "Security Analysis", "file": "security/security-analysis.md" }
+      ]
+    },
+
+    {
+      "path": "/examples",
+      "title": "Implementation Examples",
+      "icon": "🔬",
+      "file": "examples/overview.md",
+      "children": [
+        { "path": "/examples-overview", "title": "Examples Overview", "file": "examples/overview.md" }
+      ]
+    },
+
+    { "path": "*", "title": "Not found", "icon": "❓", "file": "404.html" }
   ]
 }

@@ -67,7 +67,7 @@
           },
           {
             "name": "show-language",
-            "jsPath": "/plugins/show-language/prism-show-language.min.js",
+            "jsPath": ["/plugins/show-language/prism-show-language.min.js"],
             "cssPath": null,
             "dependencies": ["toolbar"]
           },

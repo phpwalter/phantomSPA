@@ -1,0 +1,199 @@
+/* Documentation Portal Landing Page Styles */
+
+/* Force CSS to load and apply - high specificity */
+#app-shell .docs-grid,
+.site-main .docs-grid {
+    display: grid !important;
+}
+
+#app-shell .doc-section,
+.site-main .doc-section {
+    display: block !important;
+    background: white !important;
+    border: 1px solid #e9ecef !important;
+}
+
+/* Fix for full-width layout when ASIDE is hidden */
+.shell:has(aside[hidden]) {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+}
+
+/* Fallback for browsers that don't support :has() - more specific selector */
+body .shell aside[hidden] + .site-main {
+    grid-column: 1 / -1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Additional fallback - target the shell directly when aside is hidden */
+.shell aside[hidden] {
+    display: none !important;
+}
+
+.shell:has(aside[hidden]) .site-main,
+.shell aside[hidden] + .site-main {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Documentation Portal Header */
+.docs-portal-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.portal-logo {
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.logo-image {
+    max-width: 400px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.portal-subtitle {
+    font-size: 1.2rem;
+    color: #6c757d;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.version-badge {
+    display: inline-block;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 0.4rem 1rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    color: #495057;
+    font-weight: 500;
+    margin-top: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+/* Documentation Grid */
+.docs-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+    gap: 2rem !important;
+    margin-bottom: 3rem !important;
+    max-width: 1000px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+}
+
+/* Documentation Section Cards - Reduced height by 25% */
+.doc-section {
+    display: block !important;
+    padding: 1.5rem !important; /* Reduced from 2rem */
+    background: white !important;
+    border: 1px solid #e9ecef !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    min-height: 200px !important;
+}
+
+.doc-section:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: #667eea;
+}
+
+.doc-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.doc-section:hover::before {
+    transform: scaleX(1);
+}
+
+.doc-icon {
+    font-size: 2.5rem; /* Reduced from 3rem */
+    margin-bottom: 0.75rem; /* Reduced from 1rem */
+    display: block;
+}
+
+.doc-title {
+    font-size: 1.4rem; /* Reduced from 1.5rem */
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.4rem; /* Reduced from 0.5rem */
+}
+
+.doc-audience {
+    font-size: 0.85rem; /* Reduced from 0.9rem */
+    color: #667eea;
+    font-weight: 500;
+    margin-bottom: 0.75rem; /* Reduced from 1rem */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.doc-description {
+    color: #6c757d;
+    line-height: 1.4; /* Reduced from 1.5 */
+    font-size: 0.95rem; /* Slightly smaller text */
+}
+
+/* Footer */
+.docs-portal-footer {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .docs-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .logo-image {
+        max-width: 300px;
+    }
+
+    .portal-subtitle {
+        font-size: 1rem;
+    }
+
+    .site-nav[hidden] + .site-main {
+        padding: 1rem;
+    }
+
+    .doc-section {
+        padding: 1.25rem; /* Further reduced for mobile */
+    }
+
+    .doc-icon {
+        font-size: 2rem;
+    }
+
+    .doc-title {
+        font-size: 1.2rem;
+    }
+}

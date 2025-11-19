@@ -1,0 +1,24 @@
+{
+  "name": "PhantomSPA Documentation Portal",
+  "version": "1.0.0",
+  "description": "Documentation portal for PhantomSPA framework",
+  "plugins": [
+    {
+      "name": "markdown",
+      "enabled": true,
+      "config": {
+        "breaks": true,
+        "linkify": true,
+        "typographer": true
+      }
+    },
+    {
+      "name": "prism",
+      "enabled": true,
+      "config": {
+        "manual": true,
+        "theme": "default"
+      }
+    }
+  ]
+}

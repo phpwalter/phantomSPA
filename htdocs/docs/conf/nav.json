@@ -1,0 +1,17 @@
+{
+  "$schema": "https://example.com/phantom/nav.schema.json",
+  "basePath": "/docs/",
+  "contentRoot": "/docs/pages/",
+  "stylesRoot": "/docs/assets/css/",
+  "routes": [
+    {
+      "path": "/",
+      "file": "index.md",
+      "title": "Documentation Portal",
+      "icon": "📖",
+      "css": "index.css"
+    },
+
+    { "path": "*", "title": "Not found", "icon": "❓", "file": "404.html" }
+  ]
+}
