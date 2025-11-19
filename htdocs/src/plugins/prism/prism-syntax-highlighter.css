@@ -530,6 +530,13 @@ div.code-toolbar > pre {
 /* Copy button success state */
 .prism-copy-btn.success {
     color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+}
+
+/* Copy button error state */
+.prism-copy-btn.error {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
 }
 
 /* Dropdown menu */

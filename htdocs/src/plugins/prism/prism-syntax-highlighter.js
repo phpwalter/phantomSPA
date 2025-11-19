@@ -276,6 +276,13 @@ function addCustomHeaders(container) {
         const code = pre.querySelector('code');
         const codeText = code ? code.textContent : '';
 
+        // Extract title for filename
+        const rawTitle = pre.dataset.title ||
+                         pre.getAttribute('data-filename') ||
+                         extractTitleFromComment(pre) ||
+                         'code';
+        const title = sanitizeFilename(rawTitle);
+
         // Create header element
         const header = document.createElement('div');
         header.className = 'prism-custom-header';
@@ -313,12 +320,22 @@ function addCustomHeaders(container) {
         // Dropdown menu
         const dropdown = document.createElement('div');
         dropdown.className = 'prism-dropdown-menu';
+
+        // Get file extension for display (e.g., "js", "css", "bash")
+        const fileExtension = getFileExtension(language.toLowerCase());
+
         dropdown.innerHTML = `
-            <button class="prism-dropdown-item" data-action="download">
+            <button class="prism-dropdown-item" data-action="download-native">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M14 11V14H2V11H0V14C0 15.1 0.9 16 2 16H14C15.1 16 16 15.1 16 14V11H14ZM13 7L11.59 5.59L9 8.17V0H7V8.17L4.41 5.59L3 7L8 12L13 7Z" fill="currentColor"/>
                 </svg>
-                Download
+                Download as .${fileExtension}
+            </button>
+            <button class="prism-dropdown-item" data-action="download-txt">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 11V14H2V11H0V14C0 15.1 0.9 16 2 16H14C15.1 16 16 15.1 16 14V11H14ZM13 7L11.59 5.59L9 8.17V0H7V8.17L4.41 5.59L3 7L8 12L13 7Z" fill="currentColor"/>
+                </svg>
+                Download as text file
             </button>
         `;
 
@@ -334,8 +351,12 @@ function addCustomHeaders(container) {
             if (!item) return;
 
             const action = item.getAttribute('data-action');
-            if (action === 'download') {
-                downloadCode(codeText, language.toLowerCase());
+            const fileExtension = getFileExtension(language.toLowerCase());
+
+            if (action === 'download-native') {
+                downloadCode(codeText, title, fileExtension);
+            } else if (action === 'download-txt') {
+                downloadCode(codeText, title, 'txt');
             }
 
             dropdown.classList.remove('show');
@@ -364,50 +385,194 @@ function addCustomHeaders(container) {
  * @param {HTMLElement} button - Button element for feedback
  */
 function copyCodeToClipboard(text, button) {
-    navigator.clipboard.writeText(text).then(() => {
-        // Show success feedback
-        const originalHTML = button.innerHTML;
-        button.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5.5 12L1.5 8L2.91 6.59L5.5 9.17L13.09 1.59L14.5 3L5.5 12Z" fill="currentColor"/>
-        </svg>`;
-        button.classList.add('success');
+    // Try modern Clipboard API first
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showCopySuccess(button);
+        }).catch(err => {
+            console.warn('Clipboard API failed, trying fallback:', err);
+            fallbackCopyToClipboard(text, button);
+        });
+    } else {
+        // Fallback for older browsers or non-secure contexts
+        fallbackCopyToClipboard(text, button);
+    }
+}
 
-        setTimeout(() => {
-            button.innerHTML = originalHTML;
-            button.classList.remove('success');
-        }, 2000);
-    }).catch(err => {
-        console.error('Failed to copy code:', err);
-    });
+/**
+ * Fallback copy method using document.execCommand
+ * @param {string} text - Text to copy
+ * @param {HTMLElement} button - Button element for feedback
+ */
+function fallbackCopyToClipboard(text, button) {
+    // Create a temporary textarea element
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-999999px';
+    textarea.style.top = '-999999px';
+    document.body.appendChild(textarea);
+
+    try {
+        // Select and copy the text
+        textarea.focus();
+        textarea.select();
+        const successful = document.execCommand('copy');
+
+        if (successful) {
+            showCopySuccess(button);
+        } else {
+            showCopyError(button);
+        }
+    } catch (err) {
+        console.error('Fallback copy failed:', err);
+        showCopyError(button);
+    } finally {
+        // Clean up
+        document.body.removeChild(textarea);
+    }
+}
+
+/**
+ * Show copy success feedback
+ * @param {HTMLElement} button - Button element
+ */
+function showCopySuccess(button) {
+    const originalHTML = button.innerHTML;
+    button.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5.5 12L1.5 8L2.91 6.59L5.5 9.17L13.09 1.59L14.5 3L5.5 12Z" fill="currentColor"/>
+    </svg>`;
+    button.classList.add('success');
+    button.title = 'Copied!';
+
+    setTimeout(() => {
+        button.innerHTML = originalHTML;
+        button.classList.remove('success');
+        button.title = 'Copy code';
+    }, 2000);
+}
+
+/**
+ * Show copy error feedback
+ * @param {HTMLElement} button - Button element
+ */
+function showCopyError(button) {
+    const originalHTML = button.innerHTML;
+    button.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 1C4.13 1 1 4.13 1 8s3.13 7 7 7 7-3.13 7-7-3.13-7-7-7zM7 5h2v6H7V5zM7 13h2v2H7v-2z" fill="currentColor"/>
+    </svg>`;
+    button.classList.add('error');
+    button.title = 'Copy failed - try selecting and copying manually';
+
+    setTimeout(() => {
+        button.innerHTML = originalHTML;
+        button.classList.remove('error');
+        button.title = 'Copy code';
+    }, 3000);
+}
+
+/**
+ * Get file extension for a given language
+ * @param {string} language - Programming language name (lowercase)
+ * @returns {string} - File extension without dot
+ */
+function getFileExtension(language) {
+    const extensionMap = {
+        'javascript': 'js',
+        'typescript': 'ts',
+        'jsx': 'jsx',
+        'tsx': 'tsx',
+        'python': 'py',
+        'bash': 'bash',
+        'shell': 'sh',
+        'css': 'css',
+        'html': 'html',
+        'markup': 'html',
+        'json': 'json',
+        'yaml': 'yml',
+        'yml': 'yml',
+        'markdown': 'md',
+        'md': 'md',
+        'sql': 'sql',
+        'php': 'php',
+        'ruby': 'rb',
+        'java': 'java',
+        'csharp': 'cs',
+        'cpp': 'cpp',
+        'c': 'c',
+        'go': 'go',
+        'rust': 'rs',
+        'swift': 'swift',
+        'kotlin': 'kt',
+        'xml': 'xml',
+        'scss': 'scss',
+        'sass': 'sass',
+        'less': 'less',
+        'stylus': 'styl'
+    };
+
+    return extensionMap[language] || language;
+}
+
+/**
+ * Sanitize filename by removing invalid characters
+ * @param {string} filename - Raw filename
+ * @returns {string} - Sanitized filename
+ */
+function sanitizeFilename(filename) {
+    return filename
+        .replace(/[^a-zA-Z0-9_-]/g, '_')  // Replace invalid chars with underscore
+        .replace(/_{2,}/g, '_')            // Replace multiple underscores with single
+        .replace(/^_|_$/g, '')             // Remove leading/trailing underscores
+        || 'code';                         // Fallback if empty after sanitization
+}
+
+/**
+ * Extract title from HTML comment directive before code block
+ * @param {HTMLElement} pre - The pre element
+ * @returns {string|null} - Extracted title or null
+ */
+function extractTitleFromComment(pre) {
+    // Look for HTML comment before the pre element
+    let node = pre.previousSibling;
+    while (node && node.nodeType !== Node.COMMENT_NODE) {
+        if (node.nodeType === Node.ELEMENT_NODE) break; // Stop if we hit another element
+        node = node.previousSibling;
+    }
+
+    if (node && node.nodeType === Node.COMMENT_NODE) {
+        const comment = node.textContent.trim();
+        // Look for patterns like: prism-title: "filename" or title: "filename"
+        const titleMatch = comment.match(/(?:prism-)?title:\s*["']([^"']+)["']/i);
+        if (titleMatch) {
+            return titleMatch[1];
+        }
+    }
+
+    return null;
 }
 
 /**
  * Download code as file
- * @param {string} text - Code text
- * @param {string} language - Programming language
+ * @param {string} text - Code text content
+ * @param {string} filename - Base filename without extension (e.g., "example" or "code")
+ * @param {string} extension - File extension without dot (e.g., "js", "txt")
  */
-function downloadCode(text, language) {
-    // Map language to file extension
-    const extensions = {
-        javascript: 'js',
-        typescript: 'ts',
-        jsx: 'jsx',
-        python: 'py',
-        bash: 'sh',
-        json: 'json',
-        css: 'css',
-        markup: 'html',
-        markdown: 'md'
-    };
-
-    const ext = extensions[language] || 'txt';
-    const filename = `code.${ext}`;
-
+function downloadCode(text, filename, extension) {
+    // Create blob with code content
     const blob = new Blob([text], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
+
+    // Create temporary download link
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${filename}.${extension}`;
+
+    // Trigger download
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
     URL.revokeObjectURL(url);
 }
