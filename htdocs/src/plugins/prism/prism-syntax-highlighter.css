@@ -15,8 +15,8 @@ pre[class*="language-"] {
     border: 1px solid var(--line-strong);
     border-radius: var(--radius);
     margin: .5em 0;
-    padding: 0em;
-    font-family: var(--font-mono);
+    padding: 0;
+    font-family: var(--font-mono) monospace;
     font-size: 0.875rem;
     line-height: 1.6;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -35,18 +35,19 @@ pre[class*="language-"] {
     border: 1px solid var(--panel-line);
 }
 
-/* Line numbers plugin */
-pre.line-numbers {
+/* Prism.js Overrides - Override CDN styles to align with PhantomSPA design system */
+pre[class*=language-].line-numbers {
     position: relative;
-    padding-left: 14px;
+    padding: 5px 5px 5px 14px;
     counter-reset: linenumber;
 }
 
 pre.line-numbers > code {
+    background: black;
     position: relative;
     white-space: inherit;
     padding-left: 50px;
-    margin-left: 0px;
+    margin-left: 0;
 }
 
 .line-numbers .line-numbers-rows {
@@ -56,7 +57,7 @@ pre.line-numbers > code {
     font-size: 100%;
     /* Position in the left padding area, not overlaying the code */
     left: 0 !important;
-    margin-left: 0px;
+    margin-left: 0;
     width: 3em;
     letter-spacing: -1px;
     border-right: 1px solid var(--line-strong) !important;
@@ -82,7 +83,7 @@ pre.line-numbers > code {
     position: absolute;
     left: 0;
     right: 0;
-    padding: inherit 0;
+    padding: inherit;
     margin-top: 1em;
     pointer-events: none;
     line-height: inherit;
@@ -247,7 +248,7 @@ div.code-toolbar > .toolbar > .toolbar-item > span.language-label {
 }
 
 .prism-settings-btn .icon {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono) monospace;
     font-size: 1rem;
     font-weight: 600;
 }
@@ -295,8 +296,6 @@ div.code-toolbar > .toolbar > .toolbar-item > span.language-label {
     font-size: 1rem;
     font-weight: 600;
 }
-
-
 
 /* Setting option */
 .prism-setting-option {
@@ -473,9 +472,9 @@ div.code-toolbar > pre {
     border: 1px solid var(--line-strong);
     border-bottom: none;
     border-radius: var(--radius) var(--radius) 0 0;
-    padding: 0.5rem 1rem;
+    padding: 0.25rem 1rem;
     margin-top: 0.5em;
-    font-family: var(--font-mono);
+    font-family: var(--font-mono) monospace;
     font-size: 0.75rem;
 }
 
@@ -486,12 +485,29 @@ div.code-toolbar > pre {
 }
 
 /* Language label (left side) */
-.prism-language-label {
+.prism-custom-header .prism-language-label {
+    display: flex;
+    margin-top: 4px;
+    align-items: center;
     font-weight: 700;
     color: var(--text);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
+
+
+/* Language icon within header - CSS Custom Properties System */
+.prism-custom-header .prism-language-label .lang-icon {
+    /* Override CSS custom properties system for header icons */
+    width: var(--lang-icon-size-sm) !important;
+    height: var(--lang-icon-size-sm) !important;
+    /* Scale background-size for small icons */
+    background-size: calc(7 * var(--lang-icon-size-sm)) calc(4 * var(--lang-icon-size-sm)) !important; /* 126px 72px */
+    margin-top: -4px !important;
+    margin-right: 6px;
+    flex-shrink: 0;
+}
+
 
 /* Actions container (right side) */
 .prism-header-actions {
@@ -572,7 +588,7 @@ div.code-toolbar > pre {
     background: transparent;
     border: none;
     color: var(--text);
-    font-family: var(--font-mono);
+    font-family: var(--font-mono) monospace;
     font-size: 0.75rem;
     text-align: left;
     cursor: pointer;
@@ -612,4 +628,29 @@ div.code-toolbar > pre {
         width: 14px;
         height: 14px;
     }
+}
+/* @GENERATED-FONT */
+@font-face {
+    font-family: "PrismTreeview";
+    /**
+     * This font is generated from the .svg files in the `icons` folder. See the `treeviewIconFont` function in
+     * `gulpfile.js/index.js` for more information.
+     *
+     * Use the following escape sequences to refer to a specific icon:
+     *
+     * - \ea01 file
+     * - \ea02 folder
+     * - \ea03 image
+     * - \ea04 audio
+     * - \ea05 video
+     * - \ea06 text
+     * - \ea07 code
+     * - \ea08 archive
+     * - \ea09 pdf
+     * - \ea0a excel
+     * - \ea0b powerpoint
+     * - \ea0c word
+     */
+    src: url("data:application/font-woff;base64,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")
+    format("woff");
 }

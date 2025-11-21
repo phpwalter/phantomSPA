@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS Custom Properties Integration Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Load the CSS custom properties sprite system -->
+    <link rel="stylesheet" href="/src/assets/images/prog.lang-icons/prog.lang-icons.css">
+    <!-- Load Prism.js CSS -->
+    <link rel="stylesheet" href="/src/plugins/prism/prism-syntax-highlighter.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+        
+        .test-section h2 {
+            margin-top: 0;
+            color: #495057;
+        }
+        
+        .icon-test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .icon-test-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        
+        .icon-test-item .lang-icon {
+            margin-right: 10px;
+        }
+        
+        .size-demo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        .size-label {
+            font-weight: 600;
+            min-width: 80px;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .prism-custom-header {
+            background: #4a5568;
+            color: #e2e8f0;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .prism-language-label {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            color: #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 CSS Custom Properties Integration Test</h1>
+        
+        <div class="test-section">
+            <h2>1. CSS Custom Properties System Status</h2>
+            <div id="cssPropsStatus">
+                <p>Loading CSS custom properties...</p>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. Size Variants Test</h2>
+            <p>Testing all three size variants with TypeScript icon:</p>
+            
+            <div class="size-demo">
+                <span class="size-label">Small (16px):</span>
+                <span class="lang-icon lang-icon-sm lang-icon-typescript-sm"></span>
+                <code>.lang-icon-sm .lang-icon-typescript-sm</code>
+            </div>
+            
+            <div class="size-demo">
+                <span class="size-label">Medium (32px):</span>
+                <span class="lang-icon lang-icon-md lang-icon-typescript-md"></span>
+                <code>.lang-icon-md .lang-icon-typescript-md</code>
+            </div>
+            
+            <div class="size-demo">
+                <span class="size-label">Large (64px):</span>
+                <span class="lang-icon lang-icon-lg lang-icon-typescript-lg"></span>
+                <code>.lang-icon-lg .lang-icon-typescript-lg</code>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. Language Icons Grid Test</h2>
+            <p>Testing various programming language icons with small size variant:</p>
+            
+            <div class="icon-test-grid">
+                <div class="icon-test-item">
+                    <span class="lang-icon lang-icon-sm lang-icon-typescript-sm"></span>
+                    <span>TypeScript</span>
+                </div>
+                <div class="icon-test-item">
+                    <span class="lang-icon lang-icon-sm lang-icon-javascript-sm"></span>
+                    <span>JavaScript</span>
+                </div>
+                <div class="icon-test-item">
+                    <span class="lang-icon lang-icon-sm lang-icon-python-sm"></span>
+                    <span>Python</span>
+                </div>
+                <div class="icon-test-item">
+                    <span class="lang-icon lang-icon-sm lang-icon-java-sm"></span>
+                    <span>Java</span>
+                </div>
+                <div class="icon-test-item">
+                    <span class="lang-icon lang-icon-sm lang-icon-css3-sm"></span>
+                    <span>CSS3</span>
+                </div>
+                <div class="icon-test-item">
+                    <span class="lang-icon lang-icon-sm lang-icon-html5-sm"></span>
+                    <span>HTML5</span>
+                </div>
+                <div class="icon-test-item">
+                    <span class="lang-icon lang-icon-sm lang-icon-bash-sm"></span>
+                    <span>Bash</span>
+                </div>
+                <div class="icon-test-item">
+                    <span class="lang-icon lang-icon-sm lang-icon-json-sm"></span>
+                    <span>JSON</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4. Prism.js Header Integration Test</h2>
+            <p>Testing how icons appear in Prism.js code block headers:</p>
+            
+            <!-- Simulated Prism headers -->
+            <div class="prism-custom-header">
+                <span class="prism-language-label">
+                    <span class="lang-icon lang-icon-sm lang-icon-typescript-sm"></span>
+                    TYPESCRIPT • install-script
+                </span>
+                <div>📋 ⋮</div>
+            </div>
+            <pre><code>npm install phantomspa</code></pre>
+            
+            <div class="prism-custom-header">
+                <span class="prism-language-label">
+                    <span class="lang-icon lang-icon-sm lang-icon-python-sm"></span>
+                    PYTHON
+                </span>
+                <div>📋 ⋮</div>
+            </div>
+            <pre><code>print("Hello, PhantomSPA!")</code></pre>
+            
+            <div class="prism-custom-header">
+                <span class="prism-language-label">
+                    <span class="lang-icon lang-icon-sm lang-icon-bash-sm"></span>
+                    BASH • setup-environment
+                </span>
+                <div>📋 ⋮</div>
+            </div>
+            <pre><code>#!/bin/bash
+echo "Setting up PhantomSPA environment..."</code></pre>
+        </div>
+        
+        <div class="test-section">
+            <h2>5. Integration Status</h2>
+            <div id="integrationStatus">
+                <p>Checking integration status...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Test CSS custom properties
+            function testCSSCustomProperties() {
+                const rootStyles = getComputedStyle(document.documentElement);
+                const statusDiv = document.getElementById('cssPropsStatus');
+                
+                const smSize = rootStyles.getPropertyValue('--lang-icon-size-sm').trim();
+                const mdSize = rootStyles.getPropertyValue('--lang-icon-size-md').trim();
+                const lgSize = rootStyles.getPropertyValue('--lang-icon-size-lg').trim();
+                const cols = rootStyles.getPropertyValue('--lang-sprite-cols').trim();
+                const rows = rootStyles.getPropertyValue('--lang-sprite-rows').trim();
+                
+                let html = '<h3>CSS Custom Properties Values:</h3>';
+                html += `<p><strong>--lang-icon-size-sm:</strong> ${smSize || 'Not found'}</p>`;
+                html += `<p><strong>--lang-icon-size-md:</strong> ${mdSize || 'Not found'}</p>`;
+                html += `<p><strong>--lang-icon-size-lg:</strong> ${lgSize || 'Not found'}</p>`;
+                html += `<p><strong>--lang-sprite-cols:</strong> ${cols || 'Not found'}</p>`;
+                html += `<p><strong>--lang-sprite-rows:</strong> ${rows || 'Not found'}</p>`;
+                
+                if (smSize && mdSize && lgSize && cols && rows) {
+                    html += '<div class="status success">✅ CSS Custom Properties loaded successfully</div>';
+                } else {
+                    html += '<div class="status warning">⚠️ Some CSS Custom Properties not found</div>';
+                }
+                
+                statusDiv.innerHTML = html;
+            }
+            
+            // Test integration status
+            function testIntegrationStatus() {
+                const statusDiv = document.getElementById('integrationStatus');
+                const testIcon = document.querySelector('.lang-icon-typescript-sm');
+                
+                let html = '<h3>Integration Test Results:</h3>';
+                
+                // Test if icons are loading
+                if (testIcon) {
+                    const computedStyle = getComputedStyle(testIcon);
+                    const bgImage = computedStyle.backgroundImage;
+                    const bgSize = computedStyle.backgroundSize;
+                    const bgPosition = computedStyle.backgroundPosition;
+                    
+                    html += `<p><strong>Background Image:</strong> ${bgImage !== 'none' ? '✅ Loaded' : '❌ Not loaded'}</p>`;
+                    html += `<p><strong>Background Size:</strong> ${bgSize}</p>`;
+                    html += `<p><strong>Background Position:</strong> ${bgPosition}</p>`;
+                    
+                    if (bgImage !== 'none' && bgSize && bgPosition) {
+                        html += '<div class="status success">✅ CSS Custom Properties integration working correctly</div>';
+                    } else {
+                        html += '<div class="status warning">⚠️ Integration may have issues</div>';
+                    }
+                } else {
+                    html += '<div class="status warning">⚠️ Test icon not found</div>';
+                }
+                
+                statusDiv.innerHTML = html;
+            }
+            
+            // Run tests
+            testCSSCustomProperties();
+            
+            // Wait a bit for images to load, then test integration
+            setTimeout(testIntegrationStatus, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Programming Language Icons Sprite Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Load PhantomSPA global styles -->
+    <link rel="stylesheet" href="/docs/dev/css/styles.css">
+    
+    <!-- Load Programming Language Icons Sprite CSS -->
+    <link rel="stylesheet" href="/src/assets/images/prog.lang-icons/prog.lang-icons.css">
+    
+    <style>
+        body {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg);
+            color: var(--fg);
+        }
+        
+        .test-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: var(--card);
+        }
+        
+        .test-title {
+            color: var(--heading);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .icon-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--panel);
+            border: 1px solid var(--panel-line);
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .icon-item:hover {
+            background: var(--panel-hover, var(--panel));
+        }
+        
+        .icon-name {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--fg);
+        }
+        
+        .size-demo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--panel);
+            border-radius: 8px;
+        }
+        
+        .size-label {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--fg-muted);
+            min-width: 60px;
+        }
+        
+        .usage-example {
+            background: var(--panel);
+            border: 1px solid var(--panel-line);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .usage-example h4 {
+            color: var(--accent);
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .usage-example code {
+            background: var(--code-bg, #1a1a1a);
+            color: var(--code-fg, #e6e6e6);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+        
+        .inline-demo {
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🎨 Programming Language Icons Sprite Test</h1>
+<p>Testing the CSS sprite implementation for programming language icons in PhantomSPA.</p>
+
+<!-- All Icons Grid -->
+<div class="test-section">
+    <h3 class="test-title">All Programming Language Icons</h3>
+    <p>Complete grid showing all 28 icons from the sprite (7 columns × 4 rows):</p>
+    
+    <div class="icon-grid">
+        <!-- Row 1: Web Technologies & Modern Languages -->
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-typescript"></span>
+            <span class="icon-name">TypeScript</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-javascript"></span>
+            <span class="icon-name">JavaScript</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-nodejs"></span>
+            <span class="icon-name">Node.js</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-css3"></span>
+            <span class="icon-name">CSS3</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-html5"></span>
+            <span class="icon-name">HTML5</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-swift"></span>
+            <span class="icon-name">Swift</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-assemblyscript"></span>
+            <span class="icon-name">AssemblyScript</span>
+        </div>
+        
+        <!-- Row 2: System Languages & Tools -->
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-python"></span>
+            <span class="icon-name">Python</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-c"></span>
+            <span class="icon-name">C</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-cplus"></span>
+            <span class="icon-name">C+</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-cpp"></span>
+            <span class="icon-name">C++</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-csharp"></span>
+            <span class="icon-name">C#</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-github"></span>
+            <span class="icon-name">GitHub</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-mysql"></span>
+            <span class="icon-name">MySQL</span>
+        </div>
+        
+        <!-- Row 3: Enterprise & Server Languages -->
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-java"></span>
+            <span class="icon-name">Java</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-java-alt"></span>
+            <span class="icon-name">Java (Alt)</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-java-text"></span>
+            <span class="icon-name">Java (Text)</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-php-elephant"></span>
+            <span class="icon-name">PHP (Elephant)</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-php"></span>
+            <span class="icon-name">PHP</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-perl"></span>
+            <span class="icon-name">Perl</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-mssql"></span>
+            <span class="icon-name">MS SQL</span>
+        </div>
+        
+        <!-- Row 4: Data & Scripting Languages -->
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-json"></span>
+            <span class="icon-name">JSON</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-json-alt"></span>
+            <span class="icon-name">JSON (Alt)</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-ruby"></span>
+            <span class="icon-name">Ruby</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-markdown"></span>
+            <span class="icon-name">Markdown</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-bash"></span>
+            <span class="icon-name">BASH</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-node"></span>
+            <span class="icon-name">Node</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-apache"></span>
+            <span class="icon-name">Apache</span>
+        </div>
+    </div>
+</div>
+
+<!-- Size Variants -->
+<div class="test-section">
+    <h3 class="test-title">Size Variants</h3>
+    <p>Different icon sizes using modifier classes:</p>
+    
+    <div class="size-demo">
+        <span class="size-label">Small:</span>
+        <span class="lang-icon lang-icon-sm lang-icon-javascript"></span>
+        <span class="lang-icon lang-icon-sm lang-icon-python"></span>
+        <span class="lang-icon lang-icon-sm lang-icon-java"></span>
+    </div>
+    
+    <div class="size-demo">
+        <span class="size-label">Medium:</span>
+        <span class="lang-icon lang-icon-md lang-icon-javascript"></span>
+        <span class="lang-icon lang-icon-md lang-icon-python"></span>
+        <span class="lang-icon lang-icon-md lang-icon-java"></span>
+    </div>
+    
+    <div class="size-demo">
+        <span class="size-label">Default:</span>
+        <span class="lang-icon lang-icon-javascript"></span>
+        <span class="lang-icon lang-icon-python"></span>
+        <span class="lang-icon lang-icon-java"></span>
+    </div>
+    
+    <div class="size-demo">
+        <span class="size-label">Large:</span>
+        <span class="lang-icon lang-icon-lg lang-icon-javascript"></span>
+        <span class="lang-icon lang-icon-lg lang-icon-python"></span>
+        <span class="lang-icon lang-icon-lg lang-icon-java"></span>
+    </div>
+    
+    <div class="size-demo">
+        <span class="size-label">X-Large:</span>
+        <span class="lang-icon lang-icon-xl lang-icon-javascript"></span>
+        <span class="lang-icon lang-icon-xl lang-icon-python"></span>
+        <span class="lang-icon lang-icon-xl lang-icon-java"></span>
+    </div>
+</div>
+
+<!-- Usage Examples -->
+<div class="test-section">
+    <h3 class="test-title">Usage Examples</h3>
+    
+    <div class="usage-example">
+        <h4>Basic Usage:</h4>
+        <code>&lt;span class="lang-icon lang-icon-javascript"&gt;&lt;/span&gt;</code>
+    </div>
+    
+    <div class="usage-example">
+        <h4>With Size Modifier:</h4>
+        <code>&lt;span class="lang-icon lang-icon-lg lang-icon-python"&gt;&lt;/span&gt;</code>
+    </div>
+    
+    <div class="usage-example">
+        <h4>With Utility Classes:</h4>
+        <code>&lt;span class="lang-icon lang-icon-java lang-icon-rounded lang-icon-shadow"&gt;&lt;/span&gt;</code>
+    </div>
+    
+    <div class="usage-example">
+        <h4>Inline with Text:</h4>
+        <div class="inline-demo">
+            This project uses <span class="lang-icon lang-icon-inline lang-icon-javascript"></span> JavaScript, 
+            <span class="lang-icon lang-icon-inline lang-icon-python"></span> Python, and 
+            <span class="lang-icon lang-icon-inline lang-icon-css3"></span> CSS3.
+        </div>
+    </div>
+</div>
+
+<!-- Semantic Aliases -->
+<div class="test-section">
+    <h3 class="test-title">Semantic Aliases</h3>
+    <p>Short alias class names for common languages:</p>
+    
+    <div class="icon-grid">
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-js"></span>
+            <span class="icon-name">lang-icon-js</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-ts"></span>
+            <span class="icon-name">lang-icon-ts</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-py"></span>
+            <span class="icon-name">lang-icon-py</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-cs"></span>
+            <span class="icon-name">lang-icon-cs</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-md"></span>
+            <span class="icon-name">lang-icon-md</span>
+        </div>
+        <div class="icon-item">
+            <span class="lang-icon lang-icon-sh"></span>
+            <span class="icon-name">lang-icon-sh</span>
+        </div>
+    </div>
+</div>
+
+<script>
+// Log sprite information for debugging
+console.log('Programming Language Icons Sprite Test');
+console.log('Sprite CSS loaded from: /src/assets/images/prog.lang-icons/prog.lang-icons.css');
+console.log('Sprite image: /src/assets/images/prog.lang-icons/prog.lang-icons.png');
+console.log('Grid layout: 7 columns × 4 rows (28 total icons)');
+console.log('Default icon size: 32x32px');
+
+// Test if sprite image loads successfully
+const testImg = new Image();
+testImg.onload = function() {
+    console.log('✅ Sprite image loaded successfully');
+    console.log('Image dimensions:', this.naturalWidth + 'x' + this.naturalHeight);
+};
+testImg.onerror = function() {
+    console.error('❌ Failed to load sprite image');
+};
+testImg.src = '/src/assets/images/prog.lang-icons/prog.lang-icons.png';
+</script>
+
+</body>
+</html>

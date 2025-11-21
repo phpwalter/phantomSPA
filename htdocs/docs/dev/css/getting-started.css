@@ -121,14 +121,3 @@
 
 
 /* ---------------------------- */
-
-
-/* Prism.js Overrides - Override CDN styles to align with PhantomSPA design system */
-pre[class*=language-].line-numbers {
-    padding: 5px;
-
-}
-
-pre.line-numbers > code {
-    background: black;
-}

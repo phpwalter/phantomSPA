@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Programming Language Icons - CSS Custom Properties System Analysis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Load the programming language icons sprite CSS -->
+    <link rel="stylesheet" href="/src/assets/images/prog.lang-icons/prog.lang-icons.css">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+
+        .measurement-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .sprite-image {
+            border: 2px solid #333;
+            display: block;
+            margin: 1rem 0;
+        }
+
+        .grid-overlay {
+            position: relative;
+            display: inline-block;
+        }
+
+        .grid-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .grid-line-v {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(255, 0, 0, 0.8);
+            z-index: 10;
+        }
+
+        .grid-line-h {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 0, 0, 0.8);
+            z-index: 10;
+        }
+
+        .measurements {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+            margin: 1rem 0 2rem 0;
+            max-width: 800px;
+        }
+
+        .icon-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+
+        .icon-preview .lang-icon {
+            width: 48px !important;
+            height: 48px !important;
+            background-size: 336px 192px !important; /* 7×48px, 4×48px for preview size */
+        }
+
+        .icon-label {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .row-header {
+            font-weight: bold;
+            color: #495057;
+            margin: 1.5rem 0 0.75rem 0;
+            font-size: 1.1rem;
+        }
+
+        .measurements {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+            font-family: 'Courier New', monospace;
+        }
+        .css-vars-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .css-vars-display h3 {
+            margin: 15px 0 10px 0;
+            color: #495057;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .css-vars-display h3:first-child {
+            margin-top: 0;
+        }
+
+        .var-item {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 5px 0;
+            padding: 4px 8px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+
+        .var-item span {
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🎨 Programming Language Icons - CSS Custom Properties System Analysis</h1>
+
+<div class="measurement-container">
+    <h2>CSS Architecture Overview</h2>
+    <div class="measurements">
+        <p><strong>System Type:</strong> CSS Custom Properties with Calculated Positioning</p>
+        <p><strong>CSS Layers:</strong> @layer tokens, utilities</p>
+        <p><strong>Size Variants:</strong> Small (16px), Medium (32px), Large (64px)</p>
+        <p><strong>Grid System:</strong> 7 columns × 4 rows = 28 icons</p>
+        <p><strong>Positioning:</strong> Dynamic calc() functions using CSS variables</p>
+    </div>
+
+    <h2>CSS Custom Properties Values</h2>
+    <div class="measurements">
+        <div class="css-vars-display">
+            <h3>Size Variables:</h3>
+            <div class="var-item">--lang-icon-size-sm: <span id="cssVarSm">16px</span></div>
+            <div class="var-item">--lang-icon-size-md: <span id="cssVarMd">32px</span></div>
+            <div class="var-item">--lang-icon-size-lg: <span id="cssVarLg">64px</span></div>
+
+            <h3>Grid Variables:</h3>
+            <div class="var-item">--lang-sprite-cols: <span id="cssVarCols">7</span></div>
+            <div class="var-item">--lang-sprite-rows: <span id="cssVarRows">4</span></div>
+            <div class="var-item">--lang-icon-gap: <span id="cssVarGap">0px</span></div>
+        </div>
+    </div>
+
+    <h2>Sprite Image Analysis</h2>
+    <p>This tool analyzes the sprite image and verifies compatibility with the CSS custom properties system.</p>
+
+    <div class="grid-overlay">
+        <img id="spriteImage" class="sprite-image" src="/src/assets/images/prog.lang-icons/prog.lang-icons.png" alt="Programming Language Icons Sprite">
+        <div class="grid-lines" id="gridLines"></div>
+    </div>
+
+    <div class="measurements" id="measurements">
+        <strong>Image Dimensions:</strong><br>
+        Width: <span id="imageWidth">Loading...</span>px<br>
+        Height: <span id="imageHeight">Loading...</span>px<br><br>
+
+        <strong>Calculated Grid Dimensions (7 columns × 4 rows):</strong><br>
+        Icon Width: <span id="iconWidth">Calculating...</span>px<br>
+        Icon Height: <span id="iconHeight">Calculating...</span>px<br>
+        Horizontal Spacing: <span id="hSpacing">Calculating...</span>px<br>
+        Vertical Spacing: <span id="vSpacing">Calculating...</span>px<br>
+    </div>
+</div>
+
+<div class="measurement-container">
+    <h2>Icon Layout Reference</h2>
+    <p>Grid layout showing the position of each programming language icon:</p>
+
+    <div class="row-header">Row 1 (columns 1-7):</div>
+    <div class="icon-grid">
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-typescript-lg"></span>
+            <div class="icon-label">TypeScript</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-javascript-lg"></span>
+            <div class="icon-label">JavaScript</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-nodejs-lg"></span>
+            <div class="icon-label">Node.js</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-css3-lg"></span>
+            <div class="icon-label">CSS3</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-html5-lg"></span>
+            <div class="icon-label">HTML5</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-swift-lg"></span>
+            <div class="icon-label">Swift</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-assemblyscript-lg"></span>
+            <div class="icon-label">AssemblyScript</div>
+        </div>
+    </div>
+
+    <div class="row-header">Row 2 (columns 1-7):</div>
+    <div class="icon-grid">
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-python-lg"></span>
+            <div class="icon-label">Python</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-c-lg"></span>
+            <div class="icon-label">C</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-cplus-lg"></span>
+            <div class="icon-label">C+</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-cpp-lg"></span>
+            <div class="icon-label">C++</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-csharp-lg"></span>
+            <div class="icon-label">C#</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-github-lg"></span>
+            <div class="icon-label">GitHub</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-mysql-lg"></span>
+            <div class="icon-label">MySQL</div>
+        </div>
+    </div>
+
+    <div class="row-header">Row 3 (columns 1-7):</div>
+    <div class="icon-grid">
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-java-lg"></span>
+            <div class="icon-label">Java</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-java-alt-lg"></span>
+            <div class="icon-label">Java.2 [no bg]</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-java-text-lg"></span>
+            <div class="icon-label">Java.3 [text]</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-php-elephant-lg"></span>
+            <div class="icon-label">PHP.1 [elephant]</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-php-lg"></span>
+            <div class="icon-label">PHP</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-perl-lg"></span>
+            <div class="icon-label">Perl</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-mssql-lg"></span>
+            <div class="icon-label">MS SQL</div>
+        </div>
+    </div>
+
+    <div class="row-header">Row 4 (columns 1-7):</div>
+    <div class="icon-grid">
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-json-lg"></span>
+            <div class="icon-label">JSON</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-json-alt-lg"></span>
+            <div class="icon-label">JSON.2 [variant]</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-ruby-lg"></span>
+            <div class="icon-label">Ruby</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-markdown-lg"></span>
+            <div class="icon-label">Markdown</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-bash-lg"></span>
+            <div class="icon-label">BASH</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-node-lg"></span>
+            <div class="icon-label">Node [alt]</div>
+        </div>
+        <div class="icon-preview">
+            <span class="lang-icon lang-icon-lg lang-icon-apache-lg"></span>
+            <div class="icon-label">Apache</div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Read CSS custom properties values
+    function readCSSCustomProperties() {
+        const rootStyles = getComputedStyle(document.documentElement);
+
+        // Update displayed values
+        const smSize = rootStyles.getPropertyValue('--lang-icon-size-sm').trim();
+        const mdSize = rootStyles.getPropertyValue('--lang-icon-size-md').trim();
+        const lgSize = rootStyles.getPropertyValue('--lang-icon-size-lg').trim();
+        const cols = rootStyles.getPropertyValue('--lang-sprite-cols').trim();
+        const rows = rootStyles.getPropertyValue('--lang-sprite-rows').trim();
+        const gap = rootStyles.getPropertyValue('--lang-icon-gap').trim();
+
+        document.getElementById('cssVarSm').textContent = smSize || '16px';
+        document.getElementById('cssVarMd').textContent = mdSize || '32px';
+        document.getElementById('cssVarLg').textContent = lgSize || '64px';
+        document.getElementById('cssVarCols').textContent = cols || '7';
+        document.getElementById('cssVarRows').textContent = rows || '4';
+        document.getElementById('cssVarGap').textContent = gap || '0px';
+
+        console.log('📊 CSS Custom Properties Values:');
+        console.log('--lang-icon-size-sm:', smSize || '16px');
+        console.log('--lang-icon-size-md:', mdSize || '32px');
+        console.log('--lang-icon-size-lg:', lgSize || '64px');
+        console.log('--lang-sprite-cols:', cols || '7');
+        console.log('--lang-sprite-rows:', rows || '4');
+        console.log('--lang-icon-gap:', gap || '0px');
+    }
+
+    // Read CSS custom properties on load
+    readCSSCustomProperties();
+
+    const img = document.getElementById('spriteImage');
+    const measurements = document.getElementById('measurements');
+
+    img.onload = function() {
+        // Get actual image dimensions
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+
+        // Update measurements
+        document.getElementById('imageWidth').textContent = width;
+        document.getElementById('imageHeight').textContent = height;
+
+        // Grid specifications (7 columns × 4 rows, 64×64px icons)
+        const cols = 7;
+        const rows = 4;
+        const expectedIconWidth = 64;
+        const expectedIconHeight = 64;
+        const expectedWidth = cols * expectedIconWidth; // 448px
+        const expectedHeight = rows * expectedIconHeight; // 256px
+
+        // Calculate actual icon dimensions
+        const iconWidth = Math.floor(width / cols);
+        const iconHeight = Math.floor(height / rows);
+
+        // Calculate spacing (should be 0 for this sprite)
+        const remainderWidth = width % cols;
+        const remainderHeight = height % rows;
+
+        document.getElementById('iconWidth').textContent = iconWidth;
+        document.getElementById('iconHeight').textContent = iconHeight;
+        document.getElementById('hSpacing').textContent = remainderWidth > 0 ? remainderWidth + 'px total' : '0';
+        document.getElementById('vSpacing').textContent = remainderHeight > 0 ? remainderHeight + 'px total' : '0';
+
+        // Draw grid lines
+        drawGridLines(width, height, cols, rows, iconWidth, iconHeight);
+
+        console.log('🎨 Sprite Image Analysis:');
+        console.log('Actual dimensions:', width + 'x' + height);
+        console.log('Expected dimensions:', expectedWidth + 'x' + expectedHeight);
+        console.log('Calculated icon size:', iconWidth + 'x' + iconHeight);
+        console.log('Expected icon size: 64x64px');
+        console.log('Grid layout: 7 columns × 4 rows');
+
+        // Validation
+        if (width === expectedWidth && height === expectedHeight) {
+            console.log('✅ Sprite dimensions match expected 448×256px');
+        } else {
+            console.warn('⚠️ Sprite dimensions differ from expected 448×256px');
+        }
+
+        if (iconWidth === expectedIconWidth && iconHeight === expectedIconHeight) {
+            console.log('✅ Icon dimensions match expected 64×64px');
+        } else {
+            console.warn('⚠️ Icon dimensions differ from expected 64×64px');
+        }
+
+        // Generate CSS positions for testing
+        generateCSSPositions(cols, rows, iconWidth, iconHeight);
+    };
+
+    function drawGridLines(totalWidth, totalHeight, cols, rows, iconWidth, iconHeight) {
+        const gridLines = document.getElementById('gridLines');
+        gridLines.innerHTML = '';
+
+        console.log('🔲 Drawing grid lines:');
+
+        // Vertical lines (between columns)
+        for (let i = 1; i < cols; i++) {
+            const line = document.createElement('div');
+            line.className = 'grid-line-v';
+            const xPos = i * iconWidth;
+            line.style.left = xPos + 'px';
+            gridLines.appendChild(line);
+            console.log(`Vertical line ${i} at x=${xPos}px`);
+        }
+
+        // Horizontal lines (between rows)
+        for (let i = 1; i < rows; i++) {
+            const line = document.createElement('div');
+            line.className = 'grid-line-h';
+            const yPos = i * iconHeight;
+            line.style.top = yPos + 'px';
+            gridLines.appendChild(line);
+            console.log(`Horizontal line ${i} at y=${yPos}px`);
+        }
+
+        // Add border lines for better visibility
+        const topBorder = document.createElement('div');
+        topBorder.className = 'grid-line-h';
+        topBorder.style.top = '0px';
+        topBorder.style.background = 'rgba(0, 255, 0, 0.8)';
+        gridLines.appendChild(topBorder);
+
+        const bottomBorder = document.createElement('div');
+        bottomBorder.className = 'grid-line-h';
+        bottomBorder.style.top = totalHeight + 'px';
+        bottomBorder.style.background = 'rgba(0, 255, 0, 0.8)';
+        gridLines.appendChild(bottomBorder);
+
+        const leftBorder = document.createElement('div');
+        leftBorder.className = 'grid-line-v';
+        leftBorder.style.left = '0px';
+        leftBorder.style.background = 'rgba(0, 255, 0, 0.8)';
+        gridLines.appendChild(leftBorder);
+
+        const rightBorder = document.createElement('div');
+        rightBorder.className = 'grid-line-v';
+        rightBorder.style.left = totalWidth + 'px';
+        rightBorder.style.background = 'rgba(0, 255, 0, 0.8)';
+        gridLines.appendChild(rightBorder);
+
+        // Add border lines for reference
+        const borderTop = document.createElement('div');
+        borderTop.className = 'grid-line-h';
+        borderTop.style.top = '0px';
+        borderTop.style.background = 'rgba(0, 255, 0, 0.7)';
+        gridLines.appendChild(borderTop);
+
+        const borderBottom = document.createElement('div');
+        borderBottom.className = 'grid-line-h';
+        borderBottom.style.top = totalHeight + 'px';
+        borderBottom.style.background = 'rgba(0, 255, 0, 0.7)';
+        gridLines.appendChild(borderBottom);
+
+        const borderLeft = document.createElement('div');
+        borderLeft.className = 'grid-line-v';
+        borderLeft.style.left = '0px';
+        borderLeft.style.background = 'rgba(0, 255, 0, 0.7)';
+        gridLines.appendChild(borderLeft);
+
+        const borderRight = document.createElement('div');
+        borderRight.className = 'grid-line-v';
+        borderRight.style.left = totalWidth + 'px';
+        borderRight.style.background = 'rgba(0, 255, 0, 0.7)';
+        gridLines.appendChild(borderRight);
+    }
+
+    function generateCSSPositions(cols, rows, iconWidth, iconHeight) {
+        console.log('\n🎯 CSS Custom Properties System Analysis:');
+        console.log('Current system uses calculated positioning with CSS variables\n');
+
+        const languages = [
+            // Row 1
+            'typescript', 'javascript', 'nodejs', 'css3', 'html5', 'swift', 'assemblyscript',
+            // Row 2
+            'python', 'c', 'cplus', 'cpp', 'csharp', 'github', 'mysql',
+            // Row 3
+            'java', 'java-alt', 'java-text', 'php-elephant', 'php', 'perl', 'mssql',
+            // Row 4
+            'json', 'json-alt', 'ruby', 'markdown', 'bash', 'node', 'apache'
+        ];
+
+        console.log('📋 CSS Custom Properties Classes (current system):');
+        for (let row = 0; row < rows; row++) {
+            console.log(`/* Row ${row + 1} */`);
+            for (let col = 0; col < cols; col++) {
+                const index = row * cols + col;
+                const lang = languages[index];
+
+                console.log(`.lang-icon-${lang}-sm { background-position: var(--c${col + 1 > 1 ? (col + 1) + '-sm' : '1'}) var(--r${row + 1 > 1 ? (row + 1) + '-sm' : '1'}); }`);
+                console.log(`.lang-icon-${lang}-md { background-position: var(--c${col + 1 > 1 ? (col + 1) + '-md' : '1'}) var(--r${row + 1 > 1 ? (row + 1) + '-md' : '1'}); }`);
+                console.log(`.lang-icon-${lang}-lg { background-position: var(--c${col + 1 > 1 ? (col + 1) + '-lg' : '1'}) var(--r${row + 1 > 1 ? (row + 1) + '-lg' : '1'}); }`);
+                console.log('');
+            }
+        }
+
+        // Verify CSS variable calculations
+        console.log('🔍 CSS Variable Calculations Verification:');
+        console.log('Based on current CSS custom properties:');
+        console.log('--lang-icon-size-sm: 16px');
+        console.log('--lang-icon-size-md: 32px');
+        console.log('--lang-icon-size-lg: 64px');
+        console.log('');
+
+        console.log('Column offsets (--c2-lg through --c7-lg):');
+        for (let col = 1; col < cols; col++) {
+            const offset = col * 64; // Using lg size (64px)
+            console.log(`--c${col + 1}-lg: -${offset}px`);
+        }
+
+        console.log('\nRow offsets (--r2-lg through --r4-lg):');
+        for (let row = 1; row < rows; row++) {
+            const offset = row * 64; // Using lg size (64px)
+            console.log(`--r${row + 1}-lg: -${offset}px`);
+        }
+
+        // Verify sprite compatibility
+        const totalSpriteWidth = cols * iconWidth;
+        const totalSpriteHeight = rows * iconHeight;
+
+        console.log('\n✅ Sprite Compatibility Check:');
+        console.log(`Actual sprite: ${totalSpriteWidth}×${totalSpriteHeight}px`);
+        console.log(`Expected for 64px icons: ${cols * 64}×${rows * 64}px (448×256px)`);
+
+        if (totalSpriteWidth === 448 && totalSpriteHeight === 256) {
+            console.log('✅ Sprite dimensions match CSS custom properties system!');
+        } else {
+            console.warn('⚠️ Sprite dimensions may not match CSS custom properties system');
+        }
+    }
+});
+</script>
+
+</body>
+</html>

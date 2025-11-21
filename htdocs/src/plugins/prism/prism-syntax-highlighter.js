@@ -153,10 +153,14 @@ async function loadPrismCDNResources(config) {
 }
 
 /**
- * Load plugin CSS file
+ * Load plugin CSS files
  */
 async function loadPluginCSS() {
+    // Load main plugin CSS
     await loadStylesheet('/src/plugins/prism/prism-syntax-highlighter.css', 'prism-plugin-css');
+
+    // Load programming language icons sprite CSS
+    await loadStylesheet('/src/assets/images/prog.lang-icons/prog.lang-icons.css', 'prism-lang-icons-css');
 }
 
 /**
@@ -287,10 +291,22 @@ function addCustomHeaders(container) {
         const header = document.createElement('div');
         header.className = 'prism-custom-header';
 
-        // Left side: Language label
+        // Left side: Language label with icon and optional title
         const languageLabel = document.createElement('span');
         languageLabel.className = 'prism-language-label';
-        languageLabel.textContent = language;
+
+        // Create language icon using CSS custom properties system
+        const languageIcon = document.createElement('span');
+        const iconClass = getLanguageIconClass(language.toLowerCase());
+        languageIcon.className = `lang-icon lang-icon-sm ${iconClass}`;
+
+        // Create text content with conditional title
+        const shouldShowTitle = title && title !== 'code';
+        const labelText = shouldShowTitle ? `${language} • ${title}` : language;
+
+        // Assemble language label
+        languageLabel.appendChild(languageIcon);
+        languageLabel.appendChild(document.createTextNode(' ' + labelText));
 
         // Right side: Actions container
         const actions = document.createElement('div');
@@ -469,6 +485,75 @@ function showCopyError(button) {
         button.classList.remove('error');
         button.title = 'Copy code';
     }, 3000);
+}
+
+/**
+ * Map programming language to sprite icon class
+ * @param {string} language - Programming language name (lowercase)
+ * @returns {string} - CSS class name for language icon
+ */
+function getLanguageIconClass(language) {
+    // Map languages to CSS custom properties icon classes
+    // Using -sm variant for 18px header icons (16px base size is closest to desired 18px)
+    const iconMap = {
+        // Web Technologies & Modern Languages
+        'typescript': 'lang-icon-typescript-sm',
+        'javascript': 'lang-icon-javascript-sm',
+        'js': 'lang-icon-javascript-sm',
+        'jsx': 'lang-icon-javascript-sm',
+        'tsx': 'lang-icon-typescript-sm',
+        'css': 'lang-icon-css3-sm',
+        'scss': 'lang-icon-css3-sm',
+        'sass': 'lang-icon-css3-sm',
+        'less': 'lang-icon-css3-sm',
+        'stylus': 'lang-icon-css3-sm',
+        'html': 'lang-icon-html5-sm',
+        'markup': 'lang-icon-html5-sm',
+        'xml': 'lang-icon-html5-sm',
+        'svg': 'lang-icon-html5-sm',
+        'swift': 'lang-icon-swift-sm',
+        'assemblyscript': 'lang-icon-assemblyscript-sm',
+
+        // System Languages & Tools
+        'python': 'lang-icon-python-sm',
+        'py': 'lang-icon-python-sm',
+        'c': 'lang-icon-c-sm',
+        'cpp': 'lang-icon-cpp-sm',
+        'cxx': 'lang-icon-cpp-sm',
+        'cc': 'lang-icon-cpp-sm',
+        'csharp': 'lang-icon-csharp-sm',
+        'cs': 'lang-icon-csharp-sm',
+        'mysql': 'lang-icon-mysql-sm',
+
+        // Enterprise & Server Languages
+        'java': 'lang-icon-java-sm',
+        'php': 'lang-icon-php-sm',
+        'perl': 'lang-icon-perl-sm',
+        'pl': 'lang-icon-perl-sm',
+        'sql': 'lang-icon-mssql-sm',
+        'mssql': 'lang-icon-mssql-sm',
+        'tsql': 'lang-icon-mssql-sm',
+
+        // Data & Scripting Languages
+        'json': 'lang-icon-json-sm',
+        'ruby': 'lang-icon-ruby-sm',
+        'rb': 'lang-icon-ruby-sm',
+        'markdown': 'lang-icon-markdown-sm',
+        'md': 'lang-icon-markdown-sm',
+        'bash': 'lang-icon-bash-sm',
+        'shell': 'lang-icon-bash-sm',
+        'sh': 'lang-icon-bash-sm',
+        'zsh': 'lang-icon-bash-sm',
+        'fish': 'lang-icon-bash-sm',
+        'powershell': 'lang-icon-bash-sm',
+        'apache': 'lang-icon-apache-sm',
+
+        // Node.js variants
+        'nodejs': 'lang-icon-nodejs-sm',
+        'node': 'lang-icon-node-sm'
+    };
+
+    return iconMap[language.toLowerCase()] || 'lang-icon-json-sm'; // Default fallback icon
 }
 
 /**

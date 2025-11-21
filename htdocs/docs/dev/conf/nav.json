@@ -18,7 +18,10 @@
       "title": "Development Guides",
       "icon": "📚",
       "file": "guides/getting-started.md",
-      "css": "/docs/dev/css/getting-started.css",
+      "css": [
+        "/docs/dev/css/getting-started.css",
+        "/src/assets/images/prog.lang-icons/prog.lang-icons.css"
+             ],
       "lazy": false,
       "children": [
         { "path": "/getting-started", "title": "Getting Started",  "file": "guides/getting-started.md" },

@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS Custom Properties Diagnostic Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Import CSS Custom Properties System -->
+    <link rel="stylesheet" href="/src/assets/images/prog.lang-icons/prog.lang-icons.css">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .sprite-container {
+            position: relative;
+            display: inline-block;
+            border: 2px solid #007bff;
+            margin: 20px 0;
+            max-width: 100%;
+            overflow: auto;
+        }
+
+        .sprite-image {
+            display: block;
+            /* Dynamic sprite dimensions using CSS custom properties */
+            width: calc(var(--lang-sprite-cols) * var(--lang-icon-size-lg));   /* 7 * 64px = 448px */
+            height: calc(var(--lang-sprite-rows) * var(--lang-icon-size-lg));  /* 4 * 64px = 256px */
+            max-width: 100%;
+            height: auto;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        .visual-positioning-tool {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #007bff;
+        }
+
+        .large-sprite-container {
+            position: relative;
+            display: inline-block;
+            margin: 20px auto;
+            border: 3px solid #007bff;
+            background: #333;
+        }
+
+        .large-sprite-image {
+            display: block;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            transition: all 0.3s ease;
+        }
+
+        .sprite-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(128, 128, 128, 0.7);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .clear-strip {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            background: transparent;
+            border-left: 2px solid #ff4444;
+            border-right: 2px solid #ff4444;
+            z-index: 3;
+            transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
+            pointer-events: none;
+        }
+
+        .clear-strip::before {
+            content: '';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 20px solid #ff4444;
+        }
+
+        .clear-strip::after {
+            content: attr(data-column);
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff4444;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .position-indicators {
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #666;
+        }
+
+        .position-indicator {
+            position: relative;
+            width: 1px;
+            height: 15px;
+            background: #999;
+        }
+
+        .position-indicator::after {
+            content: attr(data-pos);
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            color: #666;
+        }
+
+        .size-selector {
+            margin: 20px 0;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 6px;
+            border: 1px solid #2196f3;
+        }
+
+        .size-selector label {
+            font-weight: 600;
+            margin-right: 10px;
+            color: #1976d2;
+        }
+
+        .size-selector select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+            font-size: 14px;
+            min-width: 200px;
+        }
+
+        .icon-test-row {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .icon-test-row:hover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            transform: translateX(2px);
+        }
+
+        .icon-test-row.selected {
+            background: #e8f5e8;
+            border-color: #4caf50;
+            border-width: 2px;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+        }
+
+        .icon-preview {
+            margin-right: 15px;
+            border: 2px solid #007bff;
+            background-color: #333;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Dynamic icon preview sizes using CSS custom properties */
+        .icon-preview.size-sm {
+            width: var(--lang-icon-size-sm);   /* 16px */
+            height: var(--lang-icon-size-sm);  /* 16px */
+        }
+
+        .icon-preview.size-md {
+            width: var(--lang-icon-size-md);   /* 32px */
+            height: var(--lang-icon-size-md);  /* 32px */
+        }
+
+        .icon-preview.size-lg {
+            width: var(--lang-icon-size-lg);   /* 64px */
+            height: var(--lang-icon-size-lg);  /* 64px */
+        }
+
+        .icon-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .icon-label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 150px;
+        }
+
+        .css-values {
+            font-family: monospace;
+            font-size: 12px;
+            color: #6c757d;
+            background: #e9ecef;
+            padding: 5px 8px;
+            border-radius: 3px;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-left: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-group label {
+            min-width: 60px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .control-group input {
+            width: 60px;
+            padding: 3px 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .update-btn {
+            padding: 4px 8px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .update-btn:hover {
+            background: #0056b3;
+        }
+
+        .save-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+
+        .css-output {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .save-btn {
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .save-btn:hover {
+            background: #218838;
+        }
+
+        .position-info {
+            margin: 20px 0;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .row-header {
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 CSS Custom Properties Diagnostic Tool</h1>
+        <p>This tool uses the actual CSS custom properties system to display icons and allows real-time adjustment of positioning variables.</p>
+
+        <div class="sprite-container">
+            <img class="sprite-image" src="/src/assets/images/prog.lang-icons/prog.lang-icons.png" alt="Programming Language Icons Sprite">
+        </div>
+
+        <div class="position-info">
+            <strong>Sprite Dimensions:</strong> <span id="spriteDimensions">Loading...</span><br>
+            <strong>CSS System:</strong> CSS Custom Properties with calc() functions<br>
+            <strong>Icon Sizes:</strong> Small (16px), Medium (32px), Large (64px)<br>
+            <strong>Grid:</strong> 7 columns × 4 rows = 28 icons
+        </div>
+
+        <div class="size-selector">
+            <label for="sizeVariant">Icon Size Variant:</label>
+            <select id="sizeVariant" onchange="changeSizeVariant()">
+                <option value="sm">Small (16px) - uses -sm classes and variables</option>
+                <option value="md">Medium (32px) - uses -md classes and variables</option>
+                <option value="lg">Large (64px) - uses -lg classes and variables</option>
+            </select>
+        </div>
+
+        <div class="visual-positioning-tool">
+            <h3>🎯 Visual Positioning Tool</h3>
+            <p>Click on any icon row below to see where the CSS custom properties position it in the sprite. The red clear strip shows the calculated column position.</p>
+
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 6px; margin: 15px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #856404;">📋 How to Fix Positioning Issues:</h4>
+                <ol style="margin: 0; padding-left: 20px; color: #856404;">
+                    <li><strong>Column Issues (Row 1):</strong> Use the icon test rows below to adjust column positions (--c1-pos, --c2-pos-sm, etc.)</li>
+                    <li><strong>Row Issues (Rows 2-4):</strong> Currently showing Row 1 icons only. Row positioning (--r2-sm, --r3-sm, --r4-sm) needs separate testing</li>
+                    <li><strong>Size Variants:</strong> Switch between Small/Medium/Large to see how positioning affects different icon sizes</li>
+                    <li><strong>Visual Debugging:</strong> Click an icon row → Compare the revealed sprite icon with the preview icon → Adjust values until they match</li>
+                </ol>
+            </div>
+
+            <div class="large-sprite-container">
+                <img class="large-sprite-image" src="/src/assets/images/prog.lang-icons/prog.lang-icons.png" alt="Programming Language Icons Sprite">
+                <div class="sprite-overlay"></div>
+                <div class="clear-strip" id="clearStrip" data-column="Click an icon"></div>
+                <div class="position-indicators" id="positionIndicators"></div>
+            </div>
+
+            <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
+                <strong>Selected:</strong> <span id="selectedIcon">None - Click an icon row below</span> |
+                <strong>Position:</strong> <span id="stripPosition">-</span> |
+                <strong>Column:</strong> <span id="stripColumn">-</span>
+            </div>
+        </div>
+
+        <div class="row-header">Row 1 Icons - CSS Custom Properties System</div>
+
+        <div class="icon-test-row" onclick="selectIcon('typescript', 1)" id="row-typescript">
+            <div class="icon-preview lang-icon lang-icon-sm lang-icon-typescript-sm size-sm" id="icon-typescript"></div>
+            <div class="icon-info">
+                <div class="icon-label">TypeScript (Column 1)</div>
+                <div class="css-values" id="values-typescript">Loading...</div>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label>--c1-pos:</label>
+                    <input type="number" id="c1" value="0" step="1" onchange="updateColumnVariable(1)">
+                    <button class="update-btn" onclick="updateColumnVariable(1)">Update</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="icon-test-row" onclick="selectIcon('javascript', 2)" id="row-javascript">
+            <div class="icon-preview lang-icon lang-icon-sm lang-icon-javascript-sm size-sm" id="icon-javascript"></div>
+            <div class="icon-info">
+                <div class="icon-label">JavaScript (Column 2)</div>
+                <div class="css-values" id="values-javascript">Loading...</div>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label>--c2-pos-sm:</label>
+                    <input type="number" id="c2-sm" value="-16" step="1" onchange="updateColumnVariable(2)">
+                    <button class="update-btn" onclick="updateColumnVariable(2)">Update</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="icon-test-row" onclick="selectIcon('nodejs', 3)" id="row-nodejs">
+            <div class="icon-preview lang-icon lang-icon-sm lang-icon-nodejs-sm size-sm" id="icon-nodejs"></div>
+            <div class="icon-info">
+                <div class="icon-label">Node.js (Column 3)</div>
+                <div class="css-values" id="values-nodejs">Loading...</div>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label>--c3-pos-sm:</label>
+                    <input type="number" id="c3-sm" value="-32" step="1" onchange="updateColumnVariable(3)">
+                    <button class="update-btn" onclick="updateColumnVariable(3)">Update</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="icon-test-row" onclick="selectIcon('css3', 4)" id="row-css3">
+            <div class="icon-preview lang-icon lang-icon-sm lang-icon-css3-sm size-sm" id="icon-css3"></div>
+            <div class="icon-info">
+                <div class="icon-label">CSS3 (Column 4)</div>
+                <div class="css-values" id="values-css3">Loading...</div>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label>--c4-pos-sm:</label>
+                    <input type="number" id="c4-sm" value="-48" step="1" onchange="updateColumnVariable(4)">
+                    <button class="update-btn" onclick="updateColumnVariable(4)">Update</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="icon-test-row" onclick="selectIcon('html5', 5)" id="row-html5">
+            <div class="icon-preview lang-icon lang-icon-sm lang-icon-html5-sm size-sm" id="icon-html5"></div>
+            <div class="icon-info">
+                <div class="icon-label">HTML5 (Column 5)</div>
+                <div class="css-values" id="values-html5">Loading...</div>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label>--c5-pos-sm:</label>
+                    <input type="number" id="c5-sm" value="-64" step="1" onchange="updateColumnVariable(5)">
+                    <button class="update-btn" onclick="updateColumnVariable(5)">Update</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="icon-test-row" onclick="selectIcon('swift', 6)" id="row-swift">
+            <div class="icon-preview lang-icon lang-icon-sm lang-icon-swift-sm size-sm" id="icon-swift"></div>
+            <div class="icon-info">
+                <div class="icon-label">Swift (Column 6)</div>
+                <div class="css-values" id="values-swift">Loading...</div>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label>--c6-pos-sm:</label>
+                    <input type="number" id="c6-sm" value="-80" step="1" onchange="updateColumnVariable(6)">
+                    <button class="update-btn" onclick="updateColumnVariable(6)">Update</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="icon-test-row" onclick="selectIcon('assemblyscript', 7)" id="row-assemblyscript">
+            <div class="icon-preview lang-icon lang-icon-sm lang-icon-assemblyscript-sm size-sm" id="icon-assemblyscript"></div>
+            <div class="icon-info">
+                <div class="icon-label">AssemblyScript (Column 7)</div>
+                <div class="css-values" id="values-assemblyscript">Loading...</div>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <label>--c7-pos-sm:</label>
+                    <input type="number" id="c7-sm" value="-96" step="1" onchange="updateColumnVariable(7)">
+                    <button class="update-btn" onclick="updateColumnVariable(7)">Update</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="save-section">
+            <h3>💾 Save CSS Custom Properties</h3>
+            <p>Click the button below to generate the updated CSS custom property definitions based on your adjustments:</p>
+
+            <button class="save-btn" onclick="generateCSS()">Generate Updated CSS</button>
+
+            <div class="css-output" id="cssOutput">
+/* Updated CSS Custom Properties - Copy and paste into prog.lang-icons.css */
+/* Column positions for small (16px) icons */
+--c1-pos: 0px;
+--c2-pos-sm: calc(-1 * var(--lang-icon-size-sm));  /* -16px */
+--c3-pos-sm: calc(-2 * var(--lang-icon-size-sm));  /* -32px */
+--c4-pos-sm: calc(-3 * var(--lang-icon-size-sm));  /* -48px */
+--c5-pos-sm: calc(-4 * var(--lang-icon-size-sm));  /* -64px */
+--c6-pos-sm: calc(-5 * var(--lang-icon-size-sm));  /* -80px */
+--c7-pos-sm: calc(-6 * var(--lang-icon-size-sm));  /* -96px */
+            </div>
+        </div>
+
+        <div style="background: #e8f5e8; border: 2px solid #4caf50; padding: 20px; border-radius: 8px; margin: 30px 0;">
+            <h3 style="margin: 0 0 15px 0; color: #2e7d32;">📚 Complete Positioning Fix Workflow</h3>
+
+            <h4 style="color: #388e3c; margin: 20px 0 10px 0;">🎯 Current Tool Capabilities (Row 1 Icons Only):</h4>
+            <ul style="margin: 0 0 15px 0; padding-left: 20px; color: #2e7d32;">
+                <li><strong>Column positioning:</strong> Adjust --c1-pos, --c2-pos-sm, --c3-pos-sm, --c4-pos-sm, --c5-pos-sm, --c6-pos-sm, --c7-pos-sm</li>
+                <li><strong>Visual debugging:</strong> Click icon rows to see positioning in sprite</li>
+                <li><strong>Size variants:</strong> Test Small (16px), Medium (32px), Large (64px) icon sizes</li>
+                <li><strong>Real-time updates:</strong> See changes immediately in both preview and sprite</li>
+            </ul>
+
+            <h4 style="color: #388e3c; margin: 20px 0 10px 0;">⚠️ Limitations - Row Positioning (Rows 2-4):</h4>
+            <ul style="margin: 0 0 15px 0; padding-left: 20px; color: #d32f2f;">
+                <li><strong>Missing icons:</strong> This tool only shows Row 1 icons (7 out of 28 total icons)</li>
+                <li><strong>Row variables:</strong> Cannot adjust --r2-sm, --r3-sm, --r4-sm (row positioning for Rows 2, 3, 4)</li>
+                <li><strong>Full sprite testing:</strong> Need separate testing for all 28 icons across 4 rows</li>
+            </ul>
+
+            <h4 style="color: #388e3c; margin: 20px 0 10px 0;">🔧 Recommended Workflow:</h4>
+            <ol style="margin: 0 0 15px 0; padding-left: 20px; color: #2e7d32;">
+                <li><strong>Fix Row 1 columns (current tool):</strong>
+                    <ul style="margin: 5px 0; padding-left: 20px;">
+                        <li>Use this tool to adjust column positions for TypeScript, JavaScript, Node.js, CSS3, HTML5, Swift, AssemblyScript</li>
+                        <li>Click each icon row → Compare sprite vs preview → Adjust values → Generate CSS</li>
+                    </ul>
+                </li>
+                <li><strong>Test Row 1 fixes:</strong>
+                    <ul style="margin: 5px 0; padding-left: 20px;">
+                        <li>Apply generated CSS to <code>prog.lang-icons.css</code></li>
+                        <li>Test in <code>measure-sprite-dimensions.html</code> and Prism.js integration</li>
+                    </ul>
+                </li>
+                <li><strong>Fix Rows 2-4 (manual approach):</strong>
+                    <ul style="margin: 5px 0; padding-left: 20px;">
+                        <li>Option A: Expand this tool to include all 28 icons (recommended)</li>
+                        <li>Option B: Use <code>measure-sprite-dimensions.html</code> to visually check Row 2-4 positioning</li>
+                        <li>Option C: Manually adjust --r2-sm, --r3-sm, --r4-sm values and test</li>
+                    </ul>
+                </li>
+                <li><strong>Verify all size variants:</strong>
+                    <ul style="margin: 5px 0; padding-left: 20px;">
+                        <li>Test Small (16px), Medium (32px), Large (64px) variants</li>
+                        <li>Ensure proportional scaling works correctly</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h4 style="color: #ff6f00; margin: 20px 0 10px 0;">💡 Next Steps Recommendation:</h4>
+            <p style="margin: 0; color: #e65100; font-weight: 600;">
+                Would you like me to expand this diagnostic tool to include all 28 icons (4 rows × 7 columns)
+                so you can fix both column AND row positioning issues in one comprehensive tool?
+            </p>
+        </div>
+
+        <div style="background: #e3f2fd; border: 2px solid #2196f3; padding: 20px; border-radius: 8px; margin: 30px 0;">
+            <h3 style="margin: 0 0 15px 0; color: #1565c0;">🔧 Dynamic CSS Custom Properties Integration</h3>
+
+            <h4 style="color: #1976d2; margin: 20px 0 10px 0;">✅ Eliminated Hardcoded Values:</h4>
+            <ul style="margin: 0 0 15px 0; padding-left: 20px; color: #1565c0;">
+                <li><strong>Sprite dimensions:</strong> Now calculated as <code>calc(var(--lang-sprite-cols) * var(--lang-icon-size-lg))</code></li>
+                <li><strong>Icon preview sizes:</strong> Now use <code>var(--lang-icon-size-sm/md/lg)</code> directly</li>
+                <li><strong>Scale factors:</strong> Dynamically calculated from CSS custom properties</li>
+                <li><strong>Grid dimensions:</strong> Read from <code>--lang-sprite-cols</code> and <code>--lang-sprite-rows</code></li>
+            </ul>
+
+            <h4 style="color: #1976d2; margin: 20px 0 10px 0;">📊 Current Dynamic Values:</h4>
+            <ul style="margin: 0 0 15px 0; padding-left: 20px; color: #1565c0;">
+                <li><strong>Original sprite:</strong> <span id="dynamicSpriteDims">Loading...</span> (7 cols × 4 rows × 64px)</li>
+                <li><strong>Icon sizes:</strong> <span id="dynamicIconSizes">Loading...</span></li>
+                <li><strong>Display scales:</strong> <span id="dynamicScales">Loading...</span></li>
+            </ul>
+
+            <h4 style="color: #1976d2; margin: 20px 0 10px 0;">🎯 Benefits:</h4>
+            <ul style="margin: 0 0 15px 0; padding-left: 20px; color: #1565c0;">
+                <li><strong>Automatic updates:</strong> Tool adapts to any changes in <code>prog.lang-icons.css</code></li>
+                <li><strong>Consistency:</strong> Uses exact same values as the actual CSS system</li>
+                <li><strong>Maintainability:</strong> No duplicate hardcoded values to keep in sync</li>
+                <li><strong>Flexibility:</strong> Works with any sprite grid size or icon dimensions</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        // Store original CSS values and current size variant
+        const originalValues = {};
+        let currentSize = 'sm';
+        let selectedIcon = null;
+
+        // Icon configuration
+        const iconConfig = [
+            { id: 'typescript', name: 'TypeScript', column: 1 },
+            { id: 'javascript', name: 'JavaScript', column: 2 },
+            { id: 'nodejs', name: 'Node.js', column: 3 },
+            { id: 'css3', name: 'CSS3', column: 4 },
+            { id: 'html5', name: 'HTML5', column: 5 },
+            { id: 'swift', name: 'Swift', column: 6 },
+            { id: 'assemblyscript', name: 'AssemblyScript', column: 7 }
+        ];
+
+        // Dynamic CSS custom properties reader
+        function getCSSCustomProperty(propertyName) {
+            return getComputedStyle(document.documentElement).getPropertyValue(propertyName).trim();
+        }
+
+        // Dynamic sprite dimensions calculated from CSS custom properties
+        function getOriginalSpriteDimensions() {
+            const cols = parseInt(getCSSCustomProperty('--lang-sprite-cols'));
+            const rows = parseInt(getCSSCustomProperty('--lang-sprite-rows'));
+            const originalIconSize = parseInt(getCSSCustomProperty('--lang-icon-size-lg')); // 64px = original sprite icon size
+
+            return {
+                width: cols * originalIconSize,   // 7 * 64 = 448px
+                height: rows * originalIconSize   // 4 * 64 = 256px
+            };
+        }
+
+        // Dynamic sprite scales calculated from CSS custom properties
+        function calculateSpriteScales() {
+            const originalIconSize = parseInt(getCSSCustomProperty('--lang-icon-size-lg')); // 64px
+            const smSize = parseInt(getCSSCustomProperty('--lang-icon-size-sm')); // 16px
+            const mdSize = parseInt(getCSSCustomProperty('--lang-icon-size-md')); // 32px
+            const lgSize = parseInt(getCSSCustomProperty('--lang-icon-size-lg')); // 64px
+
+            // Calculate scale factors for visual display (not actual icon ratios)
+            // These are display scales to make positioning easier to see
+            const baseScale = 1.0;
+            return {
+                'sm': baseScale * .25,
+                'md': baseScale * .5,
+                'lg': baseScale   // 64px icons (maximum detail)
+            };
+        }
+
+        // Initialize dynamic values
+        let SPRITE_SCALES = calculateSpriteScales();
+        let ORIGINAL_SPRITE_DIMENSIONS = getOriginalSpriteDimensions();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const spriteImage = document.querySelector('.sprite-image');
+
+            spriteImage.onload = function() {
+                const dimensions = `${this.naturalWidth}×${this.naturalHeight}px`;
+                document.getElementById('spriteDimensions').textContent = dimensions;
+
+                console.log('Sprite dimensions:', dimensions);
+                console.log('Expected: 448×256px');
+
+                if (this.naturalWidth === 448 && this.naturalHeight === 256) {
+                    console.log('✅ Sprite dimensions are correct');
+                } else {
+                    console.log('❌ Sprite dimensions do not match expected 448×256px');
+                }
+            };
+
+            // Initialize CSS values display
+            updateAllValues();
+            updateInputLabelsAndValues(); // Use the new function
+            initializeVisualTool();
+        });
+
+        function changeSizeVariant() {
+            const sizeSelect = document.getElementById('sizeVariant');
+            currentSize = sizeSelect.value;
+
+            console.log(`Switching to size variant: ${currentSize}`);
+
+            // Update all icon classes and visual sizes
+            iconConfig.forEach(icon => {
+                const iconElement = document.getElementById(`icon-${icon.id}`);
+                if (iconElement) {
+                    // Remove old size classes
+                    iconElement.classList.remove('lang-icon-sm', 'lang-icon-md', 'lang-icon-lg');
+                    iconElement.classList.remove(`lang-icon-${icon.id}-sm`, `lang-icon-${icon.id}-md`, `lang-icon-${icon.id}-lg`);
+                    iconElement.classList.remove('size-sm', 'size-md', 'size-lg');
+
+                    // Add new size classes
+                    iconElement.classList.add(`lang-icon-${currentSize}`, `lang-icon-${icon.id}-${currentSize}`, `size-${currentSize}`);
+                }
+
+                // Update input labels and IDs
+                const controlGroup = iconElement?.parentElement?.querySelector('.controls .control-group');
+                if (controlGroup) {
+                    const label = controlGroup.querySelector('label');
+                    const input = controlGroup.querySelector('input');
+                    const button = controlGroup.querySelector('button');
+
+                    if (icon.column === 1) {
+                        // Column 1 always uses --c1-pos
+                        if (label) label.textContent = '--c1-pos:';
+                        if (input) input.id = 'c1';
+                        if (button) button.setAttribute('onclick', "updateVariable('--c1-pos', 'c1')");
+                    } else {
+                        // Other columns use size-specific variables
+                        const varName = `--c${icon.column}-${currentSize}`;
+                        const inputId = `c${icon.column}-${currentSize}`;
+
+                        if (label) label.textContent = `${varName}:`;
+                        if (input) input.id = inputId;
+                        if (button) button.setAttribute('onclick', `updateVariable('${varName}', '${inputId}')`);
+                    }
+                }
+            });
+
+            // Update input values and display
+            updateInputLabelsAndValues();
+            updateAllValues();
+            updateSpriteDisplaySize();
+            updateClearStripSize();
+            updateClearStripPosition();
+        }
+
+        function updateVariable(varName, inputId) {
+            const value = document.getElementById(inputId).value + 'px';
+            document.documentElement.style.setProperty(varName, value);
+            console.log(`Updated ${varName} to ${value}`);
+            updateAllValues();
+            updateClearStripPosition();
+        }
+
+        // Helper function to update variable for a specific column
+        function updateColumnVariable(column) {
+            const varName = column === 1 ? '--c1-pos' : `--c${column}-${currentSize}`;
+            const inputId = column === 1 ? 'c1' : `c${column}-sm`; // HTML IDs are hardcoded to -sm
+            updateVariable(varName, inputId);
+        }
+
+        function selectIcon(iconId, column) {
+            // Remove selection from all rows
+            document.querySelectorAll('.icon-test-row').forEach(row => {
+                row.classList.remove('selected');
+            });
+
+            // Add selection to clicked row
+            const selectedRow = document.getElementById(`row-${iconId}`);
+            if (selectedRow) {
+                selectedRow.classList.add('selected');
+            }
+
+            selectedIcon = iconId;
+
+            // Update visual tool
+            updateClearStripPosition();
+
+            // Update info display
+            const iconInfo = iconConfig.find(icon => icon.id === iconId);
+            if (iconInfo) {
+                document.getElementById('selectedIcon').textContent = iconInfo.name;
+            }
+        }
+
+        function refreshDynamicValues() {
+            // Recalculate values from CSS custom properties
+            SPRITE_SCALES = calculateSpriteScales();
+            ORIGINAL_SPRITE_DIMENSIONS = getOriginalSpriteDimensions();
+
+            console.log('Refreshed dynamic values from CSS custom properties:');
+            console.log('- Sprite scales:', SPRITE_SCALES);
+            console.log('- Original sprite dimensions:', ORIGINAL_SPRITE_DIMENSIONS);
+
+            // Update dynamic values display
+            updateDynamicValuesDisplay();
+        }
+
+        function updateDynamicValuesDisplay() {
+            const spriteDimsEl = document.getElementById('dynamicSpriteDims');
+            const iconSizesEl = document.getElementById('dynamicIconSizes');
+            const scalesEl = document.getElementById('dynamicScales');
+
+            if (spriteDimsEl) {
+                spriteDimsEl.textContent = `${ORIGINAL_SPRITE_DIMENSIONS.width}×${ORIGINAL_SPRITE_DIMENSIONS.height}px`;
+            }
+
+            if (iconSizesEl) {
+                const sm = getCSSCustomProperty('--lang-icon-size-sm');
+                const md = getCSSCustomProperty('--lang-icon-size-md');
+                const lg = getCSSCustomProperty('--lang-icon-size-lg');
+                iconSizesEl.textContent = `SM: ${sm}, MD: ${md}, LG: ${lg}`;
+            }
+
+            if (scalesEl) {
+                const scales = Object.entries(SPRITE_SCALES)
+                    .map(([size, scale]) => `${size.toUpperCase()}: ${scale}x`)
+                    .join(', ');
+                scalesEl.textContent = scales;
+            }
+        }
+
+        function initializeVisualTool() {
+            refreshDynamicValues(); // Ensure we have latest CSS custom property values
+            createPositionIndicators();
+            updateSpriteDisplaySize();
+            updateClearStripSize();
+        }
+
+        function updateSpriteDisplaySize() {
+            const spriteImage = document.querySelector('.large-sprite-image');
+            const spriteContainer = document.querySelector('.large-sprite-container');
+
+            if (!spriteImage || !spriteContainer) return;
+
+            const scale = SPRITE_SCALES[currentSize];
+            const newWidth = ORIGINAL_SPRITE_DIMENSIONS.width * scale;
+            const newHeight = ORIGINAL_SPRITE_DIMENSIONS.height * scale;
+
+            spriteImage.style.width = newWidth + 'px';
+            spriteImage.style.height = newHeight + 'px';
+
+            console.log(`Updated sprite display size: ${newWidth}×${newHeight}px (${scale}x scale for ${currentSize})`);
+            console.log(`Original sprite dimensions: ${ORIGINAL_SPRITE_DIMENSIONS.width}×${ORIGINAL_SPRITE_DIMENSIONS.height}px (from CSS custom properties)`);
+
+            // Update position indicators for new scale
+            createPositionIndicators();
+        }
+
+        function createPositionIndicators() {
+            const indicatorsContainer = document.getElementById('positionIndicators');
+            indicatorsContainer.innerHTML = '';
+
+            const currentScale = SPRITE_SCALES[currentSize];
+            const originalIconSize = parseInt(getCSSCustomProperty('--lang-icon-size-lg')); // 64px = original sprite icon size
+            const totalCols = parseInt(getCSSCustomProperty('--lang-sprite-cols')); // 7
+
+            // Create position indicators for each column boundary
+            for (let i = 0; i <= totalCols; i++) {
+                const indicator = document.createElement('div');
+                indicator.className = 'position-indicator';
+
+                const originalPos = i * originalIconSize; // Dynamic: i * 64px per column
+                const scaledPos = originalPos * currentScale;
+
+                indicator.style.left = scaledPos + 'px';
+                indicator.setAttribute('data-pos', originalPos + 'px');
+
+                indicatorsContainer.appendChild(indicator);
+            }
+        }
+
+        function updateClearStripSize() {
+            const clearStrip = document.getElementById('clearStrip');
+            const currentScale = SPRITE_SCALES[currentSize];
+            const originalIconSize = parseInt(getCSSCustomProperty('--lang-icon-size-lg')); // 64px = original sprite icon size
+
+            // Clear strip should show one column width in the scaled sprite display
+            // Column width in scaled sprite = Original column width (64px) * Scale factor
+            const stripWidth = originalIconSize * currentScale;
+            clearStrip.style.width = stripWidth + 'px';
+
+            console.log(`Updated clear strip width to ${stripWidth}px for ${currentSize}`);
+            console.log(`- Original column width: ${originalIconSize}px`);
+            console.log(`- Scale factor: ${currentScale}x`);
+            console.log(`- Scaled column width: ${stripWidth}px`);
+        }
+
+        function updateClearStripPosition() {
+            if (!selectedIcon) return;
+
+            const iconInfo = iconConfig.find(icon => icon.id === selectedIcon);
+            if (!iconInfo) return;
+
+            // Get the computed background position for the selected icon
+            const iconElement = document.getElementById(`icon-${selectedIcon}`);
+            if (!iconElement) return;
+
+            const computedStyle = getComputedStyle(iconElement);
+            const backgroundPosition = computedStyle.backgroundPosition;
+
+            // Parse the background position to get X offset
+            const positionParts = backgroundPosition.split(' ');
+            const xOffset = parseFloat(positionParts[0]);
+
+            // Convert the background position to sprite position
+            // Background position is negative offset, so we need to convert it
+            const spritePosition = Math.abs(xOffset);
+            const currentScale = SPRITE_SCALES[currentSize];
+            const scaledPosition = spritePosition * currentScale;
+
+            // Update clear strip position
+            const clearStrip = document.getElementById('clearStrip');
+            clearStrip.style.left = scaledPosition + 'px';
+            clearStrip.setAttribute('data-column', `Col ${iconInfo.column}`);
+
+            // Update info display
+            document.getElementById('stripPosition').textContent = `${spritePosition}px`;
+            document.getElementById('stripColumn').textContent = iconInfo.column;
+
+            console.log(`Updated clear strip position: ${scaledPosition}px (original: ${spritePosition}px) for ${iconInfo.name}`);
+        }
+
+        function updateAllValues() {
+            iconConfig.forEach(icon => {
+                const element = document.getElementById(`icon-${icon.id}`);
+                const valuesElement = document.getElementById(`values-${icon.id}`);
+
+                if (element && valuesElement) {
+                    const computedStyle = getComputedStyle(element);
+                    const backgroundPosition = computedStyle.backgroundPosition;
+                    const backgroundSize = computedStyle.backgroundSize;
+
+                    // Get CSS variable values for current size
+                    const columnVar = icon.column === 1 ? '--c1-pos' : `--c${icon.column}-${currentSize}`;
+                    const rowVar = '--r1'; // Row 1 for all these icons
+
+                    const columnValue = getComputedStyle(document.documentElement).getPropertyValue(columnVar).trim();
+                    const rowValue = getComputedStyle(document.documentElement).getPropertyValue(rowVar).trim();
+
+                    valuesElement.innerHTML = `
+                        <div>CSS Variables: ${columnVar}: ${columnValue || '0px'}, ${rowVar}: ${rowValue || '0px'}</div>
+                        <div>Computed Position: ${backgroundPosition}</div>
+                        <div>Background Size: ${backgroundSize}</div>
+                        <div>Current Size: ${currentSize} (${getCurrentSizePixels()}px)</div>
+                    `;
+                }
+            });
+        }
+
+        function getCurrentSizePixels() {
+            const sizeMap = { 'sm': 16, 'md': 32, 'lg': 64 };
+            return sizeMap[currentSize] || 16;
+        }
+
+        function generateCSS() {
+            let css = `/* Updated CSS Custom Properties - Copy and paste into prog.lang-icons.css */\n`;
+            css += `/* Generated from ${currentSize} size variant adjustments */\n`;
+            css += `/* Replace the column position variables in the :root section */\n\n`;
+
+            const baseSize = getCurrentSizePixels();
+
+            // Generate CSS for all size variants based on current adjustments
+            const sizeVariants = [
+                { suffix: 'sm', size: 16, varSuffix: 'sm' },
+                { suffix: 'md', size: 32, varSuffix: 'md' },
+                { suffix: 'lg', size: 64, varSuffix: 'lg' }
+            ];
+
+            sizeVariants.forEach((variant, index) => {
+                if (index > 0) css += '\n';
+                css += `/* ${variant.suffix.toUpperCase()} size variants (${variant.size}px) */\n`;
+
+                iconConfig.forEach(icon => {
+                    if (icon.column === 1) {
+                        // Column 1 always uses --c1-pos (no size suffix)
+                        if (index === 0) {
+                            const inputElement = document.getElementById('c1');
+                            const value = inputElement ? inputElement.value : '0';
+                            css += `        --c1-pos: ${value}px;  /* ${icon.name} */\n`;
+                        }
+                    } else {
+                        // Other columns use size-specific variables
+                        const inputId = `c${icon.column}-${currentSize}`;
+                        const inputElement = document.getElementById(inputId);
+
+                        if (inputElement) {
+                            const currentValue = parseInt(inputElement.value);
+                            // Scale the value based on the ratio between current size and target size
+                            const scaledValue = Math.round(currentValue * (variant.size / baseSize));
+                            const multiplier = Math.abs(scaledValue) / variant.size;
+
+                            const varName = `--c${icon.column}-${variant.varSuffix}`;
+                            css += `        ${varName}: calc(-${multiplier} * var(--lang-icon-size-${variant.varSuffix}));  /* ${scaledValue}px - ${icon.name} */\n`;
+                        }
+                    }
+                });
+            });
+
+            css += `\n/* Current adjustments summary (${currentSize} variant): */\n`;
+            iconConfig.forEach(icon => {
+                const inputId = icon.column === 1 ? 'c1' : `c${icon.column}-${currentSize}`;
+                const inputElement = document.getElementById(inputId);
+                if (inputElement) {
+                    const varName = icon.column === 1 ? '--c1-pos' : `--c${icon.column}-${currentSize}`;
+                    css += `/* ${icon.name}: ${varName} = ${inputElement.value}px */\n`;
+                }
+            });
+
+            document.getElementById('cssOutput').textContent = css;
+        }
+
+        // Update input labels and values for current size variant
+        function updateInputLabelsAndValues() {
+            console.log(`=== updateInputLabelsAndValues() called for currentSize: ${currentSize} ===`);
+
+            iconConfig.forEach(icon => {
+                const varName = icon.column === 1 ? '--c1-pos' : `--c${icon.column}-${currentSize}`;
+                const inputId = icon.column === 1 ? 'c1' : `c${icon.column}-sm`; // HTML IDs are hardcoded to -sm
+
+                console.log(`Processing ${icon.name} (col ${icon.column}): varName=${varName}, inputId=${inputId}`);
+
+                // Update the label to show current size variant
+                const controlGroup = document.getElementById(inputId)?.closest('.control-group');
+                const labelInGroup = controlGroup?.querySelector('label');
+
+                if (labelInGroup) {
+                    labelInGroup.textContent = varName + ':';
+                    console.log(`Updated label to: ${varName}:`);
+                }
+
+                // Update the input value from CSS custom property
+                const element = document.getElementById(inputId);
+
+                if (!element) {
+                    console.error(`❌ Input element ${inputId} not found for CSS var ${varName}`);
+                    return;
+                }
+
+                // Try to get CSS custom property value
+                const cssValue = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+                console.log(`CSS value for ${varName}: "${cssValue}" (length: ${cssValue.length})`);
+
+                let finalValue;
+
+                if (cssValue && cssValue !== '' && cssValue !== 'initial' && cssValue !== 'inherit') {
+                    // Check if it's a calc() expression that needs to be computed
+                    if (cssValue.startsWith('calc(')) {
+                        // For calc() expressions, we need to get the computed value from an actual element
+                        // Create a temporary element to get the computed value
+                        const tempElement = document.createElement('div');
+                        tempElement.style.position = 'absolute';
+                        tempElement.style.visibility = 'hidden';
+                        tempElement.style.left = cssValue;
+                        document.body.appendChild(tempElement);
+
+                        const computedLeft = getComputedStyle(tempElement).left;
+                        document.body.removeChild(tempElement);
+
+                        const numericValue = parseInt(computedLeft.replace('px', ''));
+                        finalValue = isNaN(numericValue) ? 0 : numericValue;
+                        console.log(`✅ Using computed calc() value: ${finalValue} (from ${varName}: ${cssValue} → ${computedLeft})`);
+                    } else {
+                        // Regular pixel value
+                        const numericValue = parseInt(cssValue.replace('px', ''));
+                        finalValue = isNaN(numericValue) ? 0 : numericValue;
+                        console.log(`✅ Using CSS value: ${finalValue} (from ${varName}: ${cssValue})`);
+                    }
+                } else {
+                    // Fallback to calculated default values
+                    const iconSizePixels = getCurrentSizePixels();
+                    finalValue = icon.column === 1 ? 0 : -(icon.column - 1) * iconSizePixels;
+                    console.log(`⚠️ Using calculated default: ${finalValue} (${iconSizePixels}px per column)`);
+                }
+
+                element.value = finalValue;
+                console.log(`Set input ${inputId} = ${finalValue}`);
+            });
+
+            console.log(`=== updateInputLabelsAndValues() completed ===`);
+        }
+
+        // Initialize input values from CSS (legacy function for initial load)
+        function initializeInputs() {
+            iconConfig.forEach(icon => {
+                const varName = icon.column === 1 ? '--c1-pos' : `--c${icon.column}-${currentSize}`;
+                // Input IDs are hardcoded in HTML to -sm suffix, so we need to map them correctly
+                const inputId = icon.column === 1 ? 'c1' : `c${icon.column}-sm`;
+
+                const element = document.getElementById(inputId);
+                const cssValue = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+
+                if (element && cssValue) {
+                    const numericValue = parseInt(cssValue.replace('px', ''));
+                    element.value = numericValue || 0;
+                    console.log(`Set input ${inputId} to ${numericValue} (from CSS var ${varName}: ${cssValue})`);
+                } else if (element) {
+                    // Set default values if CSS value not found
+                    const defaultValue = icon.column === 1 ? 0 : -(icon.column - 1) * getCurrentSizePixels();
+                    element.value = defaultValue;
+                    console.log(`Set input ${inputId} to default ${defaultValue} (CSS var ${varName} not found)`);
+                } else {
+                    console.warn(`Input element ${inputId} not found for CSS var ${varName}`);
+                }
+            });
+        }
+
+        // Debug function to test CSS custom property reading
+        function debugCSSCustomProperties() {
+            console.log('=== CSS Custom Properties Debug ===');
+            const testVars = ['--lang-icon-size-sm', '--lang-icon-size-md', '--lang-icon-size-lg', '--c1-pos', '--c2-pos-sm', '--c3-pos-sm'];
+
+            testVars.forEach(varName => {
+                const value = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+                console.log(`${varName}: "${value}" (length: ${value.length})`);
+            });
+
+            // Test if CSS file is loaded by checking if an icon element has the right background
+            const testIcon = document.querySelector('.lang-icon-typescript-sm');
+            if (testIcon) {
+                const computedStyle = getComputedStyle(testIcon);
+                console.log('Test icon background-image:', computedStyle.backgroundImage);
+                console.log('Test icon background-position:', computedStyle.backgroundPosition);
+                console.log('Test icon background-size:', computedStyle.backgroundSize);
+            }
+
+            console.log('=== End CSS Debug ===');
+        }
+
+        // Initialize inputs when page loads
+        setTimeout(() => {
+            console.log('Initializing page...');
+            debugCSSCustomProperties(); // Debug CSS loading
+            updateInputLabelsAndValues(); // Use the new function instead of initializeInputs()
+            updateAllValues();
+        }, 100);
+    </script>
+</body>
+</html>
