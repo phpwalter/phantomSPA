@@ -16,15 +16,15 @@
 
 @layer tokens {
     :root {
-        --lang-icon-png:  url('./prog.lang-icons.png');
+        --lang-icon-png:  url('prog.lang-icons.png');
 
         --lang-icon-size-sm:  16px;         /* width & height of each icon */
-        --lang-icon-size-md:  36px;         /* width & height of each icon */
-        --lang-icon-size-lg:  54px;         /* width & height of each icon */
+        --lang-icon-size-md:  32px;         /* width & height of each icon */
+        --lang-icon-size-lg:  64px;         /* width & height of each icon */
 
         --lang-icon-gap:    0;             /* space between icons */
         --lang-sprite-cols: 7;             /* total columns in the sprite */
-        --lang-sprite-rows: 4;             /* total rows in the sprite */
+        --lang-sprite-rows: 5;             /* total rows in the sprite */
 
         /* Helper: row offset (1..10) => 0, -32, -64, ... */
         --r1:     0px;
@@ -32,6 +32,7 @@
         --r2-sm:  calc(-1 * var(--lang-icon-size-sm)); /* row index 3 = “row 2” */
         --r3-sm:  calc(-2 * var(--lang-icon-size-sm));
         --r4-sm:  calc(-3 * var(--lang-icon-size-sm));
+        --r5-sm:  calc(-4 * var(--lang-icon-size-sm));
 
         --c1-pos:     0px;
         --c2-pos-sm:  calc(-1 * var(--lang-icon-size-sm));  /* -18px */
@@ -44,6 +45,7 @@
         --r2-md:  calc(-1 * var(--lang-icon-size-md)); /* row index 3 = “row 2” */
         --r3-md:  calc(-2 * var(--lang-icon-size-md));
         --r4-md:  calc(-3 * var(--lang-icon-size-md));
+        --r5-md:  calc(-4 * var(--lang-icon-size-md));
 
         --c2-pos-md:  calc(-1 * var(--lang-icon-size-md));
         --c3-pos-md:  calc(-2 * var(--lang-icon-size-md));
@@ -55,6 +57,7 @@
         --r2-lg:  calc(-1 * var(--lang-icon-size-lg)); /* row index 3 = “row 2” */
         --r3-lg:  calc(-2 * var(--lang-icon-size-lg));
         --r4-lg:  calc(-3 * var(--lang-icon-size-lg));
+        --r5-lg:  calc(-4 * var(--lang-icon-size-lg));
 
         --c2-pos-lg:  calc(-1 * var(--lang-icon-size-lg));
         --c3-pos-lg:  calc(-2 * var(--lang-icon-size-lg));
@@ -74,6 +77,9 @@
         background-repeat: no-repeat;
         vertical-align: middle;
         transition: opacity var(--transition-fast);
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
     }
 
     /* Size variants */
@@ -82,8 +88,8 @@
         height: var(--lang-icon-size-sm);
         /* size the sheet so each cell remains 32px */
         background-size:
-                calc(var(--lang-sprite-cols) * var(--lang-icon-size-sm))
-                calc(var(--lang-sprite-rows) * var(--lang-icon-size-sm));
+                calc(var(--lang-sprite-cols) * var(--lang-icon-size-sm))px
+                calc(var(--lang-sprite-rows) * var(--lang-icon-size-sm))px;
     }
 
     .lang-icon-md {
@@ -114,129 +120,197 @@
 
 /*
  * Individual Language Icon Classes
- * Grid positions calculated as: -column*64px -row*64px
+ * Grid positions calculated based on actual sprite layout
  *
- * Row 1: TypeScript, JavaScript, Node.js, CSS3, HTML5, Swift, AssemblyScript
- * Row 2: Python, C, C+, C++, C#, GitHub, MySQL
- * Row 3: Java, Java.2, Java.3, PHP.1, PHP, Perl, MS SQL
- * Row 4: JSON, JSON.2, Ruby, Markdown, BASH, Node, Apache
+ * CORRECTED SPRITE LAYOUT (based on user feedback):
+ * Row 1: HTML5, CSS3, JavaScript, JSON, XML, TypeScript, AssemblyScript
+ * Row 2: C, C+, C++, C#, ??, MySQL, MS SQL
+ * Row 3: Java, Java.2, Java.3, Python, PHP.1, PHP, Perl
+ * Row 4: NODE.js, ???, Angular, VUW, jQuery, Ruby, GitHub
+ * Row 5: Tree, Bash, BATCH, npm, Markdown, Nginx, Apache
  */
 
-/* Row 1 - Web Technologies & Modern Languages */
-.lang-icon-typescript-sm { background-position: var(--c1-pos) var(--r1); }
-.lang-icon-typescript-md { background-position: var(--c1-pos) var(--r1); }
-.lang-icon-typescript-lg { background-position: var(--c1-pos) var(--r1); }
+/* * Row 1: HTML5, CSS3, JavaScript, JSON, XML, TypeScript, Swift */
+/* HTML5 - Row 1, Column 1 */
+.lang-icon-html5-sm { background-position: var(--c1-pos) var(--r1); }
+.lang-icon-html5-md { background-position: var(--c1-pos) var(--r1); }
+.lang-icon-html5-lg { background-position: var(--c1-pos) var(--r1); }
 
-.lang-icon-javascript-sm { background-position: var(--c2-pos-sm) var(--r1); }
-.lang-icon-javascript-md { background-position: var(--c2-pos-md) var(--r1); }
-.lang-icon-javascript-lg { background-position: var(--c2-pos-lg) var(--r1); }
+/* CSS3 - Row 1, Column 2 */
+.lang-icon-css3-sm { background-position: var(--c2-pos-sm) var(--r1); }
+.lang-icon-css3-md { background-position: var(--c2-pos-md) var(--r1); }
+.lang-icon-css3-lg { background-position: var(--c2-pos-lg) var(--r1); }
 
-.lang-icon-nodejs-sm { background-position: var(--c3-pos-sm) var(--r1); }
-.lang-icon-nodejs-md { background-position: var(--c3-pos-md) var(--r1); }
-.lang-icon-nodejs-lg { background-position: var(--c3-pos-lg) var(--r1); }
+/* JavaScript - Row 1, Column 3 */
+.lang-icon-javascript-sm { background-position: var(--c3-pos-sm) var(--r1); }
+.lang-icon-javascript-md { background-position: var(--c3-pos-md) var(--r1); }
+.lang-icon-javascript-lg { background-position: var(--c3-pos-lg) var(--r1); }
 
-.lang-icon-css3-sm { background-position: var(--c4-pos-sm) var(--r1); }
-.lang-icon-css3-md { background-position: var(--c4-pos-md) var(--r1); }
-.lang-icon-css3-lg { background-position: var(--c4-pos-lg) var(--r1); }
+/* Node.js - Row 1, Column 4 */
+.lang-icon-json-sm { background-position: var(--c4-pos-sm) var(--r1); }
+.lang-icon-json-md { background-position: var(--c4-pos-md) var(--r1); }
+.lang-icon-json-lg { background-position: var(--c4-pos-lg) var(--r1); }
 
-.lang-icon-html5-sm { background-position: var(--c5-pos-sm) var(--r1); }
-.lang-icon-html5-md { background-position: var(--c5-pos-md) var(--r1); }
-.lang-icon-html5-lg { background-position: var(--c5-pos-lg) var(--r1); }
+/* XML - Row 1, Column 5 */
+.lang-icon-xml-sm { background-position: var(--c5-pos-sm) var(--r1); }
+.lang-icon-xml-md { background-position: var(--c5-pos-md) var(--r1); }
+.lang-icon-xml-lg { background-position: var(--c5-pos-lg) var(--r1); }
 
-.lang-icon-swift-sm { background-position: var(--c6-pos-sm) var(--r1); }
-.lang-icon-swift-md { background-position: var(--c6-pos-md) var(--r1); }
-.lang-icon-swift-lg { background-position: var(--c6-pos-lg) var(--r1); }
+/* TypeScript - Row 1, Column 6 */
+.lang-icon-typescript-sm { background-position: var(--c6-pos-sm) var(--r1); }
+.lang-icon-typescript-md { background-position: var(--c6-pos-md) var(--r1); }
+.lang-icon-typescript-lg { background-position: var(--c6-pos-lg) var(--r1); }
 
-.lang-icon-assemblyscript-sm { background-position: var(--c7-pos-sm) var(--r1); }
-.lang-icon-assemblyscript-md { background-position: var(--c7-pos-md) var(--r1); }
-.lang-icon-assemblyscript-lg { background-position: var(--c7-pos-lg) var(--r1); }
+/* Swift - Row 1, Column 7 */
+.lang-icon-swift-sm { background-position: var(--c7-pos-sm) var(--r1); }
+.lang-icon-swift-md { background-position: var(--c7-pos-md) var(--r1); }
+.lang-icon-swift-lg { background-position: var(--c7-pos-lg) var(--r1); }
 
-/* Row 2  */
-.lang-icon-python-sm { background-position: var(--c1-pos) var(--r2-sm); }
-.lang-icon-python-md { background-position: var(--c1-pos) var(--r2-md); }
-.lang-icon-python-lg { background-position: var(--c1-pos) var(--r2-lg); }
 
-.lang-icon-c-sm { background-position: var(--c2-pos-sm) var(--r2-sm); }
-.lang-icon-c-md { background-position: var(--c2-pos-md) var(--r2-md); }
-.lang-icon-c-lg { background-position: var(--c2-pos-lg) var(--r2-lg); }
+/* * Row 2: C, C+, C++, C#, scala, MySQL, MS SQL */
+/* C - Row 2, Column 1 */
+.lang-icon-c-sm { background-position: var(--c1-pos) var(--r2-sm); }
+.lang-icon-c-md { background-position: var(--c1-pos) var(--r2-md); }
+.lang-icon-c-lg { background-position: var(--c1-pos) var(--r2-lg); }
 
-.lang-icon-cplus-sm { background-position: var(--c3-pos-sm) var(--r2-sm); }
-.lang-icon-cplus-md { background-position: var(--c3-pos-md) var(--r2-md); }
-.lang-icon-cplus-lg { background-position: var(--c3-pos-lg) var(--r2-lg); }
+/* C+ - Row 2, Column 2 */
+.lang-icon-cplus-sm { background-position: var(--c2-pos-sm) var(--r2-sm); }
+.lang-icon-cplus-md { background-position: var(--c2-pos-md) var(--r2-md); }
+.lang-icon-cplus-lg { background-position: var(--c2-pos-lg) var(--r2-lg); }
 
-.lang-icon-cpp-sm { background-position: var(--c4-pos-sm) var(--r2-sm); }
-.lang-icon-cpp-md { background-position: var(--c4-pos-md) var(--r2-md); }
-.lang-icon-cpp-lg { background-position: var(--c4-pos-lg) var(--r2-lg); }
+/* C++ - Row 2, Column 3 */
+.lang-icon-cpp-sm { background-position: var(--c3-pos-sm) var(--r2-sm); }
+.lang-icon-cpp-md { background-position: var(--c3-pos-md) var(--r2-md); }
+.lang-icon-cpp-lg { background-position: var(--c3-pos-lg) var(--r2-lg); }
 
-.lang-icon-csharp-sm { background-position: var(--c5-pos-sm) var(--r2-sm); }
-.lang-icon-csharp-md { background-position: var(--c5-pos-md) var(--r2-md); }
-.lang-icon-csharp-lg { background-position: var(--c5-pos-lg) var(--r2-lg); }
+/* C# - Row 2, Column 4 */
+.lang-icon-csharp-sm { background-position: var(--c4-pos-sm) var(--r2-sm); }
+.lang-icon-csharp-md { background-position: var(--c4-pos-md) var(--r2-md); }
+.lang-icon-csharp-lg { background-position: var(--c4-pos-lg) var(--r2-lg); }
 
-.lang-icon-github-sm { background-position: var(--c6-pos-sm) var(--r2-sm); }
-.lang-icon-github-md { background-position: var(--c6-pos-md) var(--r2-md); }
-.lang-icon-github-lg { background-position: var(--c6-pos-lg) var(--r2-lg); }
+/* Scala - Row 2, Column 5 */
+.lang-icon-scala-sm { background-position: var(--c5-pos-sm) var(--r2-sm); }
+.lang-icon-scala-md { background-position: var(--c5-pos-md) var(--r2-md); }
+.lang-icon-scala-lg { background-position: var(--c5-pos-lg) var(--r2-lg); }
 
-.lang-icon-mysql-sm { background-position: var(--c7-pos-sm) var(--r2-sm); }
-.lang-icon-mysql-md { background-position: var(--c7-pos-md) var(--r2-md); }
-.lang-icon-mysql-lg { background-position: var(--c7-pos-lg) var(--r2-lg); }
+/* My SQLql - Row 2, Column 6 */
+.lang-icon-mysql-sm { background-position: var(--c6-pos-sm) var(--r2-sm); }
+.lang-icon-mysql-md { background-position: var(--c6-pos-md) var(--r2-md); }
+.lang-icon-mysql-lg { background-position: var(--c6-pos-lg) var(--r2-lg); }
+.lang-icon-mysql-lg { background-position: var(--c6-pos-lg) var(--r2-lg); }
 
-/* Row 3*/
+/* MSSQL - Row 2, Column 7 */
+.lang-icon-mssql-sm { background-position: var(--c7-pos-sm) var(--r2-sm); }
+.lang-icon-mssql-md { background-position: var(--c7-pos-md) var(--r2-md); }
+.lang-icon-mssql-lg { background-position: var(--c7-pos-lg) var(--r2-lg); }
+
+/* Row 3 - Enterprise & Server Languages */
+/* Java - Row 3, Column 1 */
 .lang-icon-java-sm { background-position: var(--c1-pos) var(--r3-sm); }
 .lang-icon-java-md { background-position: var(--c1-pos) var(--r3-md); }
 .lang-icon-java-lg { background-position: var(--c1-pos) var(--r3-lg); }
 
+/* Java Alt - Row 3, Column 2 */
 .lang-icon-java-alt-sm { background-position: var(--c2-pos-sm) var(--r3-sm); }
 .lang-icon-java-alt-md { background-position: var(--c2-pos-md) var(--r3-md); }
 .lang-icon-java-alt-lg { background-position: var(--c2-pos-lg) var(--r3-lg); }
 
+/* Java Text - Row 3, Column 3 */
 .lang-icon-java-text-sm { background-position: var(--c3-pos-sm) var(--r3-sm); }
 .lang-icon-java-text-md { background-position: var(--c3-pos-md) var(--r3-md); }
 .lang-icon-java-text-lg { background-position: var(--c3-pos-lg) var(--r3-lg); }
 
-.lang-icon-php-elephant-sm { background-position: var(--c4-pos-sm) var(--r3-sm); }
-.lang-icon-php-elephant-md { background-position: var(--c4-pos-md) var(--r3-md); }
-.lang-icon-php-elephant-lg { background-position: var(--c4-pos-lg) var(--r3-lg); }
+/* Python - Row 3, Column 4 */
+.lang-icon-python-sm { background-position: var(--c4-pos-sm) var(--r3-sm); }
+.lang-icon-python-md { background-position: var(--c4-pos-md) var(--r3-md); }
+.lang-icon-python-lg { background-position: var(--c4-pos-lg) var(--r3-lg); }
 
-.lang-icon-php-sm { background-position: var(--c5-pos-sm) var(--r3-sm); }
-.lang-icon-php-md { background-position: var(--c5-pos-md) var(--r3-md); }
-.lang-icon-php-lg { background-position: var(--c5-pos-lg) var(--r3-lg); }
+/* PHP Elephant - Row 3, Column 5 */
+.lang-icon-php-elephant-sm { background-position: var(--c5-pos-sm) var(--r3-sm); }
+.lang-icon-php-elephant-md { background-position: var(--c5-pos-md) var(--r3-md); }
+.lang-icon-php-elephant-lg { background-position: var(--c5-pos-lg) var(--r3-lg); }
 
-.lang-icon-perl-sm { background-position: var(--c6-pos-sm) var(--r3-sm); }
-.lang-icon-perl-md { background-position: var(--c6-pos-md) var(--r3-md); }
-.lang-icon-perl-lg { background-position: var(--c6-pos-lg) var(--r3-lg); }
+/* PHP - Row 3, Column 6 */
+.lang-icon-php-sm { background-position: var(--c6-pos-sm) var(--r3-sm); }
+.lang-icon-php-md { background-position: var(--c6-pos-md) var(--r3-md); }
+.lang-icon-php-lg { background-position: var(--c6-pos-lg) var(--r3-lg); }
 
-.lang-icon-mssql-sm { background-position: var(--c7-pos-sm) var(--r3-sm); }
-.lang-icon-mssql-md { background-position: var(--c7-pos-md) var(--r3-md); }
-.lang-icon-mssql-lg { background-position: var(--c7-pos-lg) var(--r3-lg); }
+/* Perl - Row 3, Column 7 */
+.lang-icon-perl-sm { background-position: var(--c7-pos-sm) var(--r3-sm); }
+.lang-icon-perl-md { background-position: var(--c7-pos-md) var(--r3-md); }
+.lang-icon-perl-lg { background-position: var(--c7-pos-lg) var(--r3-lg); }
 
-/* Row 4 */
-.lang-icon-json-sm { background-position: var(--c1-pos) var(--r4-sm); }
-.lang-icon-json-md { background-position: var(--c1-pos) var(--r4-md); }
-.lang-icon-json-lg { background-position: var(--c1-pos) var(--r4-lg); }
+/* Row 4: NODE.js, ???, Angular, VUE, jQuery, Ruby, GitHub */
+/* Tree - Row 4, Column 1 */
+.lang-icon-nodejs-sm { background-position: var(--c1-pos) var(--r4-sm); }
+.lang-icon-nodejs-md { background-position: var(--c1-pos) var(--r4-md); }
+.lang-icon-nodejs-lg { background-position: var(--c1-pos) var(--r4-lg); }
 
-.lang-icon-json-alt-sm { background-position: var(--c2-pos-sm) var(--r4-sm); }
-.lang-icon-json-alt-md { background-position: var(--c2-pos-md) var(--r4-md); }
-.lang-icon-json-alt-lg { background-position: var(--c2-pos-lg) var(--r4-lg); }
+/* React - Row 4, Column 2 */
+.lang-icon-react-sm { background-position: var(--c2-pos-sm) var(--r4-sm); }
+.lang-icon-react-md { background-position: var(--c2-pos-md) var(--r4-md); }
+.lang-icon-react-lg { background-position: var(--c2-pos-lg) var(--r4-lg); }
 
-.lang-icon-ruby-sm { background-position: var(--c3-pos-sm) var(--r4-sm); }
-.lang-icon-ruby-md { background-position: var(--c3-pos-md) var(--r4-md); }
-.lang-icon-ruby-lg { background-position: var(--c3-pos-lg) var(--r4-lg); }
+/* Angular - Row 4, Column 3 */
+.lang-icon-angular-sm { background-position: var(--c3-pos-sm) var(--r4-sm); }
+.lang-icon-angular-md { background-position: var(--c3-pos-md) var(--r4-md); }
+.lang-icon-angular-lg { background-position: var(--c3-pos-lg) var(--r4-lg); }
 
-.lang-icon-markdown-sm { background-position: var(--c4-pos-sm) var(--r4-sm); }
-.lang-icon-markdown-md { background-position: var(--c4-pos-md) var(--r4-md); }
-.lang-icon-markdown-lg { background-position: var(--c4-pos-lg) var(--r4-lg); }
+/* Vue - Row 4, Column 4 */
+.lang-icon-vue-sm { background-position: var(--c4-pos-sm) var(--r4-sm); }
+.lang-icon-vue-md { background-position: var(--c4-pos-md) var(--r4-md); }
+.lang-icon-vue-lg { background-position: var(--c4-pos-lg) var(--r4-lg); }
 
-.lang-icon-bash-sm { background-position: var(--c5-pos-sm) var(--r4-sm); }
-.lang-icon-bash-md { background-position: var(--c5-pos-md) var(--r4-md); }
-.lang-icon-bash-lg { background-position: var(--c5-pos-lg) var(--r4-lg); }
+/* jQuery - Row 4, Column 5 */
+.lang-icon-jquery-sm { background-position: var(--c5-pos-sm) var(--r4-sm); }
+.lang-icon-jquery-md { background-position: var(--c5-pos-md) var(--r4-md); }
+.lang-icon-jquery-lg { background-position: var(--c5-pos-lg) var(--r4-lg); }
 
-.lang-icon-node-sm { background-position: var(--c6-pos-sm) var(--r4-sm); }
-.lang-icon-node-md { background-position: var(--c6-pos-md) var(--r4-md); }
-.lang-icon-node-lg { background-position: var(--c6-pos-lg) var(--r4-lg); }
+/* Ruby - Row 4, Column 6 */
+.lang-icon-ruby-sm { background-position: var(--c6-pos-sm) var(--r4-sm); }
+.lang-icon-ruby-md { background-position: var(--c6-pos-md) var(--r4-md); }
+.lang-icon-ruby-lg { background-position: var(--c6-pos-lg) var(--r4-lg); }
 
-.lang-icon-apache-sm { background-position: var(--c7-pos-sm) var(--r4-sm); }
-.lang-icon-apache-md { background-position: var(--c7-pos-md) var(--r4-md); }
-.lang-icon-apache-lg { background-position: var(--c7-pos-lg) var(--r4-lg); }
+/* GitHub - Row 4, Column 7 */
+.lang-icon-github-sm { background-position: var(--c7-pos-sm) var(--r4-sm); }
+.lang-icon-github-md { background-position: var(--c7-pos-md) var(--r4-md); }
+.lang-icon-github-lg { background-position: var(--c7-pos-lg) var(--r4-lg); }
+
+/* Row 5: Tree, Bash, BATCH, npm, Markdown, Nginx, Apache */
+/* Tree - Row 5, Column 1 */
+.lang-icon-tree-sm { background-position: var(--c1-pos) var(--r5-sm); }
+.lang-icon-tree-md { background-position: var(--c1-pos) var(--r5-md); }
+.lang-icon-tree-lg { background-position: var(--c1-pos) var(--r5-lg); }
+
+/* lang-icon-Bash-md - Row 5, Column 2 */
+.lang-icon-bash-sm { background-position: var(--c2-pos-sm) var(--r5-sm); }
+.lang-icon-bash-md { background-position: var(--c2-pos-md) var(--r5-md); }
+.lang-icon-bash-lg { background-position: var(--c2-pos-lg) var(--r5-lg); }
+
+/* Batch - Row 5, Column 3 */
+.lang-icon-batch-sm { background-position: var(--c3-pos-sm) var(--r5-sm); }
+.lang-icon-batch-md { background-position: var(--c3-pos-md) var(--r5-md); }
+.lang-icon-batch-lg { background-position: var(--c3-pos-lg) var(--r5-lg); }
+
+/* npm - Row 5, Column 5 */
+.lang-icon-npm-sm { background-position: var(--c4-pos-sm) var(--r5-sm); }
+.lang-icon-npm-md { background-position: var(--c4-pos-md) var(--r5-md); }
+.lang-icon-npm-lg { background-position: var(--c4-pos-lg) var(--r5-lg); }
+
+/* Markdown - Row 5, Column 5 */
+.lang-icon-markdown-sm { background-position: var(--c5-pos-sm) var(--r5-sm); }
+.lang-icon-markdown-md { background-position: var(--c5-pos-md) var(--r5-md); }
+.lang-icon-markdown-lg { background-position: var(--c5-pos-lg) var(--r5-lg); }
+
+/* Nginx - Row 5, Column 6 */
+.lang-icon-nginx-sm { background-position: var(--c6-pos-sm) var(--r5-sm); }
+.lang-icon-nginx-md { background-position: var(--c6-pos-md) var(--r5-md); }
+.lang-icon-nginx-lg { background-position: var(--c6-pos-lg) var(--r5-lg); }
+
+/* Apache - Row 5, Column 7 */
+.lang-icon-apache-sm { background-position: var(--c7-pos-sm) var(--r5-sm); }
+.lang-icon-apache-md { background-position: var(--c7-pos-md) var(--r5-md); }
+.lang-icon-apache-lg { background-position: var(--c7-pos-lg) var(--r5-lg); }
 
 
 /*

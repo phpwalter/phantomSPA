@@ -87,6 +87,8 @@ export async function setup(spa, options = {}) {
                     highlightCode(main, prismConfig);
                     // Add custom headers to code blocks
                     addCustomHeaders(main);
+                    // Add file type icons to tree code blocks (fallback for treeview plugin)
+                    addTreeFileIcons(main);
                 }
             });
         }
@@ -99,6 +101,7 @@ export async function setup(spa, options = {}) {
             if (main) {
                 highlightCode(main, prismConfig);
                 addCustomHeaders(main);
+                addTreeFileIcons(main);
             }
         });
 
@@ -159,8 +162,11 @@ async function loadPluginCSS() {
     // Load main plugin CSS
     await loadStylesheet('/src/plugins/prism/prism-syntax-highlighter.css', 'prism-plugin-css');
 
-    // Load programming language icons sprite CSS
-    await loadStylesheet('/src/assets/images/prog.lang-icons/prog.lang-icons.css', 'prism-lang-icons-css');
+    // Load programming language icons sprite CSS for code block headers (with cache-busting parameter)
+    await loadStylesheet('/src/assets/images/prog.lang-icons/prog.lang-icons.css?v=' + Date.now(), 'prism-prog-lang-icons-css');
+
+    // Load file type icons sprite CSS for tree code blocks (with cache-busting parameter)
+    await loadStylesheet('/src/assets/images/file.type-icons/file.type-icons.css?v=' + Date.now(), 'prism-file-type-icons-css');
 }
 
 /**
@@ -660,4 +666,161 @@ function downloadCode(text, filename, extension) {
     // Cleanup
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+}
+
+/**
+ * Add file type icons to tree code blocks (fallback for treeview plugin)
+ * This function manually injects file type icons into tree structures
+ * @param {HTMLElement} container - Container element
+ */
+function addTreeFileIcons(container) {
+    // Find all tree code blocks (treeview or tree language)
+    const treeBlocks = container.querySelectorAll('pre[class*="language-treeview"], pre.language-tree, pre[class*="language-tree"]');
+
+    console.log(`[tree-icons] Searching for tree blocks in container:`, container);
+    console.log(`[tree-icons] Found ${treeBlocks.length} tree blocks`);
+
+    // Debug: log all pre elements to see what classes they have
+    const allPres = container.querySelectorAll('pre');
+    console.log(`[tree-icons] All pre elements (${allPres.length}):`, Array.from(allPres).map(pre => pre.className));
+
+    treeBlocks.forEach((pre, blockIndex) => {
+        const code = pre.querySelector('code');
+        if (!code) return;
+
+        // Skip if already processed
+        if (code.dataset.treeIconsProcessed) return;
+        code.dataset.treeIconsProcessed = 'true';
+
+        console.log(`[tree-icons] Processing tree block ${blockIndex}...`);
+
+        // Get the HTML content and process it line by line
+        const htmlContent = code.innerHTML;
+        const lines = htmlContent.split('\n');
+
+        // Process each line to add icons
+        const processedLines = lines.map((line, index) => {
+            // Skip empty lines
+            if (!line.trim()) return line;
+
+            // Extract filename from the line (after tree structure characters)
+            // Look for patterns like: ├─ filename.ext or └─ filename.ext
+            const filenameMatch = line.match(/([├└│\s─]*)(.*?)(<\/[^>]*>)*$/);
+            if (!filenameMatch) return line;
+
+            const treeChars = filenameMatch[1] || '';
+            const restOfLine = filenameMatch[2] || '';
+            const closingTags = filenameMatch[3] || '';
+
+            // Extract just the filename (remove any HTML tags)
+            const cleanText = restOfLine.replace(/<[^>]*>/g, '').trim();
+            if (!cleanText) return line;
+
+            console.log(`[tree-icons] Line ${index}: "${cleanText}"`);
+
+            // Determine file type and icon class
+            const iconClass = getFileIconClass(cleanText);
+
+            // Create icon HTML
+            const iconHtml = `<span class="tree-file-icon ${iconClass}" aria-hidden="true"></span>`;
+
+            // Insert icon after tree characters but before filename
+            const newLine = treeChars + iconHtml + restOfLine + closingTags;
+
+            console.log(`[tree-icons] Added ${iconClass} icon for "${cleanText}"`);
+            return newLine;
+        });
+
+        // Update the code block with processed content
+        code.innerHTML = processedLines.join('\n');
+
+        console.log(`[tree-icons] Completed processing tree block ${blockIndex}`);
+    });
+}
+
+/**
+ * Get file icon class based on filename
+ * @param {string} filename - The filename to analyze
+ * @returns {string} - CSS class for the appropriate icon
+ */
+function getFileIconClass(filename) {
+    // Remove trailing slash for directories
+    const cleanName = filename.replace(/\/$/, '');
+
+    // Check if it's a directory (ends with / or has no extension and common directory names)
+    if (filename.endsWith('/') ||
+        (!cleanName.includes('.') && ['pages', 'docs', 'public', 'src', 'assets', 'components', 'project'].includes(cleanName.toLowerCase()))) {
+        return 'lang-icon-folder-sm';
+    }
+
+    // Get file extension
+    const extension = cleanName.split('.').pop()?.toLowerCase();
+
+    // Map extensions to icon classes from the new file.type-icons sprite
+    const iconMap = {
+        // Web technologies
+        'html': 'lang-icon-html-sm',
+        'htm': 'lang-icon-html-sm',
+        'css': 'lang-icon-css-sm',
+        'scss': 'lang-icon-css-sm',
+        'sass': 'lang-icon-css-sm',
+        'less': 'lang-icon-css-sm',
+        'js': 'lang-icon-js-sm',
+        'jsx': 'lang-icon-js-sm',
+        'ts': 'lang-icon-js-sm',  // Use JS icon for TypeScript (no specific TS icon in sprite)
+        'tsx': 'lang-icon-js-sm',
+
+        // Data formats
+        'json': 'lang-icon-json-sm',
+        'yml': 'lang-icon-json-sm',
+        'yaml': 'lang-icon-json-sm',
+        'csv': 'lang-icon-csv-sm',
+
+        // Documents
+        'md': 'lang-icon-txt-sm',  // Use text icon for markdown
+        'markdown': 'lang-icon-txt-sm',
+        'txt': 'lang-icon-txt-sm',
+        'pdf': 'lang-icon-pdf-sm',
+        'doc': 'lang-icon-doc-sm',
+        'docx': 'lang-icon-doc-sm',
+        'xls': 'lang-icon-xls-sm',
+        'xlsx': 'lang-icon-xls-sm',
+        'ppt': 'lang-icon-ppt-sm',
+        'pptx': 'lang-icon-ppt-sm',
+
+        // Images
+        'png': 'lang-icon-png-sm',
+        'jpg': 'lang-icon-png-sm',  // Use PNG icon for other images
+        'jpeg': 'lang-icon-png-sm',
+        'gif': 'lang-icon-gif-sm',
+        'svg': 'lang-icon-svg-sm',
+        'eps': 'lang-icon-eps-sm',
+
+        // Programming languages
+        'php': 'lang-icon-php-sm',
+        'py': 'lang-icon-pyn-sm',
+        'python': 'lang-icon-pyn-sm',
+        'pl': 'lang-icon-perl-sm',
+        'perl': 'lang-icon-perl-sm',
+
+        // Archives
+        'zip': 'lang-icon-zip-sm',
+        'rar': 'lang-icon-rar-sm',
+        'tar': 'lang-icon-zip-sm',
+        'gz': 'lang-icon-zip-sm',
+
+        // Media
+        'mp3': 'lang-icon-mp3-sm',
+        'wav': 'lang-icon-wav-sm',
+        'mov': 'lang-icon-mov-sm',
+        'avi': 'lang-icon-avi-sm',
+        'mp4': 'lang-icon-avi-sm',
+
+        // Executables
+        'exe': 'lang-icon-exe-sm',
+        'dll': 'lang-icon-dll-sm',
+        'mod': 'lang-icon-mod-sm'
+    };
+
+    return iconMap[extension] || 'lang-icon-generic-sm';
 }

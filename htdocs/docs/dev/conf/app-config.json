@@ -73,8 +73,8 @@
           },
           {
             "name": "treeview",
-            "jsPath": "/plugins/prism-treeview/prism-treeview.min.js",
-            "cssPath": "/plugins/prism-treeview/prism-treeview.min.css",
+            "jsPath": "/plugins/treeview/prism-treeview.min.js",
+            "cssPath": "/plugins/treeview/prism-treeview.min.css",
             "dependencies": []
           }
         ]
