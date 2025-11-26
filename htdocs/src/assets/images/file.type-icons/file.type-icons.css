@@ -5,9 +5,9 @@
  * Grid Layout: 7 columns × 4 rows (28 total icons)
  *
  * Usage:
- * <span class="file-icon-sm file-icon-pdf"></span>
- * <span class="file-icon-md file-icon-doc"></span>
- * <span class="file-icon-lg file-icon-xls"></span>
+ * <span class="file-icon file-icon-sm file-icon-pdf"></span>
+ * <span class="file-icon file-icon-md file-icon-doc"></span>
+ * <span class="file-icon file-icon-lg file-icon-xls"></span>
  *
  * Grid-Based Positioning System:
  * Each icon defines --icon-row and --icon-col custom properties.

@@ -496,12 +496,66 @@ $ npm run serve
         </code></pre>
     </div>
 
-    <!-- Treeview Plugin -->
+    <!-- Treeview Plugin - Mode 1: No Icons (Default) -->
     <div class="code-example">
-        <div class="example-label">Treeview Plugin</div>
-        <div class="test-subtitle">Displays file structure with file type icons</div>
-        <div class="directive-example">&lt;!-- prism: line-numbers treeview --&gt;</div>
-        <!-- prism: line-numbers treeview -->
+        <div class="example-label">Treeview Plugin - Mode 1: No Icons (Default)</div>
+        <div class="test-subtitle">Displays file structure without icons (text-only)</div>
+        <div class="directive-example">&lt;!-- prism: treeview --&gt;</div>
+        <!-- prism: treeview -->
+        <pre><code class="language-treeview">
+project/
+├── src/
+│   ├── index.js
+│   ├── styles.css
+│   └── utils.js
+├── docs/
+│   └── README.md
+└── package.json
+        </code></pre>
+    </div>
+
+    <!-- Treeview Plugin - Mode 2: Native Icons (-N flag) -->
+    <div class="code-example">
+        <div class="example-label">Treeview Plugin - Mode 2: Native Icons (-N flag)</div>
+        <div class="test-subtitle">Uses Prism.js native PrismTreeview icon font (12 icons)</div>
+        <div class="directive-example">&lt;!-- prism: treeview -N --&gt;</div>
+        <!-- prism: treeview -N -->
+        <pre><code class="language-treeview">
+project/
+├── src/
+│   ├── index.js
+│   ├── styles.css
+│   └── utils.js
+├── docs/
+│   └── README.md
+└── package.json
+        </code></pre>
+    </div>
+
+    <!-- Treeview Plugin - Mode 3: Custom Icons (-C flag) -->
+    <div class="code-example">
+        <div class="example-label">Treeview Plugin - Mode 3: Custom Icons (-C flag)</div>
+        <div class="test-subtitle">Uses PhantomSPA custom sprite-based icons (28+ icons)</div>
+        <div class="directive-example">&lt;!-- prism: treeview -C --&gt;</div>
+        <!-- prism: treeview -C -->
+        <pre><code class="language-treeview">
+project/
+├── src/
+│   ├── index.js
+│   ├── styles.css
+│   └── utils.js
+├── docs/
+│   └── README.md
+└── package.json
+        </code></pre>
+    </div>
+
+    <!-- Treeview Plugin - Mode 3 with Line Numbers -->
+    <div class="code-example">
+        <div class="example-label">Treeview Plugin - Mode 3 with Line Numbers</div>
+        <div class="test-subtitle">Custom icons combined with line numbers</div>
+        <div class="directive-example">&lt;!-- prism: line-numbers treeview -C --&gt;</div>
+        <!-- prism: line-numbers treeview -C -->
         <pre><code class="language-treeview">
 phantomSPA/
 ├── .github/
@@ -634,8 +688,18 @@ phantomSPA/
                 </tr>
                 <tr style="border-bottom: 1px solid var(--line);">
                     <td style="padding: 0.5rem;"><code>treeview</code></td>
-                    <td style="padding: 0.5rem;">Display file structure</td>
+                    <td style="padding: 0.5rem;">Display file structure (no icons)</td>
                     <td style="padding: 0.5rem;"><code>treeview</code></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                    <td style="padding: 0.5rem;"><code>treeview -N</code></td>
+                    <td style="padding: 0.5rem;">Treeview with native Prism icons</td>
+                    <td style="padding: 0.5rem;"><code>treeview -N</code></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                    <td style="padding: 0.5rem;"><code>treeview -C</code></td>
+                    <td style="padding: 0.5rem;">Treeview with custom PhantomSPA icons</td>
+                    <td style="padding: 0.5rem;"><code>treeview -C</code></td>
                 </tr>
                 <tr style="border-bottom: 1px solid var(--line);">
                     <td style="padding: 0.5rem;"><code>copy-to-clipboard</code></td>
@@ -713,8 +777,18 @@ app.init();
     </div>
 
     <div class="code-example">
-        <div class="example-label">File Structure with Treeview (Markdown)</div>
-        <div class="directive-example">&lt;!-- prism: line-numbers treeview --&gt;<br>```treeview<br>src/<br>├── index.js<br>├── styles.css<br>└── components/<br>&nbsp;&nbsp;&nbsp;&nbsp;└── App.js<br>```</div>
+        <div class="example-label">File Structure with Treeview - No Icons (Markdown)</div>
+        <div class="directive-example">&lt;!-- prism: treeview --&gt;<br>```treeview<br>src/<br>├── index.js<br>├── styles.css<br>└── components/<br>&nbsp;&nbsp;&nbsp;&nbsp;└── App.js<br>```</div>
+    </div>
+
+    <div class="code-example">
+        <div class="example-label">File Structure with Treeview - Native Icons (Markdown)</div>
+        <div class="directive-example">&lt;!-- prism: treeview -N --&gt;<br>```treeview<br>src/<br>├── index.js<br>├── styles.css<br>└── components/<br>&nbsp;&nbsp;&nbsp;&nbsp;└── App.js<br>```</div>
+    </div>
+
+    <div class="code-example">
+        <div class="example-label">File Structure with Treeview - Custom Icons (Markdown)</div>
+        <div class="directive-example">&lt;!-- prism: line-numbers treeview -C --&gt;<br>```treeview<br>src/<br>├── index.js<br>├── styles.css<br>└── components/<br>&nbsp;&nbsp;&nbsp;&nbsp;└── App.js<br>```</div>
     </div>
 </div>
 

@@ -681,9 +681,28 @@ pre.language-tree .line-numbers-rows {
     display: block !important;
 }
 
-/* Override treeview font icons with PhantomSPA file type icon sprites */
-/* Only target treeview-specific elements to avoid affecting other code blocks */
-.token.treeview-part .entry-name:before {
+/* ============================================
+   TREEVIEW ICON MODES
+   ============================================ */
+
+/* Mode 1: No icons (default) - Hide all icon rendering */
+pre[data-treeview-icons="none"] .token.treeview-part .entry-name:before {
+    content: none !important;
+    display: none !important;
+}
+
+/* Mode 2: Native Prism icons - Use the PrismTreeview font */
+pre[data-treeview-icons="native"] .token.treeview-part .entry-name:before {
+    /* Keep the native Prism font rendering */
+    font-family: "PrismTreeview" !important;
+    display: inline-block;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Mode 3: Custom PhantomSPA icons - Use sprite-based icons */
+pre[data-treeview-icons="custom"] .token.treeview-part .entry-name:before {
     /* Reset treeview font styles */
     font-family: inherit !important;
     content: "" !important;
@@ -700,8 +719,8 @@ pre.language-tree .line-numbers-rows {
     flex-shrink: 0;
 }
 
-/* Directory/folder icon - Row 1, Col 0 */
-.token.treeview-part .entry-name.dir:before {
+/* Directory/folder icon - Row 1, Col 0 (only for custom icons mode) */
+pre[data-treeview-icons="custom"] .token.treeview-part .entry-name.dir:before {
     --icon-row: 0;
     --icon-col: 0;
     background-position:
@@ -709,10 +728,10 @@ pre.language-tree .line-numbers-rows {
         calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
-/* File extension mappings to PhantomSPA file type icons */
+/* File extension mappings to PhantomSPA file type icons (only for custom icons mode) */
 /* Row 4: HTML, CSS, JS, PHP, Python, JSON, Perl */
 
-.token.treeview-part .entry-name.ext-html:before {
+pre[data-treeview-icons="custom"] .token.treeview-part .entry-name.ext-html:before {
     --icon-row: 3;
     --icon-col: 0;
     background-position:
@@ -720,7 +739,7 @@ pre.language-tree .line-numbers-rows {
         calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
-.token.treeview-part .entry-name.ext-css:before {
+pre[data-treeview-icons="custom"] .token.treeview-part .entry-name.ext-css:before {
     --icon-row: 3;
     --icon-col: 1;
     background-position:
@@ -728,8 +747,8 @@ pre.language-tree .line-numbers-rows {
         calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
-.token.treeview-part .entry-name.ext-js:before,
-.token.treeview-part .entry-name.ext-mjs:before {
+pre[data-treeview-icons="custom"] .token.treeview-part .entry-name.ext-js:before,
+pre[data-treeview-icons="custom"] .token.treeview-part .entry-name.ext-mjs:before {
     --icon-row: 3;
     --icon-col: 2;
     background-position:
@@ -737,7 +756,7 @@ pre.language-tree .line-numbers-rows {
         calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
-.token.treeview-part .entry-name.ext-json:before {
+pre[data-treeview-icons="custom"] .token.treeview-part .entry-name.ext-json:before {
     --icon-row: 3;
     --icon-col: 5;
     background-position:
@@ -746,7 +765,7 @@ pre.language-tree .line-numbers-rows {
 }
 
 /* Row 1: Folder, Generic, Text, PNG, GIF, EPS, SVG */
-.token.treeview-part .token.entry-name.ext-png:before {
+pre[data-treeview-icons="custom"] .token.treeview-part .token.entry-name.ext-png:before {
     --icon-row: 0;
     --icon-col: 3;
     background-position:
@@ -754,7 +773,7 @@ pre.language-tree .line-numbers-rows {
         calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
-.token.treeview-part .entry-name.ext-svg:before {
+pre[data-treeview-icons="custom"] .token.treeview-part .entry-name.ext-svg:before {
     --icon-row: 0;
     --icon-col: 6;
     background-position:
@@ -763,7 +782,7 @@ pre.language-tree .line-numbers-rows {
 }
 
 /* Row 3: DLL, CSV, PDF, DOC, XLS, PPT, MOD */
-.token.treeview-part .entry-name.ext-pdf:before {
+pre[data-treeview-icons="custom"] .token.treeview-part .entry-name.ext-pdf:before {
     --icon-row: 2;
     --icon-col: 2;
     background-position:
@@ -771,8 +790,8 @@ pre.language-tree .line-numbers-rows {
         calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
-/* Generic file icon for unknown extensions - Row 1, Col 1 */
-.token.treeview-part .entry-name:not(.dir):not([class*="ext-"]):before {
+/* Generic file icon for unknown extensions - Row 1, Col 1 (only for custom icons mode) */
+pre[data-treeview-icons="custom"] .token.treeview-part .entry-name:not(.dir):not([class*="ext-"]):before {
     --icon-row: 0;
     --icon-col: 1;
     background-position:
@@ -780,8 +799,8 @@ pre.language-tree .line-numbers-rows {
         calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
-/* Dotfiles (files starting with .) - slightly faded */
-.token.treeview-part .entry-name.dotfile:before {
+/* Dotfiles (files starting with .) - slightly faded (only for custom icons mode) */
+pre[data-treeview-icons="custom"] .token.treeview-part .entry-name.dotfile:before {
     opacity: 0.6;
 }
 

@@ -430,7 +430,10 @@ function parseDirectiveOptions(directiveText) {
         downloadButton: false,
         showLanguage: false,
         toolbar: false,
-        commandLine: false
+        commandLine: false,
+        treeview: false,
+        treeviewNative: false,
+        treeviewCustom: false
     };
 
     // Split by whitespace
@@ -477,6 +480,17 @@ function parseDirectiveOptions(directiveText) {
                 case 'command-line':
                     options.commandLine = true;
                     break;
+                case 'treeview':
+                    options.treeview = true;
+                    break;
+                case '-n':
+                    // Native Prism icons flag (only meaningful with treeview)
+                    options.treeviewNative = true;
+                    break;
+                case '-c':
+                    // Custom PhantomSPA icons flag (only meaningful with treeview)
+                    options.treeviewCustom = true;
+                    break;
                 default:
                     console.warn('[prism-config] Unknown directive option:', part);
             }
@@ -517,6 +531,21 @@ function applyDirectiveOptions(pre, options) {
         pre.classList.add('command-line');
         // Remove line-numbers if command-line is enabled (they're mutually exclusive)
         pre.classList.remove('line-numbers');
+    }
+
+    // Handle treeview icon modes
+    if (options.treeview) {
+        // Determine which icon mode to use
+        if (options.treeviewNative) {
+            // Native Prism icons mode (-N flag)
+            pre.setAttribute('data-treeview-icons', 'native');
+        } else if (options.treeviewCustom) {
+            // Custom PhantomSPA icons mode (-C flag)
+            pre.setAttribute('data-treeview-icons', 'custom');
+        } else {
+            // No icons mode (default)
+            pre.setAttribute('data-treeview-icons', 'none');
+        }
     }
 
     // Mark that this block has per-block configuration
