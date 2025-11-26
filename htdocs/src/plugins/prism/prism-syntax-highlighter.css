@@ -435,8 +435,7 @@ body.prism-no-command-line pre[class*="language-"]:not([data-prism-configured]) 
    HIDE DEFAULT PRISM TOOLBAR
    ============================================ */
 
-/* Completely hide the default Prism toolbar and all its elements */
-div.code-toolbar,
+/* Hide only the toolbar elements, NOT the code-toolbar wrapper or pre/code elements */
 div.code-toolbar > .toolbar,
 div.code-toolbar > .toolbar > .toolbar-item,
 div.code-toolbar > .toolbar > .toolbar-item > button,
@@ -447,17 +446,23 @@ div.code-toolbar > .toolbar > .toolbar-item > span {
     pointer-events: none !important;
 }
 
-/* Prevent toolbar wrapper from affecting layout */
+/* Keep code-toolbar wrapper visible and properly positioned */
 div.code-toolbar {
-    position: static !important;
+    position: relative !important;
     padding: 0 !important;
     margin: 0 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
-/* Ensure pre element is not wrapped by code-toolbar */
+/* Ensure pre element displays normally within code-toolbar */
 div.code-toolbar > pre {
     position: static !important;
     margin: 0.5em 0 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 /* ============================================
@@ -659,81 +664,124 @@ div.code-toolbar > pre {
    PRISM TREEVIEW INTEGRATION WITH PHANTOMSPA ICONS
    ============================================ */
 
-/* Disable line numbers specifically for treeview language blocks */
+/* Allow line numbers to display with treeview blocks */
 pre[class*="language-treeview"].line-numbers,
 pre.language-tree.line-numbers {
-    padding-left: 1rem !important;
+    padding-left: 5px 5px 5px 14px !important;
 }
 
 pre[class*="language-treeview"].line-numbers > code,
 pre.language-tree.line-numbers > code {
-    padding-left: 0 !important;
+    padding-left: 50px !important;
 }
 
+/* Line numbers rows should be visible for treeview blocks */
 pre[class*="language-treeview"] .line-numbers-rows,
 pre.language-tree .line-numbers-rows {
-    display: none !important;
+    display: block !important;
 }
 
-/* Override treeview font icons with PhantomSPA language icon sprites */
+/* Override treeview font icons with PhantomSPA file type icon sprites */
 /* Only target treeview-specific elements to avoid affecting other code blocks */
 .token.treeview-part .entry-name:before {
     /* Reset treeview font styles */
     font-family: inherit !important;
     content: "" !important;
 
-    /* Apply PhantomSPA icon sprite styles */
+    /* Apply PhantomSPA file type icon sprite styles */
     display: inline-block;
-    width: var(--lang-icon-size-sm);
-    height: var(--lang-icon-size-sm);
-    background-image: var(--lang-icon-png);
+    width: var(--file-icon-size-sm);
+    height: var(--file-icon-size-sm);
+    background-image: var(--file-icon-png);
     background-repeat: no-repeat;
-    background-size: calc(var(--lang-sprite-cols) * var(--lang-icon-size-sm)) calc(var(--lang-sprite-rows) * var(--lang-icon-size-sm));
+    background-size: calc(var(--file-sprite-cols) * var(--file-icon-size-sm)) calc(var(--file-sprite-rows) * var(--file-icon-size-sm));
     vertical-align: middle;
     margin-right: 0.5rem;
     flex-shrink: 0;
 }
 
-/* Directory/folder icon - use a folder-like icon */
+/* Directory/folder icon - Row 1, Col 0 */
 .token.treeview-part .entry-name.dir:before {
-    background-position: var(--c1-pos) var(--r1); /* TypeScript icon as folder placeholder */
-    opacity: 0.7;
-    filter: hue-rotate(45deg); /* Make it look more folder-like */
+    --icon-row: 0;
+    --icon-col: 0;
+    background-position:
+        calc((var(--icon-col, 0) * -1) * var(--file-icon-size-sm))
+        calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
-/* File extension mappings to PhantomSPA language icons */
+/* File extension mappings to PhantomSPA file type icons */
+/* Row 4: HTML, CSS, JS, PHP, Python, JSON, Perl */
+
 .token.treeview-part .entry-name.ext-html:before {
-    background-position: var(--c5-pos-sm) var(--r1); /* HTML5 icon */
-}
-
-.token.treeview-part .entry-name.ext-js:before {
-    background-position: var(--c2-pos-sm) var(--r1); /* JavaScript icon */
-}
-
-.token.treeview-part .entry-name.ext-ts:before {
-    background-position: var(--c1-pos) var(--r1); /* TypeScript icon */
+    --icon-row: 3;
+    --icon-col: 0;
+    background-position:
+        calc((var(--icon-col, 0) * -1) * var(--file-icon-size-sm))
+        calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
 .token.treeview-part .entry-name.ext-css:before {
-    background-position: var(--c4-pos-sm) var(--r1); /* CSS3 icon */
+    --icon-row: 3;
+    --icon-col: 1;
+    background-position:
+        calc((var(--icon-col, 0) * -1) * var(--file-icon-size-sm))
+        calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
-.token.treeview-part .entry-name.ext-md:before {
-    background-position: var(--c4-pos-sm) var(--r4-sm); /* Markdown icon */
+.token.treeview-part .entry-name.ext-js:before,
+.token.treeview-part .entry-name.ext-mjs:before {
+    --icon-row: 3;
+    --icon-col: 2;
+    background-position:
+        calc((var(--icon-col, 0) * -1) * var(--file-icon-size-sm))
+        calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
 .token.treeview-part .entry-name.ext-json:before {
-    background-position: var(--c1-pos) var(--r4-sm); /* JSON icon */
+    --icon-row: 3;
+    --icon-col: 5;
+    background-position:
+        calc((var(--icon-col, 0) * -1) * var(--file-icon-size-sm))
+        calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
-/* Dotfiles (files starting with .) */
-.token.treeview-part .entry-name.dotfile:before {
-    opacity: 0.5;
+/* Row 1: Folder, Generic, Text, PNG, GIF, EPS, SVG */
+.token.treeview-part .token.entry-name.ext-png:before {
+    --icon-row: 0;
+    --icon-col: 3;
+    background-position:
+        calc((var(--icon-col, 0) * -1) * var(--file-icon-size-sm))
+        calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
 }
 
-/* Default file icon for unknown extensions */
+.token.treeview-part .entry-name.ext-svg:before {
+    --icon-row: 0;
+    --icon-col: 6;
+    background-position:
+        calc((var(--icon-col, 0) * -1) * var(--file-icon-size-sm))
+        calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
+}
+
+/* Row 3: DLL, CSV, PDF, DOC, XLS, PPT, MOD */
+.token.treeview-part .entry-name.ext-pdf:before {
+    --icon-row: 2;
+    --icon-col: 2;
+    background-position:
+        calc((var(--icon-col, 0) * -1) * var(--file-icon-size-sm))
+        calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
+}
+
+/* Generic file icon for unknown extensions - Row 1, Col 1 */
 .token.treeview-part .entry-name:not(.dir):not([class*="ext-"]):before {
-    background-position: var(--c1-pos) var(--r4-sm); /* JSON icon as default */
+    --icon-row: 0;
+    --icon-col: 1;
+    background-position:
+        calc((var(--icon-col, 0) * -1) * var(--file-icon-size-sm))
+        calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
+}
+
+/* Dotfiles (files starting with .) - slightly faded */
+.token.treeview-part .entry-name.dotfile:before {
     opacity: 0.6;
 }
 

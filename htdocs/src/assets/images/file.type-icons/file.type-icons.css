@@ -1,0 +1,144 @@
+/*
+ * File Type Icons CSS Sprite
+ *
+ * Sprite Image: file.type-icons.png
+ * Grid Layout: 7 columns × 4 rows (28 total icons)
+ *
+ * Usage:
+ * <span class="file-icon-sm file-icon-pdf"></span>
+ * <span class="file-icon-md file-icon-doc"></span>
+ * <span class="file-icon-lg file-icon-xls"></span>
+ *
+ * Grid-Based Positioning System:
+ * Each icon defines --icon-row and --icon-col custom properties.
+ * Size variants (.file-icon-sm/md/lg) calculate background-position dynamically.
+ */
+
+@layer tokens, utilities;
+
+@layer tokens {
+    :root {
+        --file-icon-png:  url('/src/assets/images/file.type-icons/file.type-icons.png');
+
+        --file-icon-size-sm:  16px;         /* width & height of each icon */
+        --file-icon-size-md:  32px;         /* width & height of each icon */
+        --file-icon-size-lg:  64px;         /* width & height of each icon */
+
+        --file-icon-gap:    0;             /* space between icons */
+        --file-sprite-cols: 7;             /* total columns in the sprite */
+        --file-sprite-rows: 4;             /* total rows in the sprite */
+    }
+}
+
+@layer utilities {
+
+    /* Base class for all file type icons */
+    .file-icon {
+        display: inline-block;
+        background-image: var(--file-icon-png);
+        background-repeat: no-repeat;
+        vertical-align: middle;
+        transition: opacity var(--transition-fast);
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+
+        /* Default to medium size */
+        width: var(--file-icon-size-md);
+        height: var(--file-icon-size-md);
+        background-size:
+            calc(var(--file-sprite-cols) * var(--file-icon-size-md))
+            calc(var(--file-sprite-rows) * var(--file-icon-size-md));
+        background-position:
+            calc((var(--icon-col, 0) * -1) * var(--file-icon-size-md))
+            calc((var(--icon-row, 0) * -1) * var(--file-icon-size-md));
+    }
+
+    /* Size variants - override base class with dynamic positioning */
+    .file-icon-sm {
+        width: var(--file-icon-size-sm);
+        height: var(--file-icon-size-sm);
+        background-size:
+            calc(var(--file-sprite-cols) * var(--file-icon-size-sm))
+            calc(var(--file-sprite-rows) * var(--file-icon-size-sm));
+        background-position:
+            calc((var(--icon-col, 0) * -1) * var(--file-icon-size-sm))
+            calc((var(--icon-row, 0) * -1) * var(--file-icon-size-sm));
+    }
+
+    .file-icon-md {
+        width: var(--file-icon-size-md);
+        height: var(--file-icon-size-md);
+        background-size:
+            calc(var(--file-sprite-cols) * var(--file-icon-size-md))
+            calc(var(--file-sprite-rows) * var(--file-icon-size-md));
+        background-position:
+            calc((var(--icon-col, 0) * -1) * var(--file-icon-size-md))
+            calc((var(--icon-row, 0) * -1) * var(--file-icon-size-md));
+    }
+
+    .file-icon-lg {
+        width: var(--file-icon-size-lg);
+        height: var(--file-icon-size-lg);
+        background-size:
+            calc(var(--file-sprite-cols) * var(--file-icon-size-lg))
+            calc(var(--file-sprite-rows) * var(--file-icon-size-lg));
+        background-position:
+            calc((var(--icon-col, 0) * -1) * var(--file-icon-size-lg))
+            calc((var(--icon-row, 0) * -1) * var(--file-icon-size-lg));
+    }
+
+    .file-icon:hover,
+    .file-icon:focus {
+        opacity: 0.7;
+        outline: none;
+    }
+
+}
+
+/*
+ * Individual File Type Icon Classes
+ * Grid positions calculated based on actual sprite layout
+ *
+ * SPRITE LAYOUT (7 columns × 4 rows):
+ * Row 1: Folder, Generic, Text, PNG, GIF, EPS, SVG
+ * Row 2: WAV, MOV, MP3, AVI, ZIP, RAR, EXE
+ * Row 3: DLL, CSV, PDF, DOC, XLS, PPT, MOD
+ * Row 4: HTML, CSS, JS, PHP, Python, JSON, Perl
+ */
+
+/* Row 1: Folder, Generic, Text, PNG, GIF, EPS, SVG */
+.file-icon-folder  { --icon-row: 0; --icon-col: 0; }
+.file-icon-generic { --icon-row: 0; --icon-col: 1; }
+.file-icon-txt     { --icon-row: 0; --icon-col: 2; }
+.file-icon-png     { --icon-row: 0; --icon-col: 3; }
+.file-icon-gif     { --icon-row: 0; --icon-col: 4; }
+.file-icon-eps     { --icon-row: 0; --icon-col: 5; }
+.file-icon-svg     { --icon-row: 0; --icon-col: 6; }
+
+/* Row 2: WAV, MOV, MP3, AVI, ZIP, RAR, EXE */
+.file-icon-wav { --icon-row: 1; --icon-col: 0; }
+.file-icon-mov { --icon-row: 1; --icon-col: 1; }
+.file-icon-mp3 { --icon-row: 1; --icon-col: 2; }
+.file-icon-avi { --icon-row: 1; --icon-col: 3; }
+.file-icon-zip { --icon-row: 1; --icon-col: 4; }
+.file-icon-rar { --icon-row: 1; --icon-col: 5; }
+.file-icon-exe { --icon-row: 1; --icon-col: 6; }
+
+/* Row 3: DLL, CSV, PDF, DOC, XLS, PPT, MOD */
+.file-icon-dll { --icon-row: 2; --icon-col: 0; }
+.file-icon-csv { --icon-row: 2; --icon-col: 1; }
+.file-icon-pdf { --icon-row: 2; --icon-col: 2; }
+.file-icon-doc { --icon-row: 2; --icon-col: 3; }
+.file-icon-xls { --icon-row: 2; --icon-col: 4; }
+.file-icon-ppt { --icon-row: 2; --icon-col: 5; }
+.file-icon-mod { --icon-row: 2; --icon-col: 6; }
+
+/* Row 4: HTML, CSS, JS, PHP, Python, JSON, Perl */
+.file-icon-html { --icon-row: 3; --icon-col: 0; }
+.file-icon-css  { --icon-row: 3; --icon-col: 1; }
+.file-icon-js   { --icon-row: 3; --icon-col: 2; }
+.file-icon-php  { --icon-row: 3; --icon-col: 3; }
+.file-icon-py   { --icon-row: 3; --icon-col: 4; }
+.file-icon-json { --icon-row: 3; --icon-col: 5; }
+.file-icon-perl { --icon-row: 3; --icon-col: 6; }

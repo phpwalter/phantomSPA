@@ -1,70 +1,928 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="tomorrow">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>PhantomSPA Prism Test</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link id="prism-theme-link" rel="stylesheet" href="" />
+    <meta charset="UTF-8">
+    <title>Prism.js Syntax Highlighter Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Load PhantomSPA global styles -->
+    <link rel="stylesheet" href="/docs/dev/css/styles.css">
+
+    <!-- Load Prism custom styles (critical for code block rendering) -->
+    <link rel="stylesheet" href="/src/plugins/prism/prism-syntax-highlighter.css">
+
+    <!-- Load programming language icons sprite CSS -->
+    <link rel="stylesheet" href="/src/assets/images/prog.lang-icons/prog.lang-icons.css">
+
+    <!-- Load file type icons sprite CSS -->
+    <link rel="stylesheet" href="/src/assets/images/file.type-icons/file.type-icons.css">
+
+    <!-- Prism theme and plugins will be loaded dynamically via JavaScript -->
+    <!-- See initialization script at the end of the file -->
+
     <style>
         body {
-            font-family: sans-serif;
             padding: 2rem;
-            background: #2d2d2d;
-            color: #f8f8f2;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg);
+            color: var(--fg);
         }
-        pre {
-            margin: 1em 0;
-        }
-        h2 {
-            margin-top: 2rem;
-        }
-    </style>
-    <script type="module">
-        import { setup } from '/src/plugins/prism-directives.js';
 
-        setup({}, {
-            theme: 'tomorrow',
-            languages: ['javascript', 'css', 'markup'],
-            extensions: {
-                'toolbar': { active: true },
-                'line-numbers': { active: true },
-                'copy-to-clipboard': { active: true },
-                'show-language': { active: true }
-            }
-        });
-    </script>
+        .test-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: var(--card);
+        }
+
+        .test-title {
+            color: var(--heading);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+        }
+
+        .test-subtitle {
+            color: var(--fg-muted);
+            font-size: 0.95rem;
+            margin: 0 0 1rem 0;
+        }
+
+        .code-example {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--panel);
+            border: 1px solid var(--panel-line);
+            border-radius: 8px;
+        }
+
+        .example-label {
+            font-family: var(--font-mono) monospace;
+            font-size: 0.85rem;
+            color: var(--fg-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .feature-card {
+            padding: 1rem;
+            background: var(--panel);
+            border: 1px solid var(--panel-line);
+            border-radius: 8px;
+        }
+
+        .feature-name {
+            font-weight: 600;
+            color: var(--heading);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: var(--fg-muted);
+        }
+
+        .directive-example {
+            background: var(--code-bg, #1a1a1a);
+            color: var(--code-fg, #e6e6e6);
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-family: var(--font-mono) monospace;
+            font-size: 0.85rem;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+        }
+
+        .language-label {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--accent-fg, #fff);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+    </style>
+
 </head>
 <body>
 
-<h1>🧪 Prism Plugin Test</h1>
+<h1>🧪 Prism.js Syntax Highlighter Test</h1>
+<p>Comprehensive testing of Prism.js features, plugins, and configurations in PhantomSPA.</p>
 
-<h2>✅ JavaScript</h2>
-<pre class="line-numbers"><code class="language-javascript">
-function greet(name) {
-  return `Hello, ${name}`;
+<!-- Supported Languages Section -->
+<div class="test-section">
+    <h3 class="test-title">📚 Supported Languages</h3>
+    <p class="test-subtitle">PhantomSPA supports the following programming languages for syntax highlighting:</p>
+
+    <div class="feature-grid">
+
+        <div class="feature-card">
+            <span class="lang-icon lang-icon-md lang-icon-html5"></span>
+            <span class="feature-name">HTML5</span>
+            <div class="feature-desc">HTML Documents</div>
+        </div>
+
+        <div class="feature-card">
+            <span class="lang-icon lang-icon-md lang-icon-css3"></span>
+            <span class="feature-name">CSS3</span>
+            <div class="feature-desc">Stylesheets</div>
+        </div>
+
+        <div class="feature-card">
+            <span class="lang-icon lang-icon-md lang-icon-javascript"></span>
+            <span class="feature-name">JavaScript</span>
+            <div class="feature-desc">ES6+ syntax</div>
+        </div>
+
+        <div class="feature-card">
+            <span class="lang-icon lang-icon-md lang-icon-json"></span>
+            <span class="feature-name">JSON</span>
+            <div class="feature-desc">Data format</div>
+        </div>
+
+        <div class="feature-card">
+            <span class="lang-icon lang-icon-md lang-icon-markdown"></span>
+            <span class="feature-name">Markdown</span>
+            <div class="feature-desc">Documentation</div>
+        </div>
+
+        <div class="feature-card">
+            <span class="lang-icon lang-icon-md lang-icon-bash"></span>
+            <span class="feature-name">Bash</span>
+            <div class="feature-desc">Shell scripts</div>
+        </div>
+
+        <div class="feature-card">
+            <span class="lang-icon lang-icon-md lang-icon-typescript"></span>
+            <span class="feature-name">TypeScript</span>
+            <div class="feature-desc">Typed JavaScript</div>
+        </div>
+    </div>
+</div>
+
+<!-- Code Examples Section -->
+<div class="test-section">
+    <h3 class="test-title">💻 Code Examples by Language</h3>
+    <p class="test-subtitle">Syntax highlighting examples for each supported language:</p>
+
+    <!-- JavaScript Example -->
+    <div class="code-example">
+        <div class="example-label">
+            <span class="language-label">
+                <span class="lang-icon lang-icon-sm lang-icon-javascript"></span>
+                JavaScript
+            </span>
+            Basic function with ES6 syntax
+        </div>
+        <!-- prism: line-numbers -->
+        <pre><code class="language-javascript">
+// Arrow function with destructuring
+const greet = ({ name, age }) => {
+  return `Hello, ${name}! You are ${age} years old.`;
+};
+
+// Async/await example
+async function fetchData(url) {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
-  </code></pre>
+        </code></pre>
+    </div>
 
-<h2>✅ HTML (markup)</h2>
-<pre><code class="language-markup">
-<!DOCTYPE html>
-<html>
-  <body>Hello!</body>
-</html>
-  </code></pre>
+    <!-- Python Example -->
+    <div class="code-example">
+        <div class="example-label">
+            <span class="language-label">
+                <span class="lang-icon lang-icon-sm lang-icon-python"></span>
+                Python
+            </span>
+            Class definition with decorators
+        </div>
+        <!-- prism: line-numbers -->
+        <pre><code class="language-python">
+class DataProcessor:
+    def __init__(self, name):
+        self.name = name
 
-<h2>✅ CSS</h2>
-<pre><code class="language-css">
-body {
-  background: #333;
-  color: #fff;
+    @property
+    def display_name(self):
+        return f"Processor: {self.name}"
+
+    def process(self, data):
+        """Process data and return results."""
+        return [x * 2 for x in data]
+
+processor = DataProcessor("Main")
+print(processor.display_name)
+        </code></pre>
+    </div>
+
+    <!-- HTML/Markup Example -->
+    <div class="code-example">
+        <div class="example-label">
+            <span class="language-label">
+                <span class="lang-icon lang-icon-sm lang-icon-html5"></span>
+                HTML
+            </span>
+            Semantic HTML structure
+        </div>
+        <!-- prism: line-numbers -->
+        <pre><code class="language-markup">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;PhantomSPA&lt;/title&gt;
+    &lt;link rel="stylesheet" href="/css/styles.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;main id="app-shell"&gt;&lt;/main&gt;
+    &lt;script type="module" src="/js/app.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </code></pre>
+    </div>
+
+    <!-- CSS Example -->
+    <div class="code-example">
+        <div class="example-label">
+            <span class="language-label">
+                <span class="lang-icon lang-icon-sm lang-icon-css3"></span>
+                CSS
+            </span>
+            CSS Grid layout with custom properties
+        </div>
+        <!-- prism: line-numbers -->
+        <pre><code class="language-css">
+:root {
+    --primary: #007bff;
+    --spacing: 1rem;
+    --radius: 8px;
 }
-  </code></pre>
 
-<h2>⚠️ No Language Class (Should Trigger Warning)</h2>
-<pre><code>
-This code block is missing a "language-*" class.
-  </code></pre>
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing);
+    padding: var(--spacing);
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: var(--spacing);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+        </code></pre>
+    </div>
+
+    <!-- JSON Example -->
+    <div class="code-example">
+        <div class="example-label">
+            <span class="language-label">
+                <span class="lang-icon lang-icon-sm lang-icon-json"></span>
+                JSON
+            </span>
+            Configuration file structure
+        </div>
+        <!-- prism: line-numbers -->
+        <pre><code class="language-json">
+{
+  "name": "PhantomSPA",
+  "version": "1.0.0",
+  "plugins": {
+    "prism-syntax-highlighter": {
+      "theme": "tomorrow",
+      "languages": ["javascript", "css", "markup"],
+      "plugins": [
+        { "name": "line-numbers" },
+        { "name": "line-highlight" }
+      ]
+    }
+  }
+}
+        </code></pre>
+    </div>
+
+    <!-- TypeScript Example -->
+    <div class="code-example">
+        <div class="example-label">
+            <span class="language-label">
+                <span class="lang-icon lang-icon-sm lang-icon-typescript"></span>
+                TypeScript
+            </span>
+            Interface and generic types
+        </div>
+        <!-- prism: line-numbers -->
+        <pre><code class="language-typescript">
+interface User {
+    id: number;
+    name: string;
+    email: string;
+}
+
+class UserService&lt;T extends User&gt; {
+    private users: T[] = [];
+
+    addUser(user: T): void {
+        this.users.push(user);
+    }
+
+    getUser(id: number): T | undefined {
+        return this.users.find(u =&gt; u.id === id);
+    }
+}
+        </code></pre>
+    </div>
+
+    <!-- Bash Example -->
+    <div class="code-example">
+        <div class="example-label">
+            <span class="language-label">
+                <span class="lang-icon lang-icon-sm lang-icon-bash"></span>
+                Bash
+            </span>
+            Shell script with command-line prompts
+        </div>
+        <!-- prism: line-numbers command-line -->
+        <pre><code class="language-bash">
+#!/bin/bash
+# Build and deploy script
+
+echo "Building project..."
+npm run build
+
+if [ $? -eq 0 ]; then
+    echo "Build successful!"
+    npm run deploy
+else
+    echo "Build failed!"
+    exit 1
+fi
+        </code></pre>
+    </div>
+
+    <!-- JSX Example -->
+    <div class="code-example">
+        <div class="example-label">
+            <span class="language-label">
+                <span class="lang-icon lang-icon-sm lang-icon-react"></span>
+                JSX
+            </span>
+            React component with hooks
+        </div>
+        <!-- prism: line-numbers -->
+        <pre><code class="language-jsx">
+import React, { useState, useEffect } from 'react';
+
+export function Counter() {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        document.title = `Count: ${count}`;
+    }, [count]);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+                Increment
+            &lt;/button&gt;
+        &lt;/div&gt;
+    );
+}
+        </code></pre>
+    </div>
+
+    <!-- Markdown Example -->
+    <div class="code-example">
+        <div class="example-label">
+            <span class="language-label">
+                <span class="lang-icon lang-icon-sm lang-icon-markdown"></span>
+                Markdown
+            </span>
+            Documentation format
+        </div>
+        <!-- prism: line-numbers -->
+        <pre><code class="language-markdown">
+# PhantomSPA Documentation
+
+## Getting Started
+
+PhantomSPA is a lightweight SPA framework.
+
+### Installation
+
+\`\`\`bash
+npm install phantomspa
+\`\`\`
+
+### Features
+
+- ✅ Lightweight
+- ✅ Fast
+- ✅ Extensible
+        </code></pre>
+    </div>
+</div>
+
+<!-- Prism Plugins Section -->
+<div class="test-section">
+    <h3 class="test-title">🔌 Prism Plugins & Features</h3>
+    <p class="test-subtitle">Demonstrations of all available Prism.js plugins and features:</p>
+
+    <!-- Line Numbers Plugin -->
+    <div class="code-example">
+        <div class="example-label">Line Numbers Plugin</div>
+        <div class="test-subtitle">Displays line numbers in the gutter</div>
+        <div class="directive-example">&lt;!-- prism: line-numbers --&gt;</div>
+        <!-- prism: line-numbers -->
+        <pre><code class="language-javascript">
+function fibonacci(n) {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+const result = fibonacci(10);
+console.log(result);
+        </code></pre>
+    </div>
+
+    <!-- Line Highlighting Plugin -->
+    <div class="code-example">
+        <div class="example-label">Line Highlighting Plugin</div>
+        <div class="test-subtitle">Highlights specific lines (lines 2, 4-6 highlighted)</div>
+        <div class="directive-example">&lt;!-- prism: line-numbers highlight=2,4-6 --&gt;</div>
+        <!-- prism: line-numbers highlight=2,4-6 -->
+        <pre><code class="language-javascript">
+const config = {
+  theme: 'tomorrow',
+  languages: ['javascript', 'css'],
+  plugins: [
+    'line-numbers',
+    'line-highlight'
+  ]
+};
+        </code></pre>
+    </div>
+
+    <!-- Command Line Plugin -->
+    <div class="code-example">
+        <div class="example-label">Command Line Plugin</div>
+        <div class="test-subtitle">Shows command prompts and output</div>
+        <div class="directive-example">&lt;!-- prism: line-numbers command-line --&gt;</div>
+        <!-- prism: line-numbers command-line -->
+        <pre><code class="language-bash">
+$ npm install phantomspa
+$ npm run build
+$ npm run serve
+        </code></pre>
+    </div>
+
+    <!-- Treeview Plugin -->
+    <div class="code-example">
+        <div class="example-label">Treeview Plugin</div>
+        <div class="test-subtitle">Displays file structure with file type icons</div>
+        <div class="directive-example">&lt;!-- prism: line-numbers treeview --&gt;</div>
+        <!-- prism: line-numbers treeview -->
+        <pre><code class="language-treeview">
+phantomSPA/
+├── .github/
+│   └── workflows/
+│       ├── build.yml
+│       ├── test.yml
+│       └── deploy.yml
+├── htdocs/
+│   ├── src/
+│   │   ├── core/
+│   │   │   ├── router.js
+│   │   │   ├── app.js
+│   │   │   ├── plugin-manager.js
+│   │   │   └── event-bus.js
+│   │   ├── plugins/
+│   │   │   ├── prism/
+│   │   │   │   ├── prism-syntax-highlighter.js
+│   │   │   │   ├── prism-syntax-highlighter.css
+│   │   │   │   ├── prism-config.js
+│   │   │   │   ├── prism-plugin-loader.js
+│   │   │   │   └── prism-debug.js
+│   │   │   ├── nav/
+│   │   │   │   ├── nav-tree.js
+│   │   │   │   └── nav-tree.css
+│   │   │   └── markdown/
+│   │   │       ├── markdown-processor.js
+│   │   │       └── markdown-processor.css
+│   │   ├── assets/
+│   │   │   ├── images/
+│   │   │   │   ├── prog.lang-icons/
+│   │   │   │   │   ├── prog.lang-icons.png
+│   │   │   │   │   └── prog.lang-icons.css
+│   │   │   │   ├── file.type-icons/
+│   │   │   │   │   ├── file.type-icons.png
+│   │   │   │   │   └── file.type-icons.css
+│   │   │   │   └── favicons/
+│   │   │   │       ├── favicon.ico
+│   │   │   │       └── favicon-32x32.png
+│   │   │   └── styles/
+│   │   │       ├── styles.css
+│   │   │       ├── prose.css
+│   │   │       ├── variables.css
+│   │   │       └── responsive.css
+│   │   └── utilities/
+│   │       ├── helpers.js
+│   │       ├── logger.js
+│   │       └── cache.js
+│   ├── docs/
+│   │   └── dev/
+│   │       ├── conf/
+│   │       │   ├── app-config.json
+│   │       │   ├── nav.json
+│   │       │   └── settings.json
+│   │       ├── css/
+│   │       │   ├── styles.css
+│   │       │   └── theme.css
+│   │       ├── pages/
+│   │       │   ├── index.md
+│   │       │   ├── getting-started.md
+│   │       │   ├── api-reference.md
+│   │       │   └── guides/
+│   │       │       ├── setup.md
+│   │       │       ├── plugins.md
+│   │       │       ├── routing.md
+│   │       │       └── deployment.md
+│   │       └── images/
+│   │           ├── logo.png
+│   │           ├── screenshot-1.png
+│   │           └── screenshot-2.png
+│   ├── tests/
+│   │   ├── test-prism.html
+│   │   ├── test-router.html
+│   │   └── test-plugins.html
+│   └── library/
+│       └── prismjs/
+│           ├── prism.min.js
+│           ├── prism.min.css
+│           └── themes/
+│               ├── prism-tomorrow.min.css
+│               ├── prism-dark.min.css
+│               └── prism-light.min.css
+├── .gitignore
+├── .eslintrc.json
+├── package.json
+├── package-lock.json
+├── build.mjs
+├── README.md
+├── LICENSE
+└── CHANGELOG.md
+        </code></pre>
+    </div>
+</div>
+
+<!-- Per-Block Configuration Section -->
+<div class="test-section">
+    <h3 class="test-title">⚙️ Per-Block Configuration</h3>
+    <p class="test-subtitle">Configure Prism features on a per-code-block basis using HTML comment directives:</p>
+
+    <div class="code-example">
+        <div class="example-label">Directive Syntax</div>
+        <p style="margin: 0.5rem 0; color: var(--fg-muted);">Place an HTML comment immediately above a code block:</p>
+        <div class="directive-example">&lt;!-- prism: option1 option2=value --&gt;</div>
+    </div>
+
+    <div class="code-example">
+        <div class="example-label">Available Directive Options</div>
+        <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+            <thead>
+                <tr style="border-bottom: 2px solid var(--line);">
+                    <th style="text-align: left; padding: 0.5rem; color: var(--heading);">Option</th>
+                    <th style="text-align: left; padding: 0.5rem; color: var(--heading);">Description</th>
+                    <th style="text-align: left; padding: 0.5rem; color: var(--heading);">Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--line);">
+                    <td style="padding: 0.5rem;"><code>line-numbers</code></td>
+                    <td style="padding: 0.5rem;">Show line numbers in gutter</td>
+                    <td style="padding: 0.5rem;"><code>line-numbers</code></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                    <td style="padding: 0.5rem;"><code>highlight</code></td>
+                    <td style="padding: 0.5rem;">Highlight specific lines</td>
+                    <td style="padding: 0.5rem;"><code>highlight=2,4-6</code></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                    <td style="padding: 0.5rem;"><code>command-line</code></td>
+                    <td style="padding: 0.5rem;">Show command prompts</td>
+                    <td style="padding: 0.5rem;"><code>command-line</code></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                    <td style="padding: 0.5rem;"><code>treeview</code></td>
+                    <td style="padding: 0.5rem;">Display file structure</td>
+                    <td style="padding: 0.5rem;"><code>treeview</code></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                    <td style="padding: 0.5rem;"><code>copy-to-clipboard</code></td>
+                    <td style="padding: 0.5rem;">Add copy button (requires toolbar)</td>
+                    <td style="padding: 0.5rem;"><code>copy-to-clipboard</code></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                    <td style="padding: 0.5rem;"><code>download-button</code></td>
+                    <td style="padding: 0.5rem;">Add download button (requires toolbar)</td>
+                    <td style="padding: 0.5rem;"><code>download-button</code></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                    <td style="padding: 0.5rem;"><code>show-language</code></td>
+                    <td style="padding: 0.5rem;">Display language label (requires toolbar)</td>
+                    <td style="padding: 0.5rem;"><code>show-language</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem;"><code>toolbar</code></td>
+                    <td style="padding: 0.5rem;">Enable toolbar (required for some plugins)</td>
+                    <td style="padding: 0.5rem;"><code>toolbar</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="code-example">
+        <div class="example-label">Combined Directives Example</div>
+        <p style="margin: 0.5rem 0; color: var(--fg-muted);">Multiple options can be combined in a single directive:</p>
+        <div class="directive-example">&lt;!-- prism: line-numbers highlight=3,5-7 copy-to-clipboard show-language --&gt;</div>
+        <!-- prism: line-numbers highlight=3,5-7 copy-to-clipboard show-language -->
+        <pre><code class="language-javascript">
+// PhantomSPA Application Configuration
+const app = {
+  name: 'PhantomSPA',
+  version: '1.0.0',
+  features: {
+    routing: true,
+    plugins: true,
+    markdown: true
+  },
+  init: function() {
+    console.log('PhantomSPA initialized');
+  }
+};
+
+// Initialize the application
+app.init();
+        </code></pre>
+    </div>
+</div>
+
+<!-- Usage Examples Section -->
+<div class="test-section">
+    <h3 class="test-title">📖 Usage Examples</h3>
+    <p class="test-subtitle">How to use Prism.js code blocks in your documentation:</p>
+
+    <div class="code-example">
+        <div class="example-label">Basic Code Block (Markdown)</div>
+        <div class="directive-example">```javascript<br>const x = 42;<br>```</div>
+    </div>
+
+    <div class="code-example">
+        <div class="example-label">With Line Numbers (Markdown)</div>
+        <div class="directive-example">&lt;!-- prism: line-numbers --&gt;<br>```javascript<br>const x = 42;<br>```</div>
+    </div>
+
+    <div class="code-example">
+        <div class="example-label">With Line Highlighting (Markdown)</div>
+        <div class="directive-example">&lt;!-- prism: line-numbers highlight=2,4 --&gt;<br>```javascript<br>const x = 1;<br>const y = 2;<br>const z = 3;<br>const w = 4;<br>```</div>
+    </div>
+
+    <div class="code-example">
+        <div class="example-label">With All Toolbar Features (Markdown)</div>
+        <div class="directive-example">&lt;!-- prism: line-numbers copy-to-clipboard download-button show-language --&gt;<br>```javascript<br>function greet(name) {<br>&nbsp;&nbsp;return `Hello, ${name}`;<br>}<br>```</div>
+    </div>
+
+    <div class="code-example">
+        <div class="example-label">File Structure with Treeview (Markdown)</div>
+        <div class="directive-example">&lt;!-- prism: line-numbers treeview --&gt;<br>```treeview<br>src/<br>├── index.js<br>├── styles.css<br>└── components/<br>&nbsp;&nbsp;&nbsp;&nbsp;└── App.js<br>```</div>
+    </div>
+</div>
+
+<!-- Best Practices Section -->
+<div class="test-section">
+    <h3 class="test-title">✨ Best Practices</h3>
+    <p class="test-subtitle">Recommendations for using Prism.js effectively:</p>
+
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-name">✅ Use Line Numbers</div>
+            <div class="feature-desc">Add line numbers for code blocks longer than 5 lines to make referencing easier</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-name">✅ Highlight Key Lines</div>
+            <div class="feature-desc">Use line highlighting to draw attention to important code sections</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-name">✅ Show Language Label</div>
+            <div class="feature-desc">Enable language labels to help readers identify the code type</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-name">✅ Enable Copy Button</div>
+            <div class="feature-desc">Allow users to easily copy code examples for testing</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-name">⚠️ Avoid Overloading</div>
+            <div class="feature-desc">Don't enable all features at once; use only what's necessary</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-name">⚠️ Test Rendering</div>
+            <div class="feature-desc">Always test code blocks in the target environment</div>
+        </div>
+    </div>
+</div>
+
+<!-- Configuration Reference Section -->
+<div class="test-section">
+    <h3 class="test-title">⚙️ Configuration Reference</h3>
+    <p class="test-subtitle">Current Prism.js configuration in PhantomSPA:</p>
+
+    <div class="code-example">
+        <div class="example-label">Active Plugins</div>
+        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+            <li><strong>line-numbers</strong> - Display line numbers in code blocks</li>
+            <li><strong>line-highlight</strong> - Highlight specific lines</li>
+            <li><strong>command-line</strong> - Show command prompts and output</li>
+        </ul>
+    </div>
+
+    <div class="code-example">
+        <div class="example-label">Available Plugins</div>
+        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+            <li><strong>toolbar</strong> - Base toolbar for other plugins</li>
+            <li><strong>copy-to-clipboard</strong> - Copy code to clipboard button</li>
+            <li><strong>download-button</strong> - Download code as file</li>
+            <li><strong>show-language</strong> - Display language label</li>
+            <li><strong>treeview</strong> - File structure visualization</li>
+        </ul>
+    </div>
+
+    <div class="code-example">
+        <div class="example-label">Supported Languages</div>
+        <p style="margin: 0.5rem 0; color: var(--fg-muted);">
+            markup, css, javascript, json, bash, markdown, typescript, jsx, python
+        </p>
+    </div>
+
+    <div class="code-example">
+        <div class="example-label">Theme</div>
+        <p style="margin: 0.5rem 0; color: var(--fg-muted);">
+            <strong>tomorrow</strong> - Modern dark theme with good contrast
+        </p>
+    </div>
+</div>
+
+<script type="module">
+// Initialize Prism.js for this test page
+import { setup } from '/src/plugins/prism/prism-syntax-highlighter.js';
+import {
+    loadPrismConfig,
+    applyPrismConfig,
+    highlightCode,
+    applyPerBlockPrismConfig
+} from '/src/plugins/prism/prism-config.js';
+
+// Prism configuration from app-config.json
+const prismConfig = {
+    theme: 'tomorrow',
+    cdnVersion: '1.29.0',
+    cdnBase: 'https://cdn.jsdelivr.net/npm/prismjs@{version}',
+    languages: [
+        'markup',
+        'css',
+        'javascript',
+        'json',
+        'bash',
+        'markdown',
+        'typescript',
+        'jsx',
+        'python'
+    ],
+    plugins: [
+        {
+            name: 'line-numbers',
+            jsPath: '/plugins/line-numbers/prism-line-numbers.min.js',
+            cssPath: '/plugins/line-numbers/prism-line-numbers.min.css',
+            dependencies: []
+        },
+        {
+            name: 'line-highlight',
+            jsPath: '/plugins/line-highlight/prism-line-highlight.min.js',
+            cssPath: '/plugins/line-highlight/prism-line-highlight.min.css',
+            dependencies: []
+        },
+        {
+            name: 'command-line',
+            jsPath: '/plugins/command-line/prism-command-line.min.js',
+            cssPath: '/plugins/command-line/prism-command-line.min.css',
+            dependencies: []
+        },
+        // Toolbar and dependent plugins for demonstrating copy/download/language features
+        {
+            name: 'toolbar',
+            jsPath: '/plugins/toolbar/prism-toolbar.min.js',
+            cssPath: '/plugins/toolbar/prism-toolbar.min.css',
+            dependencies: []
+        },
+        {
+            name: 'copy-to-clipboard',
+            jsPath: '/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js',
+            cssPath: null,
+            dependencies: ['toolbar']
+        },
+        {
+            name: 'show-language',
+            jsPath: '/plugins/show-language/prism-show-language.min.js',
+            cssPath: null,
+            dependencies: ['toolbar']
+        },
+        // Treeview plugin for file structure visualization
+        {
+            name: 'treeview',
+            jsPath: '/plugins/treeview/prism-treeview.min.js',
+            cssPath: '/plugins/treeview/prism-treeview.min.css',
+            dependencies: []
+        }
+    ]
+};
+
+// Initialize Prism
+async function initPrism() {
+    console.log('=== Initializing Prism.js for Test Page ===');
+
+    try {
+        // Create a mock SPA object for the setup function
+        const mockSPA = {
+            events: {
+                addEventListener: (event, handler) => {
+                    // For test page, we'll manually trigger highlighting after setup
+                    if (event === 'route:after') {
+                        window._prismRouteHandler = handler;
+                    }
+                }
+            }
+        };
+
+        // Initialize Prism with configuration
+        // This loads all CSS, scripts, and plugins
+        console.log('Step 1: Setting up Prism...');
+        await setup(mockSPA, prismConfig);
+
+        // Wait a moment for Prism to be fully loaded
+        console.log('Step 2: Waiting for Prism to load...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Step 3: Apply per-block configuration from HTML comment directives
+        console.log('Step 3: Applying per-block configuration...');
+        applyPerBlockPrismConfig(document.body);
+
+        // Step 4: Load and apply global Prism configuration
+        console.log('Step 4: Loading global configuration...');
+        let config = loadPrismConfig();
+        applyPrismConfig(config);
+
+        // Step 5: Highlight all code blocks
+        console.log('Step 5: Highlighting code blocks...');
+        highlightCode(document.body, config);
+
+        console.log('✅ Prism.js initialized successfully');
+        console.log('✅ Code blocks highlighted');
+        console.log('Prism version:', window.Prism?.version || 'Loaded from CDN');
+        console.log('Supported languages:', Object.keys(window.Prism?.languages || {}).slice(0, 10).join(', '));
+        console.log('Plugins loaded:', window.Prism?.plugins ? Object.keys(window.Prism.plugins).join(', ') : 'None');
+
+    } catch (err) {
+        console.error('❌ Failed to initialize Prism.js:', err);
+        console.error('Error details:', err.stack);
+    }
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPrism);
+} else {
+    initPrism();
+}
+</script>
 
 </body>
 </html>
