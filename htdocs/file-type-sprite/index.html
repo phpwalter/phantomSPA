@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhantomSPA File Type Icons - Demo &amp; Documentation</title>
+    <link rel="stylesheet" href="file-type-icons.css">
+    <style>
+        /* Demo page styles */
+        :root {
+            --bg: #0f1724;
+            --panel: #182a45;
+            --fg: #c7d0de;
+            --muted: #a5b4cc;
+            --heading: #e6edf7;
+            --accent: #6ea8ff;
+            --card: #243659;
+            --line: #2f4267;
+            --radius: 12px;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 2rem;
+            background: var(--bg);
+            color: var(--fg);
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        h1, h2, h3 { color: var(--heading); margin-top: 2rem; }
+        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--muted); font-size: 1.1rem; margin-bottom: 2rem; }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Icon grid display */
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: var(--panel);
+            border-radius: 8px;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .icon-item:hover {
+            transform: translateY(-2px);
+            background: var(--line);
+        }
+
+        .icon-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            font-family: monospace;
+        }
+
+        /* Size comparison */
+        .size-demo {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .size-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .size-label {
+            font-size: 0.85rem;
+            color: var(--accent);
+        }
+
+        /* Code examples */
+        code {
+            background: var(--panel);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: ui-monospace, monospace;
+            font-size: 0.9rem;
+        }
+
+        pre {
+            background: var(--panel);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid var(--line);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        /* Row headers */
+        .row-header {
+            grid-column: 1 / -1;
+            text-align: left;
+            font-weight: bold;
+            color: var(--accent);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--line);
+            margin-top: 1rem;
+        }
+
+        .row-header:first-child { margin-top: 0; }
+
+        /* Interactive demo */
+        .interactive-demo {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .demo-icon {
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .demo-icon:hover { background: var(--line); }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .tab {
+            padding: 0.5rem 1rem;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            color: var(--fg);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab:hover, .tab.active {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        /* Sprite visualization */
+        .sprite-visual {
+            display: inline-block;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📁 PhantomSPA File Type Icons</h1>
+        <p class="subtitle">A CSS sprite-based icon system with 28 file type icons in 3 sizes</p>
+
+        <nav class="n`av-links">
+            <a href="#overview">Overview</a>
+            <a href="#all-icons">All Icons</a>
+            <a href="#sizes">Size Variants</a>
+            <a href="#usage">Usage</a>
+            <a href="#sprite-grid">Sprite Grid</a>
+            <a href="#extending">Extending</a>
+        </nav>
+
+        <!-- Overview Section -->
+        <section id="overview">
+            <h2>Overview</h2>
+            <div class="card">
+                <p>This icon system uses a <strong>CSS sprite sheet</strong> containing 28 file type icons arranged in a 7×4 grid. Icons are available in three sizes:</p>
+                <div class="size-demo">
+                    <div class="size-item">
+                        <span class="file-icon file-icon-sm file-icon-folder"></span>
+                        <span class="size-label">Small (16px)</span>
+                    </div>
+                    <div class="size-item">
+                        <span class="file-icon file-icon-md file-icon-folder"></span>
+                        <span class="size-label">Medium (32px)</span>
+                    </div>
+                    <div class="size-item">
+                        <span class="file-icon file-icon-lg file-icon-folder"></span>
+                        <span class="size-label">Large (64px)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- All Icons Section -->
+        <section id="all-icons">
+            <h2>All 28 File Type Icons</h2>
+            <div class="card">
+                <p>Hover over any icon to see the interaction effect. All icons shown at medium size (32px).</p>
+                <div class="icon-grid">
+                    <!-- Row 0 -->
+                    <div class="row-header">Row 0: Folders &amp; Images</div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-folder"></span>
+                        <span class="icon-label">folder</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-generic"></span>
+                        <span class="icon-label">generic</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-txt"></span>
+                        <span class="icon-label">txt</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-png"></span>
+                        <span class="icon-label">png</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-gif"></span>
+                        <span class="icon-label">gif</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-eps"></span>
+                        <span class="icon-label">eps</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-svg"></span>
+                        <span class="icon-label">svg</span>
+                    </div>
+
+                    <!-- Row 1 -->
+                    <div class="row-header">Row 1: Media &amp; Archives</div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-wav"></span>
+                        <span class="icon-label">wav</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-mov"></span>
+                        <span class="icon-label">mov</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-mp3"></span>
+                        <span class="icon-label">mp3</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-avi"></span>
+                        <span class="icon-label">avi</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-zip"></span>
+                        <span class="icon-label">zip</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-rar"></span>
+                        <span class="icon-label">rar</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-exe"></span>
+                        <span class="icon-label">exe</span>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="row-header">Row 2: Documents &amp; Data</div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-dll"></span>
+                        <span class="icon-label">dll</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-csv"></span>
+                        <span class="icon-label">csv</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-pdf"></span>
+                        <span class="icon-label">pdf</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-doc"></span>
+                        <span class="icon-label">doc</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-xls"></span>
+                        <span class="icon-label">xls</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-ppt"></span>
+                        <span class="icon-label">ppt</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-mod"></span>
+                        <span class="icon-label">mod</span>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="row-header">Row 3: Code &amp; Web</div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-html"></span>
+                        <span class="icon-label">html</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-css"></span>
+                        <span class="icon-label">css</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-js"></span>
+                        <span class="icon-label">js</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-php"></span>
+                        <span class="icon-label">php</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-py"></span>
+                        <span class="icon-label">py</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-json"></span>
+                        <span class="icon-label">json</span>
+                    </div>
+                    <div class="icon-item">
+                        <span class="file-icon file-icon-md file-icon-perl"></span>
+                        <span class="icon-label">perl</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Size Variants Section -->
+        <section id="sizes">
+            <h2>Size Variants</h2>
+            <div class="card">
+                <p>Each icon is available in three sizes. Use the appropriate size class alongside the base <code>.file-icon</code> class:</p>
+
+                <h3>Small (16px) - <code>.file-icon-sm</code></h3>
+                <p>Ideal for inline text, file lists, and compact UIs.</p>
+                <div class="interactive-demo">
+                    <span class="file-icon file-icon-sm file-icon-html"></span>
+                    <span class="file-icon file-icon-sm file-icon-css"></span>
+                    <span class="file-icon file-icon-sm file-icon-js"></span>
+                    <span class="file-icon file-icon-sm file-icon-json"></span>
+                    <span class="file-icon file-icon-sm file-icon-pdf"></span>
+                    <span class="file-icon file-icon-sm file-icon-zip"></span>
+                </div>
+
+                <h3>Medium (32px) - <code>.file-icon-md</code></h3>
+                <p>Default size, good for file browsers and cards.</p>
+                <div class="interactive-demo">
+                    <span class="file-icon file-icon-md file-icon-html"></span>
+                    <span class="file-icon file-icon-md file-icon-css"></span>
+                    <span class="file-icon file-icon-md file-icon-js"></span>
+                    <span class="file-icon file-icon-md file-icon-json"></span>
+                    <span class="file-icon file-icon-md file-icon-pdf"></span>
+                    <span class="file-icon file-icon-md file-icon-zip"></span>
+                </div>
+
+                <h3>Large (64px) - <code>.file-icon-lg</code></h3>
+                <p>For featured displays, hero sections, and large previews.</p>
+                <div class="interactive-demo">
+                    <span class="file-icon file-icon-lg file-icon-html"></span>
+                    <span class="file-icon file-icon-lg file-icon-css"></span>
+                    <span class="file-icon file-icon-lg file-icon-js"></span>
+                    <span class="file-icon file-icon-lg file-icon-json"></span>
+                    <span class="file-icon file-icon-lg file-icon-pdf"></span>
+                    <span class="file-icon file-icon-lg file-icon-zip"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Usage Section -->
+        <section id="usage">
+            <h2>Usage</h2>
+            <div class="card">
+                <h3>Basic Usage</h3>
+                <p>Combine three classes: base class + size class + icon type class:</p>
+                <pre><code>&lt;span class="file-icon file-icon-md file-icon-pdf"&gt;&lt;/span&gt;</code></pre>
+
+                <p><strong>Result:</strong> <span class="file-icon file-icon-md file-icon-pdf"></span></p>
+
+                <h3>Class Structure</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                    <tr style="border-bottom: 1px solid var(--line);">
+                        <th style="text-align: left; padding: 0.5rem;">Class</th>
+                        <th style="text-align: left; padding: 0.5rem;">Purpose</th>
+                        <th style="text-align: left; padding: 0.5rem;">Required</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--line);">
+                        <td style="padding: 0.5rem;"><code>.file-icon</code></td>
+                        <td style="padding: 0.5rem;">Base class - sets up sprite, sizing, transitions</td>
+                        <td style="padding: 0.5rem;">✅ Yes</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--line);">
+                        <td style="padding: 0.5rem;"><code>.file-icon-sm/md/lg</code></td>
+                        <td style="padding: 0.5rem;">Size variant - 16px, 32px, or 64px</td>
+                        <td style="padding: 0.5rem;">Optional (defaults to md)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem;"><code>.file-icon-{type}</code></td>
+                        <td style="padding: 0.5rem;">Icon type - sets grid position</td>
+                        <td style="padding: 0.5rem;">✅ Yes</td>
+                    </tr>
+                </table>
+
+                <h3>All Icon Type Classes</h3>
+                <pre><code>/* Row 0 */ folder, generic, txt, png, gif, eps, svg
+/* Row 1 */ wav, mov, mp3, avi, zip, rar, exe
+/* Row 2 */ dll, csv, pdf, doc, xls, ppt, mod
+/* Row 3 */ html, css, js, php, py, json, perl</code></pre>
+
+                <h3>Handling Unknown File Types</h3>
+                <p>The <strong>generic icon</strong> <span class="file-icon file-icon-sm file-icon-generic"></span> (grid position row 0, column 1) serves as a fallback for unknown or unsupported file types. Use it for files like <code>.yaml</code>, <code>.toml</code>, <code>.lock</code>, <code>.env</code>, or any extension without a dedicated icon.</p>
+
+                <p><strong>Direct usage:</strong></p>
+                <pre><code>&lt;!-- Explicitly use the generic icon --&gt;
+&lt;span class="file-icon file-icon-md file-icon-generic"&gt;&lt;/span&gt;</code></pre>
+
+                <p><strong>Result:</strong> <span class="file-icon file-icon-md file-icon-generic"></span></p>
+
+                <p><strong>Automatic fallback pattern:</strong> Set the generic icon position as the default in the base class. Each icon type class then overrides these values:</p>
+                <pre><code>/* Base class defaults to generic icon */
+.file-icon {
+    --icon-row: 0;
+    --icon-col: 1;  /* generic icon position */
+    /* ...other styles... */
+}
+
+/* Each type class overrides the position */
+.file-icon-folder { --icon-row: 0; --icon-col: 0; }
+.file-icon-pdf    { --icon-row: 2; --icon-col: 2; }
+/* etc. */</code></pre>
+
+                <p>This approach is:</p>
+                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                    <li><strong>Simple</strong> – No complex selectors needed</li>
+                    <li><strong>Scalable</strong> – New icons just add their own position</li>
+                    <li><strong>Maintainable</strong> – The default is set once in the base class</li>
+                </ul>
+
+                <p><strong>Practical example:</strong> Files without dedicated icons automatically get the generic icon:</p>
+                <div class="interactive-demo" style="gap: 1.5rem;">
+                    <div style="text-align: center;">
+                        <span class="file-icon file-icon-md file-icon-generic"></span>
+                        <div class="icon-label">config.yaml</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <span class="file-icon file-icon-md file-icon-generic"></span>
+                        <div class="icon-label">settings.toml</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <span class="file-icon file-icon-md file-icon-generic"></span>
+                        <div class="icon-label">package.lock</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <span class="file-icon file-icon-md file-icon-generic"></span>
+                        <div class="icon-label">.env</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <span class="file-icon file-icon-md file-icon-generic"></span>
+                        <div class="icon-label">Makefile</div>
+                    </div>
+                </div>
+
+                <h3>Integration with PhantomSPA</h3>
+                <p>In PhantomSPA, include the CSS file in your HTML:</p>
+                <pre><code>&lt;link rel="stylesheet" href="/src/assets/images/file.type-icons/file.type-icons.css"&gt;</code></pre>
+            </div>
+        </section>
+
+        <!-- Sprite Grid Section -->
+        <section id="sprite-grid">
+            <h2>Sprite Grid Visualization</h2>
+            <div class="card">
+                <p>The sprite sheet is organized as a 7×4 grid. Each icon's position is defined by <code>--icon-row</code> and <code>--icon-col</code> CSS custom properties.</p>
+
+                <h3>Actual Sprite Image</h3>
+                <p>The sprite at its native resolution (scaled for display):</p>
+                <div style="overflow-x: auto; padding: 1rem; background: var(--panel); border-radius: 8px;">
+                    <img src="file.type-icons.png" alt="File Type Icons Sprite" class="sprite-visual" style="max-width: 100%; height: auto;">
+                </div>
+
+                <h3>Grid Position Reference</h3>
+                <pre><code>Position: (row, col)
+
+Row 0: folder(0,0)  generic(0,1)  txt(0,2)  png(0,3)  gif(0,4)  eps(0,5)  svg(0,6)
+Row 1: wav(1,0)     mov(1,1)      mp3(1,2)  avi(1,3)  zip(1,4)  rar(1,5)  exe(1,6)
+Row 2: dll(2,0)     csv(2,1)      pdf(2,2)  doc(2,3)  xls(2,4)  ppt(2,5)  mod(2,6)
+Row 3: html(3,0)    css(3,1)      js(3,2)   php(3,3)  py(3,4)   json(3,5) perl(3,6)</code></pre>
+
+                <h3>CSS Architecture</h3>
+                <p>The system uses CSS custom properties for dynamic positioning:</p>
+                <pre><code>/* Base class sets up the calculation */
+.file-icon {
+    --file-icon-size: var(--file-icon-size-md);
+    background-position:
+        calc((var(--icon-col, 0) * -1) * var(--file-icon-size))
+        calc((var(--icon-row, 0) * -1) * var(--file-icon-size));
+}
+
+/* Icon classes just set the grid position */
+.file-icon-pdf { --icon-row: 2; --icon-col: 2; }
+
+/* Size classes just change the size variable */
+.file-icon-lg { --file-icon-size: var(--file-icon-size-lg); }</code></pre>
+            </div>
+        </section>
+
+        <!-- Extending Section -->
+        <section id="extending">
+            <h2>Extending the Icon System</h2>
+            <div class="card">
+                <h3>Adding a New File Type</h3>
+                <p>To add a new icon to the system:</p>
+
+                <ol style="line-height: 2;">
+                    <li><strong>Add the icon to the sprite sheet</strong> - Place it in an empty grid cell or expand the grid</li>
+                    <li><strong>Update the CSS</strong> - Add a new class with the grid position:</li>
+                </ol>
+
+                <pre><code>/* Example: Adding a YAML icon at position (0, 1) - using generic slot */
+.file-icon-yaml { --icon-row: 0; --icon-col: 1; }
+
+/* Example: Adding to a new row 4 */
+.file-icon-rust { --icon-row: 4; --icon-col: 0; }
+.file-icon-go   { --icon-row: 4; --icon-col: 1; }</code></pre>
+
+                <p>If expanding the grid, update the sprite configuration:</p>
+                <pre><code>:root {
+    --file-sprite-cols: 7;  /* Update if adding columns */
+    --file-sprite-rows: 5;  /* Update if adding rows */
+}</code></pre>
+
+                <h3>Creating Aliases</h3>
+                <p>Map multiple extensions to the same icon:</p>
+                <pre><code>/* JavaScript variants */
+.file-icon-mjs  { --icon-row: 3; --icon-col: 2; }
+.file-icon-cjs  { --icon-row: 3; --icon-col: 2; }
+.file-icon-jsx  { --icon-row: 3; --icon-col: 2; }
+
+/* Document variants */
+.file-icon-docx { --icon-row: 2; --icon-col: 3; }
+.file-icon-xlsx { --icon-row: 2; --icon-col: 4; }
+.file-icon-pptx { --icon-row: 2; --icon-col: 5; }</code></pre>
+
+                <h3>Prism Treeview Integration</h3>
+                <p>For use with the Prism treeview plugin, add mappings in <code>prism-syntax-highlighter.css</code>:</p>
+                <pre><code>/* Map file extension to icon */
+pre[data-treeview-icons="custom"] .entry-name.ext-yaml:before {
+    --icon-row: 0;
+    --icon-col: 1;
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Comparison Section -->
+        <section id="comparison">
+            <h2>Sprite vs Font Icons</h2>
+            <div class="card">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px solid var(--line);">
+                        <th style="text-align: left; padding: 0.75rem;">Aspect</th>
+                        <th style="text-align: left; padding: 0.75rem;">Sprite (This System)</th>
+                        <th style="text-align: left; padding: 0.75rem;">Icon Fonts</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--line);">
+                        <td style="padding: 0.75rem;">Colors</td>
+                        <td style="padding: 0.75rem;">✅ Multi-color</td>
+                        <td style="padding: 0.75rem;">❌ Single color</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--line);">
+                        <td style="padding: 0.75rem;">Scalability</td>
+                        <td style="padding: 0.75rem;">⚠️ Fixed sizes (16/32/64px)</td>
+                        <td style="padding: 0.75rem;">✅ Any size</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--line);">
+                        <td style="padding: 0.75rem;">File Size</td>
+                        <td style="padding: 0.75rem;">~15KB PNG</td>
+                        <td style="padding: 0.75rem;">~5-10KB WOFF2</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--line);">
+                        <td style="padding: 0.75rem;">HTTP Requests</td>
+                        <td style="padding: 0.75rem;">1 (sprite image)</td>
+                        <td style="padding: 0.75rem;">1 (font file)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.75rem;">Accessibility</td>
+                        <td style="padding: 0.75rem;">✅ Decorative by default</td>
+                        <td style="padding: 0.75rem;">⚠️ Needs aria-hidden</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <footer style="margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--line); text-align: center; color: var(--muted);">
+            <p>PhantomSPA File Type Icons • <a href="https://github.com/phpwalter/phantomSPA" style="color: var(--accent);">GitHub</a></p>
+        </footer>
+    </div>
+</body>
+</html>

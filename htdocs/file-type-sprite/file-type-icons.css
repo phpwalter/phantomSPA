@@ -1,0 +1,121 @@
+/*
+ * File Type Icons CSS Sprite - Standalone Version
+ *
+ * Sprite Image: file.type-icons.png
+ * Grid Layout: 7 columns × 4 rows (28 total icons)
+ *
+ * Usage:
+ * <span class="file-icon file-icon-sm file-icon-pdf"></span>
+ * <span class="file-icon file-icon-md file-icon-doc"></span>
+ * <span class="file-icon file-icon-lg file-icon-xls"></span>
+ *
+ * Grid-Based Positioning System:
+ * Each icon defines --icon-row and --icon-col custom properties.
+ * Size variants (.file-icon-sm/md/lg) calculate background-position dynamically.
+ */
+
+:root {
+    /* Sprite image path (relative to this CSS file) */
+    --file-icon-png: url('./file.type-icons.png');
+
+    /* Icon sizes */
+    --file-icon-size-sm: 16px;
+    --file-icon-size-md: 32px;
+    --file-icon-size-lg: 64px;
+
+    /* Sprite grid configuration */
+    --file-icon-gap: 0;
+    --file-sprite-cols: 7;
+    --file-sprite-rows: 4;
+
+    /* Transition (standalone fallback) */
+    --transition-fast: 0.15s ease;
+}
+
+/* Base class for all file type icons */
+.file-icon {
+    /* Use a local size variable for DRY calculations */
+    --file-icon-size: var(--file-icon-size-md);
+
+    /* Default to generic icon (row 0, col 1) for unknown file types */
+    --icon-row: 0;
+    --icon-col: 1;
+
+    display: inline-block;
+    background-image: var(--file-icon-png);
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    transition: opacity var(--transition-fast);
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+
+    /* Dynamic sizing based on --file-icon-size */
+    width: var(--file-icon-size);
+    height: var(--file-icon-size);
+    background-size:
+        calc(var(--file-sprite-cols) * var(--file-icon-size))
+        calc(var(--file-sprite-rows) * var(--file-icon-size));
+    background-position:
+        calc((var(--icon-col) * -1) * var(--file-icon-size))
+        calc((var(--icon-row) * -1) * var(--file-icon-size));
+}
+
+/* Size variants - simply override the size variable */
+.file-icon-sm { --file-icon-size: var(--file-icon-size-sm); }
+.file-icon-md { --file-icon-size: var(--file-icon-size-md); }
+.file-icon-lg { --file-icon-size: var(--file-icon-size-lg); }
+
+/* Hover and focus states */
+.file-icon:hover,
+.file-icon:focus {
+    opacity: 0.7;
+    outline: none;
+}
+
+/*
+ * Individual File Type Icon Classes
+ * Grid positions based on sprite layout (7 columns × 4 rows)
+ *
+ * SPRITE LAYOUT:
+ * Row 0: Folder, Generic, Text, PNG, GIF, EPS, SVG
+ * Row 1: WAV, MOV, MP3, AVI, ZIP, RAR, EXE
+ * Row 2: DLL, CSV, PDF, DOC, XLS, PPT, MOD
+ * Row 3: HTML, CSS, JS, PHP, Python, JSON, Perl
+ */
+
+/* Row 0: Folder, Generic, Text, PNG, GIF, EPS, SVG */
+.file-icon-folder  { --icon-row: 0; --icon-col: 0; }
+.file-icon-generic { --icon-row: 0; --icon-col: 1; }
+.file-icon-txt     { --icon-row: 0; --icon-col: 2; }
+.file-icon-png     { --icon-row: 0; --icon-col: 3; }
+.file-icon-gif     { --icon-row: 0; --icon-col: 4; }
+.file-icon-eps     { --icon-row: 0; --icon-col: 5; }
+.file-icon-svg     { --icon-row: 0; --icon-col: 6; }
+
+/* Row 1: WAV, MOV, MP3, AVI, ZIP, RAR, EXE */
+.file-icon-wav { --icon-row: 1; --icon-col: 0; }
+.file-icon-mov { --icon-row: 1; --icon-col: 1; }
+.file-icon-mp3 { --icon-row: 1; --icon-col: 2; }
+.file-icon-avi { --icon-row: 1; --icon-col: 3; }
+.file-icon-zip { --icon-row: 1; --icon-col: 4; }
+.file-icon-rar { --icon-row: 1; --icon-col: 5; }
+.file-icon-exe { --icon-row: 1; --icon-col: 6; }
+
+/* Row 2: DLL, CSV, PDF, DOC, XLS, PPT, MOD */
+.file-icon-dll { --icon-row: 2; --icon-col: 0; }
+.file-icon-csv { --icon-row: 2; --icon-col: 1; }
+.file-icon-pdf { --icon-row: 2; --icon-col: 2; }
+.file-icon-doc { --icon-row: 2; --icon-col: 3; }
+.file-icon-xls { --icon-row: 2; --icon-col: 4; }
+.file-icon-ppt { --icon-row: 2; --icon-col: 5; }
+.file-icon-mod { --icon-row: 2; --icon-col: 6; }
+
+/* Row 3: HTML, CSS, JS, PHP, Python, JSON, Perl */
+.file-icon-html { --icon-row: 3; --icon-col: 0; }
+.file-icon-css  { --icon-row: 3; --icon-col: 1; }
+.file-icon-js   { --icon-row: 3; --icon-col: 2; }
+.file-icon-php  { --icon-row: 3; --icon-col: 3; }
+.file-icon-py   { --icon-row: 3; --icon-col: 4; }
+.file-icon-json { --icon-row: 3; --icon-col: 5; }
+.file-icon-perl { --icon-row: 3; --icon-col: 6; }

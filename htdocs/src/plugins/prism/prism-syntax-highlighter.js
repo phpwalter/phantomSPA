@@ -18,7 +18,8 @@ import {
     highlightCode,
     createPrismSettingsPanel,
     createPrismSettingsButton,
-    applyPerBlockPrismConfig
+    applyPerBlockPrismConfig,
+    initPrismConfigFromJson
 } from './prism-config.js';
 
 import { loadPrismPlugins } from './prism-plugin-loader.js';
@@ -56,6 +57,9 @@ export async function setup(spa, options = {}) {
     const config = options;
 
     try {
+        // Step 0: Load directive configuration from prism-config.json
+        await initPrismConfigFromJson();
+
         // Step 1: Initialize Prism.manual mode to prevent auto-highlighting
         initializePrismManualMode();
 
@@ -357,7 +361,7 @@ function addCustomHeaders(container) {
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M14 11V14H2V11H0V14C0 15.1 0.9 16 2 16H14C15.1 16 16 15.1 16 14V11H14ZM13 7L11.59 5.59L9 8.17V0H7V8.17L4.41 5.59L3 7L8 12L13 7Z" fill="currentColor"/>
                 </svg>
-                Download as text file
+                Download as .txt
             </button>
         `;
 

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhantomSPA Vendor Icons - Demo &amp; Documentation</title>
+    <link rel="stylesheet" href="vendor-icons.css">
+    <style>
+        :root {
+            --bg: #0f1724;
+            --panel: #182a45;
+            --fg: #c7d0de;
+            --muted: #a5b4cc;
+            --heading: #e6edf7;
+            --accent: #6ea8ff;
+            --card: #243659;
+            --line: #2f4267;
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 2rem;
+            background: var(--bg);
+            color: var(--fg);
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1, h2, h3 { color: var(--heading); margin-top: 2rem; }
+        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--muted); font-size: 1.1rem; margin-bottom: 2rem; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            gap: 0.75rem;
+            text-align: center;
+        }
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: var(--panel);
+            border-radius: 8px;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .icon-item:hover {
+            transform: translateY(-2px);
+            background: var(--line);
+        }
+        .icon-label {
+            font-size: 0.65rem;
+            color: var(--muted);
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .size-demo {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .size-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .size-label { font-size: 0.85rem; color: var(--accent); }
+        code {
+            background: var(--panel);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: ui-monospace, monospace;
+            font-size: 0.9rem;
+        }
+        pre {
+            background: var(--panel);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid var(--line);
+        }
+        pre code { background: none; padding: 0; }
+        .row-header {
+            grid-column: 1 / -1;
+            text-align: left;
+            font-weight: bold;
+            color: var(--accent);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--line);
+            margin-top: 1rem;
+        }
+        .row-header:first-child { margin-top: 0; }
+        .interactive-demo {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .demo-icon {
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .demo-icon:hover { background: var(--line); }
+        .sprite-visual {
+            display: inline-block;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .nav-links a { color: var(--accent); text-decoration: none; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 PhantomSPA Vendor Icons</h1>
+        <p class="subtitle">A CSS sprite-based icon system with 111 vendor/technology icons in 3 sizes</p>
+
+        <nav class="nav-links">
+            <a href="#overview">Overview</a>
+            <a href="#all-icons">All Icons</a>
+            <a href="#sizes">Size Variants</a>
+            <a href="#usage">Usage</a>
+            <a href="#sprite-grid">Sprite Grid</a>
+            <a href="#extending">Extending</a>
+        </nav>
+
+        <section id="overview">
+            <h2>Overview</h2>
+            <div class="card">
+                <p>The Vendor Icons sprite system provides <strong>111 technology and vendor logos</strong> as a single PNG sprite with CSS-based positioning. This approach offers:</p>
+                <ul>
+                    <li><strong>Single HTTP request</strong> – All icons load in one image file</li>
+                    <li><strong>Three size variants</strong> – 16px (small), 32px (medium), 64px (large)</li>
+                    <li><strong>CSS custom properties</strong> – Easy theming and dynamic sizing</li>
+                    <li><strong>Grid-based positioning</strong> – Simple row/column coordinates</li>
+                </ul>
+                <p><strong>Quick example:</strong></p>
+                <pre><code>&lt;span class="vendor-icon vendor-icon-md vendor-icon-github"&gt;&lt;/span&gt;
+&lt;span class="vendor-icon vendor-icon-lg vendor-icon-react"&gt;&lt;/span&gt;</code></pre>
+            </div>
+        </section>
+
+        <section id="all-icons">
+            <h2>All 111 Vendor Icons</h2>
+            <p>Hover over any icon to see the interaction effect. Icons are organized by sprite row.</p>
+            <div class="card">
+                <div class="icon-grid">
+                    <!-- Row 0 -->
+                    <div class="row-header">Row 0: Operating Systems &amp; Editors</div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-linux"></span><div class="icon-label">linux</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-air"></span><div class="icon-label">air</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-atom"></span><div class="icon-label">atom</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-bower"></span><div class="icon-label">bower</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-c"></span><div class="icon-label">c</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-chai"></span><div class="icon-label">chai</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-codemirror"></span><div class="icon-label">codemirror</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-codepen"></span><div class="icon-label">codepen</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-composer"></span><div class="icon-label">composer</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-cordova"></span><div class="icon-label">cordova</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-modernizr"></span><div class="icon-label">modernizr</div></div>
+
+                    <!-- Row 1 -->
+                    <div class="row-header">Row 1: Frameworks &amp; Services</div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-angular"></span><div class="icon-label">angular</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-apache"></span><div class="icon-label">apache</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-backbone"></span><div class="icon-label">backbone</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-bitbucket"></span><div class="icon-label">bitbucket</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-blackberry"></span><div class="icon-label">blackberry</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-bootstrap"></span><div class="icon-label">bootstrap</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-couchdb"></span><div class="icon-label">couchdb</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-coveralls"></span><div class="icon-label">coveralls</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-css3"></span><div class="icon-label">css3</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-david-dm"></span><div class="icon-label">david-dm</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-mongodb"></span><div class="icon-label">mongodb</div></div>
+
+                    <!-- Row 2 -->
+                    <div class="row-header">Row 2: Browsers &amp; CMS</div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-chrome"></span><div class="icon-label">chrome</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-chromium"></span><div class="icon-label">chromium</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-code-climate"></span><div class="icon-label">code-climate</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-codeigniter"></span><div class="icon-label">codeigniter</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-debian"></span><div class="icon-label">debian</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-django"></span><div class="icon-label">django</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-drupal"></span><div class="icon-label">drupal</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-editorconfig"></span><div class="icon-label">editorconfig</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-fedora"></span><div class="icon-label">fedora</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-firefox-dev"></span><div class="icon-label">firefox-dev</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-mysql"></span><div class="icon-label">mysql</div></div>
+
+                    <!-- Row 3 -->
+                    <div class="row-header">Row 3: Version Control &amp; Browsers</div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-firefox-os"></span><div class="icon-label">firefox-os</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-firefox"></span><div class="icon-label">firefox</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-flash"></span><div class="icon-label">flash</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-flattr"></span><div class="icon-label">flattr</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-font-awesome"></span><div class="icon-label">font-awesome</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-git"></span><div class="icon-label">git</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-gitbook"></span><div class="icon-label">gitbook</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-github"></span><div class="icon-label">github</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-gitlab"></span><div class="icon-label">gitlab</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-gnu"></span><div class="icon-label">gnu</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-nginx"></span><div class="icon-label">nginx</div></div>
+
+                    <!-- Row 4 -->
+                    <div class="row-header">Row 4: Build Tools &amp; Web Standards</div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-gradle"></span><div class="icon-label">gradle</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-grunt"></span><div class="icon-label">grunt</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-gtk"></span><div class="icon-label">gtk</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-gulp"></span><div class="icon-label">gulp</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-h5bp"></span><div class="icon-label">h5bp</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-hbase"></span><div class="icon-label">hbase</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-html5"></span><div class="icon-label">html5</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-humans-txt"></span><div class="icon-label">humans-txt</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-ie"></span><div class="icon-label">ie</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-inch-ci"></span><div class="icon-label">inch-ci</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-nodejs"></span><div class="icon-label">nodejs</div></div>
+
+                    <!-- Row 5 -->
+                    <div class="row-header">Row 5: Mobile &amp; Languages</div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-ios"></span><div class="icon-label">ios</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-java"></span><div class="icon-label">java</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-jekyll"></span><div class="icon-label">jekyll</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-jquery"></span><div class="icon-label">jquery</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-jsbin"></span><div class="icon-label">jsbin</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-json"></span><div class="icon-label">json</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-android"></span><div class="icon-label">android</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-lodash"></span><div class="icon-label">lodash</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-lua"></span><div class="icon-label">lua</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-mariadb"></span><div class="icon-label">mariadb</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-npm"></span><div class="icon-label">npm</div></div>
+
+                    <!-- Row 6 -->
+                    <div class="row-header">Row 6: Documentation &amp; Package Managers</div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-marionette"></span><div class="icon-label">marionette</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-markdown"></span><div class="icon-label">markdown</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-mdn"></span><div class="icon-label">mdn</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-mocha"></span><div class="icon-label">mocha</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-nuget"></span><div class="icon-label">nuget</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-opengl"></span><div class="icon-label">opengl</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-openhub"></span><div class="icon-label">openhub</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-opera"></span><div class="icon-label">opera</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-packagist"></span><div class="icon-label">packagist</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-pear"></span><div class="icon-label">pear</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-perl"></span><div class="icon-label">perl</div></div>
+
+                    <!-- Row 7 -->
+                    <div class="row-header">Row 7: Languages &amp; Frameworks</div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-phantomjs"></span><div class="icon-label">phantomjs</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-phonegap"></span><div class="icon-label">phonegap</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-php"></span><div class="icon-label">php</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-polymer"></span><div class="icon-label">polymer</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-postgresql"></span><div class="icon-label">postgresql</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-python"></span><div class="icon-label">python</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-qt"></span><div class="icon-label">qt</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-react"></span><div class="icon-label">react</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-redis"></span><div class="icon-label">redis</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-requirejs"></span><div class="icon-label">requirejs</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-ruby"></span><div class="icon-label">ruby</div></div>
+
+                    <!-- Row 8 -->
+                    <div class="row-header">Row 8: Databases &amp; Version Control</div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-rubygems"></span><div class="icon-label">rubygems</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-safari"></span><div class="icon-label">safari</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-sourceforge"></span><div class="icon-label">sourceforge</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-sourcegraph"></span><div class="icon-label">sourcegraph</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-sqlite"></span><div class="icon-label">sqlite</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-stack-overflow"></span><div class="icon-label">stack-overflow</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-svg"></span><div class="icon-label">svg</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-svn"></span><div class="icon-label">svn</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-symfony"></span><div class="icon-label">symfony</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-titanium"></span><div class="icon-label">titanium</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-tizen"></span><div class="icon-label">tizen</div></div>
+
+                    <!-- Row 9 -->
+                    <div class="row-header">Row 9: CI/CD &amp; Operating Systems</div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-travis-ci"></span><div class="icon-label">travis-ci</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-ubuntu"></span><div class="icon-label">ubuntu</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-unity"></span><div class="icon-label">unity</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-versioneye"></span><div class="icon-label">versioneye</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-w3c"></span><div class="icon-label">w3c</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-webgl"></span><div class="icon-label">webgl</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-webkit"></span><div class="icon-label">webkit</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-whatwg"></span><div class="icon-label">whatwg</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-windows8"></span><div class="icon-label">windows8</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-wordpress"></span><div class="icon-label">wordpress</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-xamarin"></span><div class="icon-label">xamarin</div></div>
+
+                    <!-- Row 10 -->
+                    <div class="row-header">Row 10: Build Tools</div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-yeoman"></span><div class="icon-label">yeoman</div></div>
+                    <div class="icon-item"><span class="vendor-icon vendor-icon-md vendor-icon-zend"></span><div class="icon-label">zend</div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Size Variants Section -->
+        <section id="sizes">
+            <h2>Size Variants</h2>
+            <div class="card">
+                <p>Three size variants are available. Use the appropriate size class:</p>
+                <div class="size-demo">
+                    <div class="size-item">
+                        <span class="vendor-icon vendor-icon-sm vendor-icon-react"></span>
+                        <span class="size-label">Small (16px)</span>
+                        <code>.vendor-icon-sm</code>
+                    </div>
+                    <div class="size-item">
+                        <span class="vendor-icon vendor-icon-md vendor-icon-react"></span>
+                        <span class="size-label">Medium (32px)</span>
+                        <code>.vendor-icon-md</code>
+                    </div>
+                    <div class="size-item">
+                        <span class="vendor-icon vendor-icon-lg vendor-icon-react"></span>
+                        <span class="size-label">Large (64px)</span>
+                        <code>.vendor-icon-lg</code>
+                    </div>
+                </div>
+                <h3>More Examples</h3>
+                <div class="interactive-demo">
+                    <div class="size-item">
+                        <span class="vendor-icon vendor-icon-sm vendor-icon-github"></span>
+                        <span class="vendor-icon vendor-icon-md vendor-icon-github"></span>
+                        <span class="vendor-icon vendor-icon-lg vendor-icon-github"></span>
+                        <span class="size-label">github</span>
+                    </div>
+                    <div class="size-item">
+                        <span class="vendor-icon vendor-icon-sm vendor-icon-nodejs"></span>
+                        <span class="vendor-icon vendor-icon-md vendor-icon-nodejs"></span>
+                        <span class="vendor-icon vendor-icon-lg vendor-icon-nodejs"></span>
+                        <span class="size-label">nodejs</span>
+                    </div>
+                    <div class="size-item">
+                        <span class="vendor-icon vendor-icon-sm vendor-icon-python"></span>
+                        <span class="vendor-icon vendor-icon-md vendor-icon-python"></span>
+                        <span class="vendor-icon vendor-icon-lg vendor-icon-python"></span>
+                        <span class="size-label">python</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Usage Section -->
+        <section id="usage">
+            <h2>Usage</h2>
+            <div class="card">
+                <h3>Basic Usage</h3>
+                <p>Combine three classes: base class, size class, and icon type class:</p>
+                <pre><code>&lt;!-- Basic usage --&gt;
+&lt;span class="vendor-icon vendor-icon-md vendor-icon-github"&gt;&lt;/span&gt;
+
+&lt;!-- Different sizes --&gt;
+&lt;span class="vendor-icon vendor-icon-sm vendor-icon-react"&gt;&lt;/span&gt;
+&lt;span class="vendor-icon vendor-icon-lg vendor-icon-nodejs"&gt;&lt;/span&gt;</code></pre>
+
+                <h3>Class Structure</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                    <tr style="border-bottom: 1px solid var(--line);">
+                        <th style="text-align: left; padding: 0.5rem;">Class</th>
+                        <th style="text-align: left; padding: 0.5rem;">Purpose</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--line);">
+                        <td style="padding: 0.5rem;"><code>.vendor-icon</code></td>
+                        <td style="padding: 0.5rem;">Base class (required)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--line);">
+                        <td style="padding: 0.5rem;"><code>.vendor-icon-sm/md/lg</code></td>
+                        <td style="padding: 0.5rem;">Size variant</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem;"><code>.vendor-icon-{name}</code></td>
+                        <td style="padding: 0.5rem;">Icon type (e.g., github, react)</td>
+                    </tr>
+                </table>
+
+                <h3>Handling Unknown Vendors</h3>
+                <p>The base <code>.vendor-icon</code> class defaults to the Linux icon (row 0, col 0). Each vendor class overrides the position:</p>
+                <pre><code>/* Base class defaults to linux icon */
+.vendor-icon {
+    --icon-row: 0;
+    --icon-col: 0;  /* linux icon position */
+}
+
+/* Each vendor class overrides the position */
+.vendor-icon-github { --icon-row: 3; --icon-col: 7; }
+.vendor-icon-react  { --icon-row: 7; --icon-col: 7; }</code></pre>
+            </div>
+        </section>
+
+        <!-- Sprite Grid Section -->
+        <section id="sprite-grid">
+            <h2>Sprite Grid Layout</h2>
+            <div class="card">
+                <p>The sprite is organized as an <strong>11×11 grid</strong> (352×352 pixels at 32px per icon):</p>
+                <div style="overflow-x: auto;">
+                    <img src="vendor-icons.png" alt="Vendor Icons Sprite" class="sprite-visual" style="max-width: 352px;">
+                </div>
+                <h3>Grid Reference</h3>
+                <pre><code>/* Grid positioning formula */
+background-position:
+    calc((var(--icon-col) * -1) * var(--vendor-icon-size))
+    calc((var(--icon-row) * -1) * var(--vendor-icon-size));
+
+/* Example: GitHub is at row 3, column 7 */
+.vendor-icon-github { --icon-row: 3; --icon-col: 7; }</code></pre>
+            </div>
+        </section>
+
+        <!-- Extending Section -->
+        <section id="extending">
+            <h2>Extending the System</h2>
+            <div class="card">
+                <h3>Adding New Vendor Icons</h3>
+                <p>To add a new vendor icon to the sprite:</p>
+                <ol>
+                    <li>Add the icon to the sprite image at the next available position</li>
+                    <li>Create a new CSS class with the grid coordinates:</li>
+                </ol>
+                <pre><code>/* New vendor at row 10, column 2 */
+.vendor-icon-newvendor {
+    --icon-row: 10;
+    --icon-col: 2;
+}</code></pre>
+
+                <h3>Creating Aliases</h3>
+                <p>Create aliases for alternative names:</p>
+                <pre><code>/* Alias for nodejs */
+.vendor-icon-node { --icon-row: 4; --icon-col: 10; }
+
+/* Alias for postgresql */
+.vendor-icon-postgres { --icon-row: 7; --icon-col: 4; }</code></pre>
+
+                <h3>CSS Custom Properties</h3>
+                <p>The system uses these CSS custom properties:</p>
+                <pre><code>:root {
+    --vendor-icon-png: url('./vendor-icons.png');
+    --vendor-icon-size-sm: 16px;
+    --vendor-icon-size-md: 32px;
+    --vendor-icon-size-lg: 64px;
+    --vendor-sprite-cols: 11;
+    --vendor-sprite-rows: 11;
+}</code></pre>
+            </div>
+        </section>
+
+        <footer style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--line); text-align: center; color: var(--muted);">
+            <p>PhantomSPA Vendor Icons Sprite System • 111 Icons • 3 Size Variants</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$comment": "PhantomSPA Prism Plugin Configuration - Directive definitions and activation rules",
+
+    "storageKey": "prismConfig",
+
+    "defaults": {
+        "enableHighlighting": true,
+        "showLineNumbers": true,
+        "showCopyButton": true,
+        "showDownloadButton": true,
+        "showLanguageLabel": true,
+        "enableLineHighlight": true,
+        "enableCommandLine": true
+    },
+
+    "directives": {
+        "line-numbers": {
+            "description": "Show line numbers in the gutter",
+            "activation": {
+                "target": "pre",
+                "addClass": "line-numbers"
+            }
+        },
+        "command-line": {
+            "description": "Display as command-line interface with prompt",
+            "activation": {
+                "target": "pre",
+                "addClass": "command-line"
+            },
+            "conflicts": ["line-numbers"]
+        },
+        "toolbar": {
+            "description": "Show the toolbar (required for copy/download/language buttons)",
+            "activation": {
+                "target": "pre",
+                "addClass": "toolbar"
+            }
+        },
+        "copy-to-clipboard": {
+            "description": "Show copy button in toolbar",
+            "activation": {
+                "target": "pre",
+                "setAttribute": { "data-prism-copy": "true" }
+            },
+            "implies": ["toolbar"]
+        },
+        "download-button": {
+            "description": "Show download button in toolbar",
+            "activation": {
+                "target": "pre",
+                "setAttribute": { "data-prism-download": "true" }
+            },
+            "implies": ["toolbar"],
+            "requiresCustomLogic": true,
+            "customLogicDescription": "Creates Blob URL and sets data-src, data-download-link attributes"
+        },
+        "show-language": {
+            "description": "Show language label in toolbar",
+            "activation": {
+                "target": "pre",
+                "setAttribute": { "data-prism-language": "true" }
+            },
+            "implies": ["toolbar"]
+        },
+        "treeview": {
+            "description": "Display as file/folder tree structure",
+            "activation": {
+                "target": "pre",
+                "setAttribute": { "data-treeview-icons": "none" }
+            },
+            "flags": {
+                "-n": {
+                    "description": "Use native Prism icons",
+                    "overrideAttribute": { "data-treeview-icons": "native" }
+                },
+                "-c": {
+                    "description": "Use custom PhantomSPA icons",
+                    "overrideAttribute": { "data-treeview-icons": "custom" }
+                }
+            }
+        },
+        "match-braces": {
+            "description": "Highlight matching braces on hover/click",
+            "activation": {
+                "target": "code",
+                "addClass": "match-braces"
+            }
+        },
+        "rainbow-braces": {
+            "description": "Colorful nested brace levels (implies match-braces)",
+            "activation": {
+                "target": "code",
+                "addClass": ["match-braces", "rainbow-braces"]
+            },
+            "implies": ["match-braces"]
+        }
+    },
+
+    "parameterizedDirectives": {
+        "highlight": {
+            "description": "Highlight specific lines (e.g., highlight=2,4-6)",
+            "pattern": "^[\\d,\\-]+$",
+            "activation": {
+                "target": "pre",
+                "setAttribute": { "data-line": "{value}" }
+            }
+        }
+    },
+
+    "globalAttributes": {
+        "configured": {
+            "description": "Marks that this block has per-block configuration",
+            "attribute": "data-prism-configured",
+            "value": "true"
+        }
+    }
+}
+

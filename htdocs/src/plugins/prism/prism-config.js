@@ -1,11 +1,55 @@
 /**
  * Prism.js Configuration Manager
  * Handles user preferences for syntax highlighting features
+ *
+ * Configuration is loaded from prism-config.json for directive definitions
+ * and activation rules. This allows adding new plugins without modifying code.
  */
 
-const STORAGE_KEY = 'prismConfig';
+// Configuration loaded from prism-config.json
+let directiveConfig = null;
 
-const DEFAULT_CONFIG = {
+/**
+ * Load the directive configuration from prism-config.json
+ * @returns {Promise<Object>} The directive configuration
+ */
+async function loadDirectiveConfig() {
+    if (directiveConfig) {
+        return directiveConfig;
+    }
+
+    try {
+        // Determine the base path for the config file
+        const scriptUrl = import.meta.url;
+        const basePath = scriptUrl.substring(0, scriptUrl.lastIndexOf('/'));
+        const configUrl = `${basePath}/prism-config.json`;
+
+        const response = await fetch(configUrl);
+        if (!response.ok) {
+            throw new Error(`Failed to load prism-config.json: ${response.status}`);
+        }
+        directiveConfig = await response.json();
+        console.info('[prism-config] Loaded directive configuration:', Object.keys(directiveConfig.directives || {}));
+        return directiveConfig;
+    } catch (err) {
+        console.error('[prism-config] Failed to load directive config, using fallback:', err);
+        // Return minimal fallback config
+        directiveConfig = { directives: {}, parameterizedDirectives: {}, defaults: {} };
+        return directiveConfig;
+    }
+}
+
+/**
+ * Get the directive configuration synchronously (must be loaded first)
+ * @returns {Object} The directive configuration or empty fallback
+ */
+function getDirectiveConfig() {
+    return directiveConfig || { directives: {}, parameterizedDirectives: {}, defaults: {} };
+}
+
+// Storage key and defaults - will be populated from config
+let STORAGE_KEY = 'prismConfig';
+let DEFAULT_CONFIG = {
     enableHighlighting: true,
     showLineNumbers: true,
     showCopyButton: true,
@@ -14,6 +58,21 @@ const DEFAULT_CONFIG = {
     enableLineHighlight: true,
     enableCommandLine: true
 };
+
+/**
+ * Initialize configuration from prism-config.json
+ * Call this before using other config functions
+ */
+export async function initPrismConfigFromJson() {
+    const config = await loadDirectiveConfig();
+    if (config.storageKey) {
+        STORAGE_KEY = config.storageKey;
+    }
+    if (config.defaults) {
+        DEFAULT_CONFIG = { ...DEFAULT_CONFIG, ...config.defaults };
+    }
+    return config;
+}
 
 /**
  * Load Prism configuration from localStorage
@@ -61,7 +120,7 @@ export function resetPrismConfig() {
  */
 export function applyPrismConfig(config) {
     const body = document.body;
-    
+
     // Apply body classes for CSS-based feature toggling
     body.classList.toggle('prism-no-highlighting', !config.enableHighlighting);
     body.classList.toggle('prism-no-line-numbers', !config.showLineNumbers);
@@ -70,7 +129,7 @@ export function applyPrismConfig(config) {
     body.classList.toggle('prism-no-language', !config.showLanguageLabel);
     body.classList.toggle('prism-no-line-highlight', !config.enableLineHighlight);
     body.classList.toggle('prism-no-command-line', !config.enableCommandLine);
-    
+
     console.info('[prism-config] Configuration applied:', config);
 }
 
@@ -179,17 +238,17 @@ export function highlightCode(container, config) {
  */
 function removeHighlighting(container) {
     const codeBlocks = container.querySelectorAll('pre[class*="language-"]');
-    
+
     codeBlocks.forEach(pre => {
         const code = pre.querySelector('code');
         if (code) {
             // Get original text content
             const text = code.textContent;
-            
+
             // Remove all Prism-generated elements
             code.innerHTML = '';
             code.textContent = text;
-            
+
             // Remove Prism classes except language class
             const classes = Array.from(pre.classList);
             classes.forEach(cls => {
@@ -212,11 +271,11 @@ function removeHighlighting(container) {
 export function createPrismSettingsPanel(config, onUpdate) {
     const panel = document.createElement('div');
     panel.classList.add('prism-settings-panel');
-    
+
     const title = document.createElement('h4');
     title.textContent = 'Code Block Settings';
     panel.appendChild(title);
-    
+
     // Create toggle options
     const options = [
         { key: 'enableHighlighting', label: 'Enable syntax highlighting' },
@@ -227,7 +286,7 @@ export function createPrismSettingsPanel(config, onUpdate) {
         { key: 'enableLineHighlight', label: 'Enable line highlighting' },
         { key: 'enableCommandLine', label: 'Enable command-line prompts' }
     ];
-    
+
     options.forEach(option => {
         const optionEl = createToggleOption(
             option.key,
@@ -242,18 +301,18 @@ export function createPrismSettingsPanel(config, onUpdate) {
         );
         panel.appendChild(optionEl);
     });
-    
+
     // Action buttons container
     const actions = document.createElement('div');
     actions.classList.add('prism-settings-actions');
-    
+
     // Reset button
     const resetBtn = document.createElement('button');
     resetBtn.classList.add('prism-reset-btn');
     resetBtn.textContent = 'Reset to Defaults';
     resetBtn.addEventListener('click', () => {
         const defaultConfig = resetPrismConfig();
-        
+
         // Update all checkboxes
         options.forEach(option => {
             const checkbox = panel.querySelector(`#prism-setting-${option.key}`);
@@ -261,15 +320,15 @@ export function createPrismSettingsPanel(config, onUpdate) {
                 checkbox.checked = defaultConfig[option.key];
             }
         });
-        
+
         applyPrismConfig(defaultConfig);
         if (onUpdate) onUpdate(defaultConfig);
-        
+
         // Visual feedback
         resetBtn.classList.add('clicked');
         setTimeout(() => resetBtn.classList.remove('clicked'), 300);
     });
-    
+
     // Close button
     const closeBtn = document.createElement('button');
     closeBtn.classList.add('prism-close-btn');
@@ -277,11 +336,11 @@ export function createPrismSettingsPanel(config, onUpdate) {
     closeBtn.addEventListener('click', () => {
         panel.classList.remove('open');
     });
-    
+
     actions.appendChild(resetBtn);
     actions.appendChild(closeBtn);
     panel.appendChild(actions);
-    
+
     return panel;
 }
 
@@ -296,7 +355,7 @@ export function createPrismSettingsPanel(config, onUpdate) {
 function createToggleOption(id, label, checked, onChange) {
     const option = document.createElement('div');
     option.classList.add('prism-setting-option');
-    
+
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = `prism-setting-${id}`;
@@ -304,14 +363,14 @@ function createToggleOption(id, label, checked, onChange) {
     checkbox.addEventListener('change', (e) => {
         onChange(e.target.checked);
     });
-    
+
     const labelEl = document.createElement('label');
     labelEl.setAttribute('for', `prism-setting-${id}`);
     labelEl.textContent = label;
-    
+
     option.appendChild(checkbox);
     option.appendChild(labelEl);
-    
+
     return option;
 }
 
@@ -419,19 +478,21 @@ export function applyPerBlockPrismConfig(container) {
 
 /**
  * Parse directive options from the directive text
+ * Uses configuration from prism-config.json for dynamic directive handling
  * @param {string} directiveText - The directive text (e.g., "line-numbers highlight=2,4-6 copy-to-clipboard")
  * @returns {Object} Parsed options
  */
 function parseDirectiveOptions(directiveText) {
+    const config = getDirectiveConfig();
+    const directives = config.directives || {};
+    const parameterized = config.parameterizedDirectives || {};
+
+    // Build options object with all known directives set to false
     const options = {
-        lineNumbers: false,
+        // Dynamic activations from config (will be processed by applyDirectiveOptions)
+        _dynamicActivations: [],
+        // Legacy options for backward compatibility with existing code
         highlight: null,
-        copyToClipboard: false,
-        downloadButton: false,
-        showLanguage: false,
-        toolbar: false,
-        commandLine: false,
-        treeview: false,
         treeviewNative: false,
         treeviewCustom: false
     };
@@ -439,61 +500,80 @@ function parseDirectiveOptions(directiveText) {
     // Split by whitespace
     const parts = directiveText.split(/\s+/);
 
+    // Track which directives are enabled for "implies" processing
+    const enabledDirectives = new Set();
+
     parts.forEach(part => {
         if (!part) return;
+
+        const partLower = part.toLowerCase();
 
         // Check for parameterized options (e.g., highlight=2,4-6)
         if (part.includes('=')) {
             const [key, value] = part.split('=', 2);
+            const keyLower = key.toLowerCase();
 
-            if (key === 'highlight') {
-                // Validate highlight syntax
-                if (validateHighlightSyntax(value)) {
-                    options.highlight = value;
+            // Check if this is a known parameterized directive
+            if (parameterized[keyLower]) {
+                const paramConfig = parameterized[keyLower];
+                // Validate using pattern from config
+                if (paramConfig.pattern) {
+                    const regex = new RegExp(paramConfig.pattern);
+                    if (regex.test(value)) {
+                        // Store the value and activation info
+                        options._dynamicActivations.push({
+                            ...paramConfig.activation,
+                            value: value
+                        });
+                    } else {
+                        console.warn(`[prism-config] Invalid ${keyLower} syntax:`, value);
+                    }
                 } else {
-                    console.warn('[prism-config] Invalid highlight syntax:', value);
+                    // No pattern validation, just store
+                    options._dynamicActivations.push({
+                        ...paramConfig.activation,
+                        value: value
+                    });
                 }
             } else {
                 console.warn('[prism-config] Unknown parameterized option:', key);
             }
-        } else {
-            // Simple flag options
-            switch (part.toLowerCase()) {
-                case 'line-numbers':
-                    options.lineNumbers = true;
-                    break;
-                case 'copy-to-clipboard':
-                    options.copyToClipboard = true;
-                    options.toolbar = true; // Toolbar required for copy button
-                    break;
-                case 'download-button':
-                    options.downloadButton = true;
-                    options.toolbar = true; // Toolbar required for download button
-                    break;
-                case 'show-language':
-                    options.showLanguage = true;
-                    options.toolbar = true; // Toolbar required for language label
-                    break;
-                case 'toolbar':
-                    options.toolbar = true;
-                    break;
-                case 'command-line':
-                    options.commandLine = true;
-                    break;
-                case 'treeview':
-                    options.treeview = true;
-                    break;
-                case '-n':
-                    // Native Prism icons flag (only meaningful with treeview)
-                    options.treeviewNative = true;
-                    break;
-                case '-c':
-                    // Custom PhantomSPA icons flag (only meaningful with treeview)
-                    options.treeviewCustom = true;
-                    break;
-                default:
-                    console.warn('[prism-config] Unknown directive option:', part);
+        } else if (directives[partLower]) {
+            // Known directive from config
+            const directiveConfig = directives[partLower];
+            enabledDirectives.add(partLower);
+
+            // Add activation to the list
+            if (directiveConfig.activation) {
+                options._dynamicActivations.push({
+                    directive: partLower,
+                    ...directiveConfig.activation
+                });
             }
+
+            // Process "implies" - other directives that should be enabled
+            if (directiveConfig.implies) {
+                directiveConfig.implies.forEach(implied => {
+                    if (!enabledDirectives.has(implied) && directives[implied]) {
+                        enabledDirectives.add(implied);
+                        if (directives[implied].activation) {
+                            options._dynamicActivations.push({
+                                directive: implied,
+                                ...directives[implied].activation
+                            });
+                        }
+                    }
+                });
+            }
+        } else if (partLower === '-n' || partLower === '-c') {
+            // Special flags for treeview (handled separately due to complex logic)
+            if (partLower === '-n') {
+                options.treeviewNative = true;
+            } else if (partLower === '-c') {
+                options.treeviewCustom = true;
+            }
+        } else {
+            console.warn('[prism-config] Unknown directive option:', part);
         }
     });
 
@@ -512,71 +592,96 @@ function validateHighlightSyntax(value) {
 
 /**
  * Apply directive options to a <pre> element
+ * Uses dynamic activations from prism-config.json
  * @param {HTMLElement} pre - The <pre> element
- * @param {Object} options - Parsed options
+ * @param {Object} options - Parsed options with _dynamicActivations array
  */
 function applyDirectiveOptions(pre, options) {
-    // Add line-numbers class
-    if (options.lineNumbers) {
-        pre.classList.add('line-numbers');
+    const config = getDirectiveConfig();
+    const directives = config.directives || {};
+    const code = pre.querySelector('code');
+
+    // Track which directives are applied for conflict resolution
+    const appliedDirectives = new Set();
+
+    // Process dynamic activations from config
+    if (options._dynamicActivations && options._dynamicActivations.length > 0) {
+        options._dynamicActivations.forEach(activation => {
+            const target = activation.target === 'code' ? code : pre;
+            if (!target) return;
+
+            // Track the directive for conflict resolution
+            if (activation.directive) {
+                appliedDirectives.add(activation.directive);
+            }
+
+            // Add class(es)
+            if (activation.addClass) {
+                const classes = Array.isArray(activation.addClass)
+                    ? activation.addClass
+                    : [activation.addClass];
+                classes.forEach(cls => target.classList.add(cls));
+            }
+
+            // Set attribute(s)
+            if (activation.setAttribute) {
+                Object.entries(activation.setAttribute).forEach(([attr, value]) => {
+                    // Replace {value} placeholder with actual value (for parameterized directives)
+                    const finalValue = activation.value
+                        ? value.replace('{value}', activation.value)
+                        : value;
+                    target.setAttribute(attr, finalValue);
+                });
+            }
+        });
     }
 
-    // Add highlight data attribute
-    if (options.highlight) {
-        pre.setAttribute('data-line', options.highlight);
-    }
+    // Handle conflicts defined in config
+    appliedDirectives.forEach(directive => {
+        const directiveConfig = directives[directive];
+        if (directiveConfig?.conflicts) {
+            directiveConfig.conflicts.forEach(conflicting => {
+                if (appliedDirectives.has(conflicting)) {
+                    // Remove conflicting classes/attributes
+                    const conflictConfig = directives[conflicting];
+                    if (conflictConfig?.activation) {
+                        const target = conflictConfig.activation.target === 'code' ? code : pre;
+                        if (target && conflictConfig.activation.addClass) {
+                            const classes = Array.isArray(conflictConfig.activation.addClass)
+                                ? conflictConfig.activation.addClass
+                                : [conflictConfig.activation.addClass];
+                            classes.forEach(cls => target.classList.remove(cls));
+                        }
+                    }
+                }
+            });
+        }
+    });
 
-    // Add command-line class
-    if (options.commandLine) {
-        pre.classList.add('command-line');
-        // Remove line-numbers if command-line is enabled (they're mutually exclusive)
-        pre.classList.remove('line-numbers');
-    }
-
-    // Handle treeview icon modes
-    if (options.treeview) {
-        // Determine which icon mode to use
+    // Handle treeview icon modes (special logic that can't be fully config-driven)
+    if (appliedDirectives.has('treeview')) {
         if (options.treeviewNative) {
-            // Native Prism icons mode (-N flag)
             pre.setAttribute('data-treeview-icons', 'native');
         } else if (options.treeviewCustom) {
-            // Custom PhantomSPA icons mode (-C flag)
             pre.setAttribute('data-treeview-icons', 'custom');
-        } else {
-            // No icons mode (default)
-            pre.setAttribute('data-treeview-icons', 'none');
         }
+        // Default 'none' is already set by the config activation
+    }
+
+    // Handle download-button special logic (requires Blob URL generation)
+    if (appliedDirectives.has('download-button') && code) {
+        const language = pre.className.match(/language-(\w+)/)?.[1] || 'txt';
+        const filename = `code.${language}`;
+        const codeContent = code.textContent;
+
+        // Create a data URL with the code content
+        const blob = new Blob([codeContent], { type: 'text/plain' });
+        const dataUrl = URL.createObjectURL(blob);
+
+        pre.setAttribute('data-src', dataUrl);
+        pre.setAttribute('data-download-link', filename);
     }
 
     // Mark that this block has per-block configuration
-    // This can be used to prevent global config from overriding
     pre.setAttribute('data-prism-configured', 'true');
-
-    // Store which features are enabled for this block
-    // This allows CSS to show/hide toolbar buttons per-block
-    if (options.copyToClipboard) {
-        pre.setAttribute('data-prism-copy', 'true');
-    }
-    if (options.downloadButton) {
-        pre.setAttribute('data-prism-download', 'true');
-        // Prism download-button plugin requires BOTH data-src AND data-download-link attributes
-        // data-src: URL to download from (we'll use a data URL with the code content)
-        // data-download-link: filename for the download
-        const code = pre.querySelector('code');
-        if (code) {
-            const language = pre.className.match(/language-(\w+)/)?.[1] || 'txt';
-            const filename = `code.${language}`;
-            const codeContent = code.textContent;
-
-            // Create a data URL with the code content
-            const blob = new Blob([codeContent], { type: 'text/plain' });
-            const dataUrl = URL.createObjectURL(blob);
-
-            pre.setAttribute('data-src', dataUrl);
-            pre.setAttribute('data-download-link', filename);
-        }
-    }
-    if (options.showLanguage) {
-        pre.setAttribute('data-prism-language', 'true');
-    }
 }

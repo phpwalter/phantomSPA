@@ -186,7 +186,7 @@
             </span>
             Basic function with ES6 syntax
         </div>
-        <!-- prism: line-numbers -->
+        <!-- prism: line-numbers match-braces -->
         <pre><code class="language-javascript">
 // Arrow function with destructuring
 const greet = ({ name, age }) => {
@@ -896,6 +896,12 @@ const prismConfig = {
             name: 'line-numbers',
             jsPath: '/plugins/line-numbers/prism-line-numbers.min.js',
             cssPath: '/plugins/line-numbers/prism-line-numbers.min.css',
+            dependencies: []
+        },
+        {
+            name: 'match-braces',
+            jsPath: '/plugins/match-braces/prism-match-braces.min.js',
+            cssPath: '/plugins/match-braces/prism-match-braces.min.css',
             dependencies: []
         },
         {
