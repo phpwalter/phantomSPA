@@ -19,10 +19,12 @@ import {
     createPrismSettingsPanel,
     createPrismSettingsButton,
     applyPerBlockPrismConfig,
-    initPrismConfigFromJson
+    initPrismConfigFromJson,
+    getDirectiveConfig
 } from './prism-config.js';
 
 import { loadPrismPlugins } from './prism-plugin-loader.js';
+import { loadDropins, executeHook } from './prism-dropin-loader.js';
 
 /**
  * Plugin initialization function called by the plugin manager
@@ -66,7 +68,7 @@ export async function setup(spa, options = {}) {
         // Step 2: Load Prism CDN resources (core, languages, plugins CSS)
         await loadPrismCDNResources(config);
 
-        // Step 3: Load plugin CSS
+        // Step 3: Load plugin CSS (core only - icon sprites loaded by drop-in)
         await loadPluginCSS();
 
         // Step 4: Load Prism plugins dynamically (only the ones in config)
@@ -80,32 +82,39 @@ export async function setup(spa, options = {}) {
         let prismConfig = loadPrismConfig();
         applyPrismConfig(prismConfig);
 
-        // Step 7: Hook into SPA routing to highlight code on page load
+        // Step 7: Load drop-ins from prism-config.json
+        await loadDropins();
+
+        // Step 8: Hook into SPA routing to highlight code on page load
         if (spa.events) {
-            spa.events.addEventListener('route:after', (event) => {
+            spa.events.addEventListener('route:after', async (event) => {
                 const main = document.querySelector('#app-shell');
                 if (main) {
+                    // Execute beforeHighlight hook for drop-ins
+                    await executeHook('beforeHighlight', { container: main, config: prismConfig });
+
                     // Apply per-block configuration from HTML comment directives
-                    applyPerBlockPrismConfig(main);
+                    await applyPerBlockPrismConfig(main);
+
                     // Highlight code with global configuration
                     highlightCode(main, prismConfig);
-                    // Add custom headers to code blocks
-                    addCustomHeaders(main);
-                    // Add file type icons to tree code blocks (fallback for treeview plugin)
-                    addTreeFileIcons(main);
+
+                    // Execute afterHighlight hook for drop-ins
+                    // (custom headers, tree icons, etc. are now handled by drop-ins)
+                    await executeHook('afterHighlight', { container: main, config: prismConfig });
                 }
             });
         }
 
-        // Step 8: Initialize settings UI
-        initPrismSettingsUI(spa, prismConfig, (newConfig) => {
+        // Step 9: Initialize settings UI
+        initPrismSettingsUI(spa, prismConfig, async (newConfig) => {
             prismConfig = newConfig;
             // Re-apply highlighting to current page
             const main = document.querySelector('#app-shell');
             if (main) {
                 highlightCode(main, prismConfig);
-                addCustomHeaders(main);
-                addTreeFileIcons(main);
+                // Execute onConfigChange hook for drop-ins
+                await executeHook('onConfigChange', { container: main, config: prismConfig });
             }
         });
 
@@ -161,16 +170,12 @@ async function loadPrismCDNResources(config) {
 
 /**
  * Load plugin CSS files
+ * Note: Icon sprite CSS is now loaded by the icon-sprites drop-in
  */
 async function loadPluginCSS() {
-    // Load main plugin CSS
+    // Load main plugin CSS only
+    // Icon sprite CSS files are loaded by the icon-sprites drop-in
     await loadStylesheet('/src/plugins/prism/prism-syntax-highlighter.css', 'prism-plugin-css');
-
-    // Load programming language icons sprite CSS for code block headers (with cache-busting parameter)
-    await loadStylesheet('/src/assets/images/prog.lang-icons/prog.lang-icons.css?v=' + Date.now(), 'prism-prog-lang-icons-css');
-
-    // Load file type icons sprite CSS for tree code blocks (with cache-busting parameter)
-    await loadStylesheet('/src/assets/images/file.type-icons/file.type-icons.css?v=' + Date.now(), 'prism-file-type-icons-css');
 }
 
 /**
@@ -271,6 +276,8 @@ function loadScript(src, id) {
 
 /**
  * Add custom headers to code blocks
+ * @deprecated This function is now handled by the custom-headers drop-in.
+ * Kept for backwards compatibility but no longer called by core.
  * @param {HTMLElement} container - Container element
  */
 function addCustomHeaders(container) {
@@ -307,8 +314,8 @@ function addCustomHeaders(container) {
 
         // Create language icon using CSS custom properties system
         const languageIcon = document.createElement('span');
-        const iconClass = getLanguageIconClass(language.toLowerCase());
-        languageIcon.className = `lang-icon lang-icon-sm ${iconClass}`;
+        const { iconClass, baseClass, sizeClass } = getLanguageIconClass(language.toLowerCase());
+        languageIcon.className = `${baseClass} ${sizeClass} ${iconClass}`;
 
         // Create text content with conditional title
         const shouldShowTitle = title && title !== 'code';
@@ -499,71 +506,38 @@ function showCopyError(button) {
 
 /**
  * Map programming language to sprite icon class
+ * @deprecated This function is now provided by the icon-sprites drop-in.
+ * Kept for backwards compatibility.
  * @param {string} language - Programming language name (lowercase)
- * @returns {string} - CSS class name for language icon
+ * @returns {Object} - Object with iconClass, baseClass, and sizeClass
  */
 function getLanguageIconClass(language) {
-    // Map languages to CSS custom properties icon classes
-    // Using -sm variant for 18px header icons (16px base size is closest to desired 18px)
-    const iconMap = {
-        // Web Technologies & Modern Languages
-        'typescript': 'lang-icon-typescript-sm',
-        'javascript': 'lang-icon-javascript-sm',
-        'js': 'lang-icon-javascript-sm',
-        'jsx': 'lang-icon-javascript-sm',
-        'tsx': 'lang-icon-typescript-sm',
-        'css': 'lang-icon-css3-sm',
-        'scss': 'lang-icon-css3-sm',
-        'sass': 'lang-icon-css3-sm',
-        'less': 'lang-icon-css3-sm',
-        'stylus': 'lang-icon-css3-sm',
-        'html': 'lang-icon-html5-sm',
-        'markup': 'lang-icon-html5-sm',
-        'xml': 'lang-icon-html5-sm',
-        'svg': 'lang-icon-html5-sm',
-        'swift': 'lang-icon-swift-sm',
-        'assemblyscript': 'lang-icon-assemblyscript-sm',
+    const config = getDirectiveConfig();
+    const spriteConfig = config.iconSprites?.['prog-lang-icons'] || {};
 
-        // System Languages & Tools
-        'python': 'lang-icon-python-sm',
-        'py': 'lang-icon-python-sm',
-        'c': 'lang-icon-c-sm',
-        'cpp': 'lang-icon-cpp-sm',
-        'cxx': 'lang-icon-cpp-sm',
-        'cc': 'lang-icon-cpp-sm',
-        'csharp': 'lang-icon-csharp-sm',
-        'cs': 'lang-icon-csharp-sm',
-        'mysql': 'lang-icon-mysql-sm',
+    const prefix = spriteConfig.iconClassPrefix || 'lang-icon';
+    const sizeVariant = spriteConfig.sizeVariant || '-sm';
+    const languageMap = spriteConfig.languageMap || {};
 
-        // Enterprise & Server Languages
-        'java': 'lang-icon-java-sm',
-        'php': 'lang-icon-php-sm',
-        'perl': 'lang-icon-perl-sm',
-        'pl': 'lang-icon-perl-sm',
-        'sql': 'lang-icon-mssql-sm',
-        'mssql': 'lang-icon-mssql-sm',
-        'tsql': 'lang-icon-mssql-sm',
+    const langLower = language.toLowerCase();
+    const iconName = languageMap[langLower];
 
-        // Data & Scripting Languages
-        'json': 'lang-icon-json-sm',
-        'ruby': 'lang-icon-ruby-sm',
-        'rb': 'lang-icon-ruby-sm',
-        'markdown': 'lang-icon-markdown-sm',
-        'md': 'lang-icon-markdown-sm',
-        'bash': 'lang-icon-bash-sm',
-        'shell': 'lang-icon-bash-sm',
-        'sh': 'lang-icon-bash-sm',
-        'zsh': 'lang-icon-bash-sm',
-        'fish': 'lang-icon-bash-sm',
-        'powershell': 'lang-icon-bash-sm',
-        'apache': 'lang-icon-apache-sm',
+    // Build the language-specific icon class WITHOUT the size suffix
+    // The size suffix is only for the size class (e.g., lang-icon-sm)
+    // The language class should be just lang-icon-{language} (e.g., lang-icon-javascript)
+    let iconClass;
+    if (iconName) {
+        iconClass = `${prefix}-${iconName}`;
+    } else {
+        // Default to json icon if no mapping found
+        iconClass = `${prefix}-json`;
+    }
 
-        // Node.js variants
-        'nodejs': 'lang-icon-nodejs-sm',
-        'node': 'lang-icon-node-sm'
+    return {
+        iconClass,
+        baseClass: prefix,
+        sizeClass: `${prefix}${sizeVariant}`
     };
-
-    return iconMap[language.toLowerCase()] || 'lang-icon-json-sm'; // Default fallback icon
 }
 
 /**
@@ -674,7 +648,8 @@ function downloadCode(text, filename, extension) {
 
 /**
  * Add file type icons to tree code blocks (fallback for treeview plugin)
- * This function manually injects file type icons into tree structures
+ * @deprecated This function is now handled by the tree-icons drop-in.
+ * Kept for backwards compatibility but no longer called by core.
  * @param {HTMLElement} container - Container element
  */
 function addTreeFileIcons(container) {
@@ -744,87 +719,38 @@ function addTreeFileIcons(container) {
 
 /**
  * Get file icon class based on filename
+ * @deprecated This function is now provided by the icon-sprites drop-in.
+ * Kept for backwards compatibility.
  * @param {string} filename - The filename to analyze
  * @returns {string} - CSS class for the appropriate icon
  */
 function getFileIconClass(filename) {
+    const config = getDirectiveConfig();
+    const spriteConfig = config.iconSprites?.['file-type-icons'] || {};
+
+    const prefix = spriteConfig.iconClassPrefix || 'lang-icon';
+    const directoryNames = spriteConfig.directoryNames || [];
+    const extensionMap = spriteConfig.extensionMap || {};
+
     // Remove trailing slash for directories
     const cleanName = filename.replace(/\/$/, '');
 
-    // Check if it's a directory (ends with / or has no extension and common directory names)
+    // Check if it's a directory (ends with / or has no extension and is a known directory name)
     if (filename.endsWith('/') ||
-        (!cleanName.includes('.') && ['pages', 'docs', 'public', 'src', 'assets', 'components', 'project'].includes(cleanName.toLowerCase()))) {
-        return 'lang-icon-folder-sm';
+        (!cleanName.includes('.') && directoryNames.includes(cleanName.toLowerCase()))) {
+        return `${prefix}-folder`;
     }
 
     // Get file extension
     const extension = cleanName.split('.').pop()?.toLowerCase();
 
-    // Map extensions to icon classes from the new file.type-icons sprite
-    const iconMap = {
-        // Web technologies
-        'html': 'lang-icon-html-sm',
-        'htm': 'lang-icon-html-sm',
-        'css': 'lang-icon-css-sm',
-        'scss': 'lang-icon-css-sm',
-        'sass': 'lang-icon-css-sm',
-        'less': 'lang-icon-css-sm',
-        'js': 'lang-icon-js-sm',
-        'jsx': 'lang-icon-js-sm',
-        'ts': 'lang-icon-js-sm',  // Use JS icon for TypeScript (no specific TS icon in sprite)
-        'tsx': 'lang-icon-js-sm',
+    // Look up icon name in extension map
+    const iconName = extensionMap[extension];
 
-        // Data formats
-        'json': 'lang-icon-json-sm',
-        'yml': 'lang-icon-json-sm',
-        'yaml': 'lang-icon-json-sm',
-        'csv': 'lang-icon-csv-sm',
+    if (iconName) {
+        return `${prefix}-${iconName}`;
+    }
 
-        // Documents
-        'md': 'lang-icon-txt-sm',  // Use text icon for markdown
-        'markdown': 'lang-icon-txt-sm',
-        'txt': 'lang-icon-txt-sm',
-        'pdf': 'lang-icon-pdf-sm',
-        'doc': 'lang-icon-doc-sm',
-        'docx': 'lang-icon-doc-sm',
-        'xls': 'lang-icon-xls-sm',
-        'xlsx': 'lang-icon-xls-sm',
-        'ppt': 'lang-icon-ppt-sm',
-        'pptx': 'lang-icon-ppt-sm',
-
-        // Images
-        'png': 'lang-icon-png-sm',
-        'jpg': 'lang-icon-png-sm',  // Use PNG icon for other images
-        'jpeg': 'lang-icon-png-sm',
-        'gif': 'lang-icon-gif-sm',
-        'svg': 'lang-icon-svg-sm',
-        'eps': 'lang-icon-eps-sm',
-
-        // Programming languages
-        'php': 'lang-icon-php-sm',
-        'py': 'lang-icon-pyn-sm',
-        'python': 'lang-icon-pyn-sm',
-        'pl': 'lang-icon-perl-sm',
-        'perl': 'lang-icon-perl-sm',
-
-        // Archives
-        'zip': 'lang-icon-zip-sm',
-        'rar': 'lang-icon-rar-sm',
-        'tar': 'lang-icon-zip-sm',
-        'gz': 'lang-icon-zip-sm',
-
-        // Media
-        'mp3': 'lang-icon-mp3-sm',
-        'wav': 'lang-icon-wav-sm',
-        'mov': 'lang-icon-mov-sm',
-        'avi': 'lang-icon-avi-sm',
-        'mp4': 'lang-icon-avi-sm',
-
-        // Executables
-        'exe': 'lang-icon-exe-sm',
-        'dll': 'lang-icon-dll-sm',
-        'mod': 'lang-icon-mod-sm'
-    };
-
-    return iconMap[extension] || 'lang-icon-generic-sm';
+    // Default to generic file icon
+    return `${prefix}-generic`;
 }

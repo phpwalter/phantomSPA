@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prism.js Documentation | PhantomSPA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Comprehensive documentation for Prism.js syntax highlighting in PhantomSPA">
+
+    <!-- Load PhantomSPA global styles -->
+    <link rel="stylesheet" href="/docs/dev/css/styles.css">
+
+    <!-- Load Prism custom styles -->
+    <link rel="stylesheet" href="/src/plugins/prism/prism-syntax-highlighter.css">
+
+    <!-- Load icon sprites -->
+    <link rel="stylesheet" href="/src/assets/images/prog.lang-icons/prog.lang-icons.css">
+    <link rel="stylesheet" href="/src/assets/images/file.type-icons/file.type-icons.css">
+
+    <style>
+        /* ============================================
+           MATERIAL THEME-INSPIRED DOCUMENTATION STYLES
+           Using PhantomSPA CSS Custom Properties
+           ============================================ */
+
+        /* Reset body for docs layout */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--fg);
+        }
+
+        /* ===== DOCS LAYOUT ===== */
+        .docs-layout {
+            display: grid;
+            grid-template-columns: var(--sidebar) 1fr 200px;
+            gap: 0;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 52px);
+        }
+
+        @media (max-width: 1200px) {
+            .docs-layout {
+                grid-template-columns: var(--sidebar) 1fr;
+            }
+            .docs-toc { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .docs-layout {
+                grid-template-columns: 1fr;
+            }
+            .docs-sidebar { display: none; }
+        }
+
+        /* ===== HEADER ===== */
+        .docs-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--panel);
+            border-bottom: 1px solid var(--panel-line);
+            padding: 0 24px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .docs-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .docs-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6ea8ff 0%, #4a7fd4 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: white;
+        }
+
+        .docs-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .docs-brand-text strong {
+            color: var(--heading);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .docs-brand-text small {
+            color: var(--muted);
+            font-size: 0.75rem;
+        }
+
+        .docs-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .docs-header-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            color: var(--fg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .docs-header-btn:hover {
+            background: var(--card);
+            border-color: var(--line);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .docs-sidebar {
+            position: sticky;
+            top: 52px;
+            height: calc(100vh - 52px);
+            overflow-y: auto;
+            padding: 24px 16px;
+            border-right: 1px solid var(--panel-line);
+            background: var(--bg);
+        }
+
+        .docs-nav-section {
+            margin-bottom: 24px;
+        }
+
+        .docs-nav-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin: 0 0 12px 12px;
+        }
+
+        .docs-nav {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .docs-nav-item {
+            margin: 2px 0;
+        }
+
+        .docs-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            color: var(--fg);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+        }
+
+        .docs-nav-link:hover {
+            background: var(--panel);
+            border-color: var(--panel-line);
+        }
+
+        .docs-nav-link.active {
+            background: var(--card);
+            border-color: var(--line);
+            border-left: 3px solid var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .docs-nav-link.active .docs-nav-icon {
+            opacity: 1;
+        }
+
+        .docs-nav-icon {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .docs-main {
+            padding: 32px 48px;
+            max-width: 900px;
+            overflow-y: auto;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .docs-hero {
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .docs-hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--heading);
+            margin: 0 0 16px 0;
+            line-height: 1.2;
+        }
+
+        .docs-hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--muted);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* ===== BREADCRUMB ===== */
+        .docs-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .docs-breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .docs-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .docs-breadcrumb-sep {
+            opacity: 0.5;
+        }
+
+        /* ===== SECTIONS ===== */
+        .docs-section {
+            margin-bottom: 48px;
+        }
+
+        .docs-section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--heading);
+            margin: 0 0 8px 0;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent);
+            display: inline-flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .docs-section-desc {
+            color: var(--muted);
+            margin: 16px 0 24px 0;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* ===== FEATURE GRID ===== */
+        .docs-feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .docs-feature-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .docs-feature-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--line-strong);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .docs-feature-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        /* Support for sprite icons in feature cards - 48px size */
+        .docs-feature-icon .lang-icon,
+        .docs-feature-icon .file-icon {
+            --docs-icon-size: 48px;
+            width: var(--docs-icon-size);
+            height: var(--docs-icon-size);
+            background-size:
+                calc(var(--lang-sprite-cols, 7) * var(--docs-icon-size))
+                calc(var(--lang-sprite-rows, 5) * var(--docs-icon-size));
+            background-position:
+                calc(-1 * var(--icon-col, 0) * var(--docs-icon-size))
+                calc(-1 * var(--icon-row, 0) * var(--docs-icon-size));
+        }
+
+        /* Ensure icon positions are applied for 48px size */
+        .docs-feature-icon .lang-icon-html5      { --icon-row: 0; --icon-col: 0; }
+        .docs-feature-icon .lang-icon-css3       { --icon-row: 0; --icon-col: 1; }
+        .docs-feature-icon .lang-icon-javascript { --icon-row: 0; --icon-col: 2; }
+        .docs-feature-icon .lang-icon-json       { --icon-row: 0; --icon-col: 3; }
+        .docs-feature-icon .lang-icon-typescript { --icon-row: 0; --icon-col: 5; }
+        .docs-feature-icon .lang-icon-python     { --icon-row: 2; --icon-col: 3; }
+        .docs-feature-icon .lang-icon-react      { --icon-row: 3; --icon-col: 1; }
+        .docs-feature-icon .lang-icon-bash       { --icon-row: 4; --icon-col: 1; }
+        .docs-feature-icon .lang-icon-markdown   { --icon-row: 4; --icon-col: 4; }
+
+        .docs-feature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--heading);
+            margin: 0 0 8px 0;
+        }
+
+        .docs-feature-desc {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* ===== CARDS ===== */
+        .docs-card {
+            background: var(--panel);
+            border: 1px solid var(--panel-line);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 20px 0;
+        }
+
+        .docs-card-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 0 0 16px 0;
+        }
+
+        /* ===== CALLOUTS ===== */
+        .docs-callout {
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            margin: 24px 0;
+            border-left: 4px solid;
+        }
+
+        .docs-callout-info {
+            background: rgba(110, 168, 255, 0.1);
+            border-color: var(--accent);
+        }
+
+        .docs-callout-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-color: #ffc107;
+        }
+
+        .docs-callout-title {
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .docs-callout-info .docs-callout-title {
+            color: var(--accent);
+        }
+
+        .docs-callout-warning .docs-callout-title {
+            color: #ffc107;
+        }
+
+        .docs-callout p {
+            margin: 0;
+            color: var(--fg);
+            line-height: 1.6;
+        }
+
+        /* ===== TABLES ===== */
+        .docs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        .docs-table th,
+        .docs-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .docs-table th {
+            background: var(--panel);
+            color: var(--heading);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .docs-table tr:hover td {
+            background: rgba(110, 168, 255, 0.05);
+        }
+
+        /* ===== CODE EXAMPLES ===== */
+        .docs-code-example {
+            margin: 24px 0;
+        }
+
+        .docs-code-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .docs-directive {
+            background: var(--panel);
+            color: var(--accent);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            margin: 8px 0 16px 0;
+            border: 1px solid var(--panel-line);
+        }
+
+        /* ===== RIGHT TOC ===== */
+        .docs-toc {
+            position: sticky;
+            top: 52px;
+            height: calc(100vh - 52px);
+            overflow-y: auto;
+            padding: 24px 16px;
+            border-left: 1px solid var(--panel-line);
+            background: var(--bg);
+        }
+
+        .docs-toc-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin: 0 0 16px 0;
+        }
+
+        .docs-toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .docs-toc-list li {
+            margin: 4px 0;
+        }
+
+        .docs-toc-list a {
+            display: block;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-decoration: none;
+            border-left: 2px solid transparent;
+            transition: all 0.15s ease;
+        }
+
+        .docs-toc-list a:hover {
+            color: var(--fg);
+            border-color: var(--line);
+        }
+
+        .docs-toc-list a.active {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* ===== LISTS ===== */
+        .docs-list {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        .docs-list li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .docs-list code {
+            display: inline;
+            background: var(--panel);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        /* ===== LINKS ===== */
+        .docs-link {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .docs-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== ANCHOR LINKS ===== */
+        .docs-anchor {
+            color: var(--muted);
+            text-decoration: none;
+            margin-left: 8px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .docs-section-title:hover .docs-anchor,
+        h3:hover .docs-anchor {
+            opacity: 1;
+        }
+
+        /* ===== BACK TO TOP LINK ===== */
+        .docs-back-to-top {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 400;
+            margin-left: 12px;
+            opacity: 0.6;
+            transition: opacity 0.2s ease, color 0.2s ease;
+            vertical-align: middle;
+        }
+
+        .docs-back-to-top:hover {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        /* ===== SUBSECTIONS ===== */
+        .docs-subsection {
+            margin: 32px 0;
+        }
+
+        .docs-subsection h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--heading);
+            margin: 0 0 12px 0;
+        }
+
+        /* ===== PLUGIN LIST ===== */
+        .docs-plugin-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .docs-plugin-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .docs-plugin-item:last-child {
+            border-bottom: none;
+        }
+
+        .docs-plugin-name {
+            font-weight: 600;
+            color: var(--heading);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+        }
+
+        .docs-plugin-desc {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .docs-plugin-flag {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .docs-deprecated {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .docs-deprecated-badge {
+            display: inline-block;
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        /* ===== SMOOTH SCROLL ===== */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* ===== FOOTER ===== */
+        .docs-footer {
+            background: var(--panel);
+            border-top: 1px solid var(--panel-line);
+            padding: 24px 48px;
+            margin-top: auto;
+        }
+
+        .docs-footer-nav {
+            display: flex;
+            justify-content: space-between;
+            max-width: 900px;
+        }
+
+        .docs-footer-link {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 16px 24px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            min-width: 200px;
+        }
+
+        .docs-footer-link:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .docs-footer-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .docs-footer-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--heading);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="docs-header">
+    <a href="/" class="docs-brand">
+        <div class="docs-logo">P</div>
+        <div class="docs-brand-text">
+            <strong>PhantomSPA</strong>
+            <small>Documentation</small>
+        </div>
+    </a>
+    <div class="docs-header-actions">
+        <button class="docs-header-btn" title="Toggle theme">🌙</button>
+        <a href="https://github.com/phpwalter/phantomSPA" class="docs-header-btn" title="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+        </a>
+    </div>
+</header>
+
+<!-- ===== MAIN LAYOUT ===== -->
+<div class="docs-layout">
+
+    <!-- ===== LEFT SIDEBAR ===== -->
+    <aside class="docs-sidebar">
+        <nav class="docs-nav-section">
+            <div class="docs-nav-title">Getting Started</div>
+            <ul class="docs-nav">
+                <li class="docs-nav-item">
+                    <a href="#introduction" class="docs-nav-link active">
+                        <span class="docs-nav-icon">📖</span>
+                        Introduction
+                    </a>
+                </li>
+                <li class="docs-nav-item">
+                    <a href="#best-practices" class="docs-nav-link">
+                        <span class="docs-nav-icon">✨</span>
+                        Best Practices
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <nav class="docs-nav-section">
+            <div class="docs-nav-title">Configuration</div>
+            <ul class="docs-nav">
+                <li class="docs-nav-item">
+                    <a href="#languages" class="docs-nav-link">
+                        <span class="docs-nav-icon">🌐</span>
+                        Supported Languages
+                    </a>
+                </li>
+                <li class="docs-nav-item">
+                    <a href="#plugins" class="docs-nav-link">
+                        <span class="docs-nav-icon">🔌</span>
+                        Available Plugins
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <nav class="docs-nav-section">
+            <div class="docs-nav-title">Examples</div>
+            <ul class="docs-nav">
+                <li class="docs-nav-item">
+                    <a href="#example-line-numbers" class="docs-nav-link">
+                        <span class="docs-nav-icon">🔢</span>
+                        Line Numbers
+                    </a>
+                </li>
+                <li class="docs-nav-item">
+                    <a href="#example-line-highlight" class="docs-nav-link">
+                        <span class="docs-nav-icon">✨</span>
+                        Line Highlighting
+                    </a>
+                </li>
+                <li class="docs-nav-item">
+                    <a href="#example-match-braces" class="docs-nav-link">
+                        <span class="docs-nav-icon">🔗</span>
+                        Match Braces
+                    </a>
+                </li>
+                <li class="docs-nav-item">
+                    <a href="#example-command-line" class="docs-nav-link">
+                        <span class="docs-nav-icon">💻</span>
+                        Command Line
+                    </a>
+                </li>
+                <li class="docs-nav-item">
+                    <a href="#example-treeview" class="docs-nav-link">
+                        <span class="docs-nav-icon">🌳</span>
+                        Treeview
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="docs-main">
+
+        <!-- Breadcrumb -->
+        <nav class="docs-breadcrumb">
+            <a href="/">Home</a>
+            <span class="docs-breadcrumb-sep">›</span>
+            <a href="/docs">Docs</a>
+            <span class="docs-breadcrumb-sep">›</span>
+            <span>Prism.js</span>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="docs-hero" id="introduction">
+            <h1 class="docs-hero-title">🎨 Prism.js Syntax Highlighter</h1>
+            <p class="docs-hero-subtitle">
+                Beautiful, lightweight syntax highlighting for your code blocks.
+                Prism.js integrates seamlessly with PhantomSPA to provide config-driven,
+                per-block customization with HTML comment directives.
+            </p>
+        </section>
+
+        <!-- Key Features -->
+        <section class="docs-section">
+            <h2 class="docs-section-title">Key Features</h2>
+            <div class="docs-feature-grid">
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon">🎨</div>
+                    <h3 class="docs-feature-title">Syntax Highlighting</h3>
+                    <p class="docs-feature-desc">Beautiful code coloring for 9+ programming languages with the Tomorrow Night theme.</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon">🔢</div>
+                    <h3 class="docs-feature-title">Line Numbers</h3>
+                    <p class="docs-feature-desc">Optional line numbering for easy reference and discussion.</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon">✨</div>
+                    <h3 class="docs-feature-title">Line Highlighting</h3>
+                    <p class="docs-feature-desc">Draw attention to specific lines with customizable highlighting.</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon">📋</div>
+                    <h3 class="docs-feature-title">Copy Button</h3>
+                    <p class="docs-feature-desc">One-click code copying via custom headers (automatic).</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon">📥</div>
+                    <h3 class="docs-feature-title">Download Menu</h3>
+                    <p class="docs-feature-desc">Download code as files with proper extensions.</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon">🌳</div>
+                    <h3 class="docs-feature-title">Treeview</h3>
+                    <p class="docs-feature-desc">File structure visualization with optional icons.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Best Practices Section -->
+        <section class="docs-section" id="best-practices">
+            <h2 class="docs-section-title">Best Practices</h2>
+            <p class="docs-section-desc">Recommendations for using Prism.js effectively in your documentation.</p>
+
+            <div class="docs-feature-grid">
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon">✅</div>
+                    <h3 class="docs-feature-title">Use Line Numbers</h3>
+                    <p class="docs-feature-desc">Add line numbers for code blocks longer than 5 lines to make referencing easier.</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon">✅</div>
+                    <h3 class="docs-feature-title">Highlight Key Lines</h3>
+                    <p class="docs-feature-desc">Use line highlighting to draw attention to important code sections.</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon">✅</div>
+                    <h3 class="docs-feature-title">Specify Language</h3>
+                    <p class="docs-feature-desc">Always specify the language class for proper syntax highlighting.</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon">⚠️</div>
+                    <h3 class="docs-feature-title">Avoid Overloading</h3>
+                    <p class="docs-feature-desc">Don't enable all features at once; use only what's necessary.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Supported Languages Section -->
+        <section class="docs-section" id="languages">
+            <h2 class="docs-section-title">Supported Languages</h2>
+            <p class="docs-section-desc">Languages currently loaded in PhantomSPA's Prism configuration.</p>
+
+            <div class="docs-feature-grid">
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-html5"></span></div>
+                    <h3 class="docs-feature-title">markup</h3>
+                    <p class="docs-feature-desc">HTML, XML, SVG</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-css3"></span></div>
+                    <h3 class="docs-feature-title">css</h3>
+                    <p class="docs-feature-desc">Cascading Style Sheets</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-javascript"></span></div>
+                    <h3 class="docs-feature-title">javascript</h3>
+                    <p class="docs-feature-desc">JavaScript / ES6+</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-json"></span></div>
+                    <h3 class="docs-feature-title">json</h3>
+                    <p class="docs-feature-desc">JSON data format</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-bash"></span></div>
+                    <h3 class="docs-feature-title">bash</h3>
+                    <p class="docs-feature-desc">Shell scripts</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-markdown"></span></div>
+                    <h3 class="docs-feature-title">markdown</h3>
+                    <p class="docs-feature-desc">Markdown syntax</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-typescript"></span></div>
+                    <h3 class="docs-feature-title">typescript</h3>
+                    <p class="docs-feature-desc">TypeScript</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-react"></span></div>
+                    <h3 class="docs-feature-title">jsx</h3>
+                    <p class="docs-feature-desc">React JSX syntax</p>
+                </div>
+                <div class="docs-feature-card">
+                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-python"></span></div>
+                    <h3 class="docs-feature-title">python</h3>
+                    <p class="docs-feature-desc">Python 3</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Available Plugins Section -->
+        <section class="docs-section" id="plugins">
+            <h2 class="docs-section-title">Available Plugins</h2>
+            <p class="docs-section-desc">
+                Prism plugins extend syntax highlighting with additional features like line numbers, brace matching, and more.
+                Enable plugins per code block using HTML comment directives placed immediately before the <code>&lt;pre&gt;&lt;code&gt;</code> block.
+            </p>
+
+            <div class="docs-card">
+                <div class="docs-card-title">Basic Syntax</div>
+                <div class="docs-directive">&lt;!-- prism: [plugin] [flags] --&gt;</div>
+                <p style="color: var(--muted); margin: 0;">Combine multiple plugins by separating them with spaces: <code>&lt;!-- prism: line-numbers match-braces --&gt;</code></p>
+            </div>
+
+            <table class="docs-table">
+                <thead>
+                    <tr>
+                        <th>Plugin</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="#example-line-numbers" class="docs-link">line-numbers</a></td>
+                        <td>Show line numbers in gutter</td>
+                        <td><code>&lt;!-- prism: line-numbers --&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#example-line-highlight" class="docs-link">highlight</a></td>
+                        <td>Highlight specific lines</td>
+                        <td><code>&lt;!-- prism: highlight=2,4-6 --&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#example-match-braces" class="docs-link">match-braces</a></td>
+                        <td>Highlight matching braces</td>
+                        <td><code>&lt;!-- prism: match-braces --&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#example-match-braces" class="docs-link">match-braces -R</a></td>
+                        <td>Rainbow colorization for nested braces</td>
+                        <td><code>&lt;!-- prism: match-braces -R --&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#example-command-line" class="docs-link">command-line</a></td>
+                        <td>Show command prompts</td>
+                        <td><code>&lt;!-- prism: command-line --&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#example-treeview" class="docs-link">treeview</a></td>
+                        <td>File structure (no icons)</td>
+                        <td><code>&lt;!-- prism: treeview --&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#example-treeview" class="docs-link">treeview -N</a></td>
+                        <td>Treeview with native Prism icons</td>
+                        <td><code>&lt;!-- prism: treeview -N --&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#example-treeview" class="docs-link">treeview -C</a></td>
+                        <td>Treeview with custom PhantomSPA icons</td>
+                        <td><code>&lt;!-- prism: treeview -C --&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Deprecated Plugins Section -->
+        <section class="docs-section" id="deprecated-plugins">
+            <h2 class="docs-section-title">Deprecated Plugins</h2>
+            <p class="docs-section-desc">These plugins are automatically filtered out and should not be used.</p>
+
+            <div class="docs-callout docs-callout-warning">
+                <div class="docs-callout-title">⚠️ Auto-filtered Plugins</div>
+                <p>The following plugins conflict with PhantomSPA's <strong>custom-headers</strong> drop-in module, which provides enhanced code block headers with language labels, copy buttons, and download menus. These directives are automatically stripped from your code and replaced by the custom-headers functionality:</p>
+                <table class="docs-table" style="margin-top: 1rem;">
+                    <thead>
+                        <tr>
+                            <th>Deprecated Plugin</th>
+                            <th>Replacement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="docs-deprecated">show-language</span></td>
+                            <td>Custom headers (language label on left)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="docs-deprecated">toolbar</span></td>
+                            <td>Custom headers (integrated toolbar)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="docs-deprecated">copy-to-clipboard</span></td>
+                            <td>Custom headers (copy icon button)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="docs-deprecated">download-button</span></td>
+                            <td>Custom headers (three-dot dropdown menu)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin-top: 1rem; color: var(--muted);">If you include these directives in your code, they will be silently removed and a console warning will be logged during development.</p>
+            </div>
+        </section>
+
+        <!-- Example: Line Numbers -->
+        <section class="docs-section" id="example-line-numbers">
+            <h2 class="docs-section-title">Example: Line Numbers <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a></h2>
+            <p class="docs-section-desc">Add line numbers to make code easier to reference.</p>
+
+            <div class="docs-code-example">
+                <div class="docs-code-label">Directive</div>
+                <div class="docs-directive">&lt;!-- prism: line-numbers --&gt;</div>
+
+                <!-- prism: line-numbers -->
+                <pre><code class="language-javascript">// PhantomSPA Configuration
+const config = {
+    name: 'PhantomSPA',
+    version: '1.0.0',
+    features: {
+        routing: true,
+        plugins: true,
+        markdown: true
+    }
+};
+
+export default config;</code></pre>
+            </div>
+        </section>
+
+        <!-- Example: Line Highlighting -->
+        <section class="docs-section" id="example-line-highlight">
+            <h2 class="docs-section-title">Example: Line Highlighting <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a></h2>
+            <p class="docs-section-desc">Highlight specific lines to draw attention to important code.</p>
+
+            <div class="docs-code-example">
+                <div class="docs-code-label">Directive</div>
+                <div class="docs-directive">&lt;!-- prism: line-numbers highlight=3,5-7 --&gt;</div>
+
+                <!-- prism: line-numbers highlight=3,5-7 -->
+                <pre><code class="language-javascript">// User authentication module
+function authenticate(user, password) {
+    const hash = hashPassword(password);  // Line 3 highlighted
+
+    if (user.passwordHash === hash) {     // Lines 5-7 highlighted
+        return createSession(user);
+    }
+
+    throw new AuthError('Invalid credentials');
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Example: Match Braces -->
+        <section class="docs-section" id="example-match-braces">
+            <h2 class="docs-section-title">Example: Match Braces <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a></h2>
+            <p class="docs-section-desc">Highlight matching braces, brackets, and parentheses on hover.</p>
+
+            <div class="docs-subsection">
+                <h3>Basic Match Braces</h3>
+                <div class="docs-code-example">
+                    <div class="docs-code-label">Directive</div>
+                    <div class="docs-directive">&lt;!-- prism: match-braces --&gt;</div>
+
+                    <!-- prism: match-braces -->
+                    <pre><code class="language-javascript">const data = {
+    users: [
+        { name: 'Alice', roles: ['admin', 'user'] },
+        { name: 'Bob', roles: ['user'] }
+    ],
+    settings: {
+        theme: 'dark',
+        notifications: { email: true, push: false }
+    }
+};</code></pre>
+                </div>
+            </div>
+
+            <div class="docs-subsection">
+                <h3>Rainbow Braces (-R flag)</h3>
+                <div class="docs-code-example">
+                    <div class="docs-code-label">Directive</div>
+                    <div class="docs-directive">&lt;!-- prism: match-braces -R --&gt;</div>
+
+                    <!-- prism: match-braces -R -->
+                    <pre><code class="language-javascript">function deepNested() {
+    return {
+        level1: {
+            level2: {
+                level3: {
+                    level4: ['a', 'b', 'c']
+                }
+            }
+        }
+    };
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Example: Command Line -->
+        <section class="docs-section" id="example-command-line">
+            <h2 class="docs-section-title">Example: Command Line <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a></h2>
+            <p class="docs-section-desc">Display terminal commands with prompts and output.</p>
+
+            <div class="docs-code-example">
+                <div class="docs-code-label">Directive</div>
+                <div class="docs-directive">&lt;!-- prism: command-line --&gt;</div>
+
+                <!-- prism: command-line -->
+                <pre><code class="language-bash">npm install phantomspa
+npm run build
+npm start</code></pre>
+            </div>
+        </section>
+
+        <!-- Example: Treeview -->
+        <section class="docs-section" id="example-treeview">
+            <h2 class="docs-section-title">Example: Treeview <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a></h2>
+            <p class="docs-section-desc">Display file and folder structures with optional icons.</p>
+
+            <div class="docs-subsection">
+                <h3>Default (No Icons)</h3>
+                <div class="docs-code-example">
+                    <div class="docs-code-label">Directive</div>
+                    <div class="docs-directive">&lt;!-- prism: treeview --&gt;</div>
+
+                    <!-- prism: treeview -->
+                    <pre><code class="language-treeview">
+project/
+├── src/
+│   ├── index.js
+│   ├── router.js
+│   └── components/
+│       ├── Header.js
+│       └── Footer.js
+├── package.json
+└── README.md</code></pre>
+                </div>
+            </div>
+
+            <div class="docs-subsection">
+                <h3>Native Prism Icons (-N flag)</h3>
+                <div class="docs-code-example">
+                    <div class="docs-code-label">Directive</div>
+                    <div class="docs-directive">&lt;!-- prism: treeview -N --&gt;</div>
+
+                    <!-- prism: treeview -N -->
+                    <pre><code class="language-treeview">
+project/
+├── src/
+│   ├── index.js
+│   ├── styles.css
+│   └── utils/
+│       └── helpers.js
+├── package.json
+└── README.md</code></pre>
+                </div>
+            </div>
+
+            <div class="docs-subsection">
+                <h3>Custom PhantomSPA Icons (-C flag)</h3>
+                <div class="docs-code-example">
+                    <div class="docs-code-label">Directive</div>
+                    <div class="docs-directive">&lt;!-- prism: treeview -C --&gt;</div>
+
+                    <!-- prism: treeview -C -->
+                    <pre><code class="language-treeview">
+phantomspa/
+├── htdocs/
+│   ├── src/
+│   │   ├── core/
+│   │   │   ├── router.js
+│   │   │   └── spa.js
+│   │   └── plugins/
+│   │       └── prism/
+│   │           ├── prism-config.js
+│   │           └── prism-config.json
+│   └── docs/
+│       └── index.html
+├── package.json
+└── README.md</code></pre>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== RIGHT TOC ===== -->
+    <aside class="docs-toc">
+        <div class="docs-toc-title">On This Page</div>
+        <ul class="docs-toc-list">
+            <li><a href="#introduction" class="active">Introduction</a></li>
+            <li><a href="#best-practices">Best Practices</a></li>
+            <li><a href="#languages">Supported Languages</a></li>
+            <li><a href="#plugins">Available Plugins</a></li>
+            <li><a href="#deprecated-plugins">Deprecated Plugins</a></li>
+            <li><a href="#example-line-numbers">Line Numbers</a></li>
+            <li><a href="#example-line-highlight">Line Highlighting</a></li>
+            <li><a href="#example-match-braces">Match Braces</a></li>
+            <li><a href="#example-command-line">Command Line</a></li>
+            <li><a href="#example-treeview">Treeview</a></li>
+        </ul>
+    </aside>
+
+</div>
+
+<script type="module">
+// Initialize Prism.js for this documentation page
+import { setup } from '/src/plugins/prism/prism-syntax-highlighter.js';
+import {
+    loadPrismConfig,
+    applyPrismConfig,
+    highlightCode,
+    applyPerBlockPrismConfig
+} from '/src/plugins/prism/prism-config.js';
+import { executeHook } from '/src/plugins/prism/prism-dropin-loader.js';
+
+const prismConfig = {
+    theme: 'tomorrow',
+    cdnVersion: '1.29.0',
+    cdnBase: 'https://cdn.jsdelivr.net/npm/prismjs@{version}',
+    languages: ['markup', 'css', 'javascript', 'json', 'bash', 'markdown', 'typescript', 'jsx', 'python'],
+    plugins: [
+        { name: 'line-numbers', jsPath: '/plugins/line-numbers/prism-line-numbers.min.js', cssPath: '/plugins/line-numbers/prism-line-numbers.min.css', dependencies: [] },
+        { name: 'match-braces', jsPath: '/plugins/match-braces/prism-match-braces.min.js', cssPath: '/plugins/match-braces/prism-match-braces.min.css', dependencies: [] },
+        { name: 'line-highlight', jsPath: '/plugins/line-highlight/prism-line-highlight.min.js', cssPath: '/plugins/line-highlight/prism-line-highlight.min.css', dependencies: [] },
+        { name: 'command-line', jsPath: '/plugins/command-line/prism-command-line.min.js', cssPath: '/plugins/command-line/prism-command-line.min.css', dependencies: [] },
+        { name: 'toolbar', jsPath: '/plugins/toolbar/prism-toolbar.min.js', cssPath: '/plugins/toolbar/prism-toolbar.min.css', dependencies: [] },
+        { name: 'copy-to-clipboard', jsPath: '/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js', cssPath: null, dependencies: ['toolbar'] },
+        { name: 'show-language', jsPath: '/plugins/show-language/prism-show-language.min.js', cssPath: null, dependencies: ['toolbar'] },
+        { name: 'treeview', jsPath: '/plugins/treeview/prism-treeview.min.js', cssPath: '/plugins/treeview/prism-treeview.min.css', dependencies: [] }
+    ]
+};
+
+async function initPrism() {
+    console.log('=== Initializing Prism.js for Documentation Page ===');
+    try {
+        const mockSPA = { events: { addEventListener: () => {} } };
+        await setup(mockSPA, prismConfig);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await applyPerBlockPrismConfig(document.body);
+        let config = loadPrismConfig();
+        applyPrismConfig(config);
+        highlightCode(document.body, config);
+        await executeHook('afterHighlight', { container: document.body, config: config });
+        console.log('✅ Prism.js initialized successfully');
+    } catch (err) {
+        console.error('❌ Failed to initialize Prism.js:', err);
+    }
+}
+
+// Scroll-spy: Active nav link highlighting using Intersection Observer
+function initScrollSpy() {
+    // Get all nav links that point to sections
+    const navLinks = document.querySelectorAll('.docs-nav-link, .docs-toc-list a');
+
+    // Build a map of section IDs to their nav links
+    const sectionIds = new Set();
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && href.startsWith('#')) {
+            sectionIds.add(href.substring(1));
+        }
+    });
+
+    // Get all sections that have corresponding nav links
+    const sections = Array.from(sectionIds)
+        .map(id => document.getElementById(id))
+        .filter(el => el !== null);
+
+    if (sections.length === 0) return;
+
+    // Track which sections are currently visible
+    const visibleSections = new Map();
+
+    // Update active nav link based on visible sections
+    function updateActiveLink() {
+        // Find the topmost visible section
+        let activeSection = null;
+        let minTop = Infinity;
+
+        visibleSections.forEach((isVisible, sectionId) => {
+            if (isVisible) {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top < minTop && rect.top >= -100) {
+                        minTop = rect.top;
+                        activeSection = sectionId;
+                    }
+                }
+            }
+        });
+
+        // If no section is visible near the top, find the one closest to viewport top
+        if (!activeSection) {
+            let closestSection = null;
+            let closestDistance = Infinity;
+
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const distance = Math.abs(rect.top);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestSection = section.id;
+                }
+            });
+
+            activeSection = closestSection;
+        }
+
+        // Update nav link active states
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === '#' + activeSection) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+
+    // Create Intersection Observer
+    const observerOptions = {
+        root: null, // viewport
+        rootMargin: '-80px 0px -60% 0px', // Trigger when section is in top 40% of viewport
+        threshold: [0, 0.1, 0.5, 1]
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            visibleSections.set(entry.target.id, entry.isIntersecting);
+        });
+        updateActiveLink();
+    }, observerOptions);
+
+    // Observe all sections
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+
+    // Also update on scroll for edge cases (debounced)
+    let scrollTimeout;
+    document.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(updateActiveLink, 50);
+    }, { passive: true });
+
+    // Initial update
+    updateActiveLink();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        initPrism();
+        initScrollSpy();
+    });
+} else {
+    initPrism();
+    initScrollSpy();
+}
+</script>
+
+</body>
+</html>

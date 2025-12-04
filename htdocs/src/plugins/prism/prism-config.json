@@ -4,6 +4,30 @@
 
     "storageKey": "prismConfig",
 
+    "deprecatedDirectives": {
+        "$comment": "Directives that are incompatible with PhantomSPA's custom-headers drop-in and should be filtered out",
+        "show-language": {
+            "reason": "PhantomSPA uses its own custom-headers drop-in which automatically displays language labels. The Prism CDN show-language plugin conflicts with this system.",
+            "replacement": "Custom headers are applied automatically. No directive needed.",
+            "severity": "warning"
+        },
+        "toolbar": {
+            "reason": "PhantomSPA uses its own custom-headers drop-in which provides toolbar functionality (copy button, download menu). The Prism CDN toolbar plugin conflicts with this system.",
+            "replacement": "Custom headers are applied automatically. No directive needed.",
+            "severity": "warning"
+        },
+        "copy-to-clipboard": {
+            "reason": "PhantomSPA's custom-headers drop-in automatically provides a copy button on all code blocks. The Prism CDN copy-to-clipboard plugin is not needed.",
+            "replacement": "Copy button is included in custom headers automatically.",
+            "severity": "warning"
+        },
+        "download-button": {
+            "reason": "PhantomSPA's custom-headers drop-in automatically provides a download menu on all code blocks. The Prism CDN download-button plugin is not needed.",
+            "replacement": "Download menu is included in custom headers automatically.",
+            "severity": "warning"
+        }
+    },
+
     "defaults": {
         "enableHighlighting": true,
         "showLineNumbers": true,
@@ -12,6 +36,72 @@
         "showLanguageLabel": true,
         "enableLineHighlight": true,
         "enableCommandLine": true
+    },
+
+    "globalToggles": {
+        "$comment": "Maps config keys to CSS classes applied to document.body for global feature toggling",
+        "enableHighlighting": {
+            "bodyClass": "prism-no-highlighting",
+            "invert": true
+        },
+        "showLineNumbers": {
+            "bodyClass": "prism-no-line-numbers",
+            "invert": true
+        },
+        "showCopyButton": {
+            "bodyClass": "prism-no-copy",
+            "invert": true
+        },
+        "showDownloadButton": {
+            "bodyClass": "prism-no-download",
+            "invert": true
+        },
+        "showLanguageLabel": {
+            "bodyClass": "prism-no-language",
+            "invert": true
+        },
+        "enableLineHighlight": {
+            "bodyClass": "prism-no-line-highlight",
+            "invert": true
+        },
+        "enableCommandLine": {
+            "bodyClass": "prism-no-command-line",
+            "invert": true
+        }
+    },
+
+    "settingsPanel": {
+        "$comment": "Configuration for the settings UI panel",
+        "title": "Code Block Settings",
+        "options": [
+            { "key": "enableHighlighting", "label": "Enable syntax highlighting" },
+            { "key": "showLineNumbers", "label": "Show line numbers" },
+            { "key": "showCopyButton", "label": "Show copy button" },
+            { "key": "showDownloadButton", "label": "Show download button" },
+            { "key": "showLanguageLabel", "label": "Show language label" },
+            { "key": "enableLineHighlight", "label": "Enable line highlighting" },
+            { "key": "enableCommandLine", "label": "Enable command-line prompts" }
+        ]
+    },
+
+    "globalHighlighting": {
+        "$comment": "Rules for applying global config to code blocks without per-block directives",
+        "lineNumbers": {
+            "configKey": "showLineNumbers",
+            "addClass": "line-numbers",
+            "conflictsWith": ["command-line"]
+        },
+        "commandLine": {
+            "configKey": "enableCommandLine",
+            "removeClass": "command-line",
+            "onlyWhenDisabled": true
+        }
+    },
+
+    "cleanupPatterns": {
+        "$comment": "Class patterns to remove when disabling highlighting",
+        "classPatterns": ["^line-"],
+        "exactClasses": ["command-line"]
     },
 
     "directives": {
@@ -52,8 +142,7 @@
                 "setAttribute": { "data-prism-download": "true" }
             },
             "implies": ["toolbar"],
-            "requiresCustomLogic": true,
-            "customLogicDescription": "Creates Blob URL and sets data-src, data-download-link attributes"
+            "customActivation": "download-button"
         },
         "show-language": {
             "description": "Show language label in toolbar",
@@ -78,22 +167,22 @@
                     "description": "Use custom PhantomSPA icons",
                     "overrideAttribute": { "data-treeview-icons": "custom" }
                 }
-            }
+            },
+            "customActivation": "treeview"
         },
         "match-braces": {
             "description": "Highlight matching braces on hover/click",
             "activation": {
                 "target": "code",
                 "addClass": "match-braces"
-            }
-        },
-        "rainbow-braces": {
-            "description": "Colorful nested brace levels (implies match-braces)",
-            "activation": {
-                "target": "code",
-                "addClass": ["match-braces", "rainbow-braces"]
             },
-            "implies": ["match-braces"]
+            "flags": {
+                "-r": {
+                    "description": "Enable rainbow colorization for nested braces",
+                    "target": "code",
+                    "addClass": "rainbow-braces"
+                }
+            }
         }
     },
 
@@ -114,6 +203,166 @@
             "attribute": "data-prism-configured",
             "value": "true"
         }
+    },
+
+    "iconSprites": {
+        "$comment": "Icon sprite systems for code block headers and treeview",
+
+        "prog-lang-icons": {
+            "description": "Programming language icons for code block headers",
+            "cssPath": "/src/assets/images/prog.lang-icons/prog.lang-icons.css",
+            "linkId": "prism-prog-lang-icons-css",
+            "applyTo": "code-headers",
+            "iconClassPrefix": "lang-icon",
+            "defaultIcon": "lang-icon-json-sm",
+            "sizeVariant": "-sm",
+            "languageMap": {
+                "typescript": "typescript",
+                "javascript": "javascript",
+                "js": "javascript",
+                "jsx": "javascript",
+                "tsx": "typescript",
+                "css": "css3",
+                "scss": "css3",
+                "sass": "css3",
+                "less": "css3",
+                "stylus": "css3",
+                "html": "html5",
+                "markup": "html5",
+                "xml": "html5",
+                "svg": "html5",
+                "swift": "swift",
+                "assemblyscript": "assemblyscript",
+                "python": "python",
+                "py": "python",
+                "c": "c",
+                "cpp": "cpp",
+                "cxx": "cpp",
+                "cc": "cpp",
+                "csharp": "csharp",
+                "cs": "csharp",
+                "mysql": "mysql",
+                "java": "java",
+                "php": "php",
+                "perl": "perl",
+                "pl": "perl",
+                "sql": "mssql",
+                "mssql": "mssql",
+                "tsql": "mssql",
+                "json": "json",
+                "ruby": "ruby",
+                "rb": "ruby",
+                "markdown": "markdown",
+                "md": "markdown",
+                "bash": "bash",
+                "shell": "bash",
+                "sh": "bash",
+                "zsh": "bash",
+                "fish": "bash",
+                "powershell": "bash",
+                "apache": "apache",
+                "nodejs": "nodejs",
+                "node": "node",
+                "treeview": "tree",
+                "tree": "tree"
+            }
+        },
+
+        "file-type-icons": {
+            "description": "File type icons for treeview blocks",
+            "cssPath": "/src/assets/images/file.type-icons/file.type-icons.css",
+            "linkId": "prism-file-type-icons-css",
+            "applyTo": "treeview",
+            "iconClassPrefix": "lang-icon",
+            "defaultIcon": "lang-icon-generic-sm",
+            "folderIcon": "lang-icon-folder-sm",
+            "sizeVariant": "-sm",
+            "directoryNames": ["pages", "docs", "public", "src", "assets", "components", "project"],
+            "extensionMap": {
+                "html5": "html",
+                "html": "html",
+                "htm": "html",
+                "css3": "css",
+                "css": "css",
+                "scss": "css",
+                "sass": "css",
+                "less": "css",
+                "js": "js",
+                "jsx": "js",
+                "ts": "js",
+                "tsx": "js",
+                "json": "json",
+                "yml": "json",
+                "yaml": "json",
+                "csv": "csv",
+                "md": "txt",
+                "markdown": "txt",
+                "txt": "txt",
+                "pdf": "pdf",
+                "doc": "doc",
+                "docx": "doc",
+                "xls": "xls",
+                "xlsx": "xls",
+                "ppt": "ppt",
+                "pptx": "ppt",
+                "png": "png",
+                "jpg": "png",
+                "jpeg": "png",
+                "gif": "gif",
+                "svg": "svg",
+                "eps": "eps",
+                "php": "php",
+                "py": "pyn",
+                "python": "pyn",
+                "pl": "perl",
+                "perl": "perl",
+                "zip": "zip",
+                "rar": "rar",
+                "tar": "zip",
+                "gz": "zip",
+                "mp3": "mp3",
+                "wav": "wav",
+                "mov": "mov",
+                "avi": "avi",
+                "mp4": "avi",
+                "exe": "exe",
+                "dll": "dll",
+                "mod": "mod"
+            }
+        }
+    },
+
+    "dropins": {
+        "$comment": "Drop-in modules that extend Prism functionality without modifying core files",
+
+        "custom-headers": {
+            "description": "Adds custom headers with language icons, copy button, and download menu to code blocks",
+            "module": "./dropins/custom-headers.js",
+            "enabled": true,
+            "hooks": ["afterHighlight", "onConfigChange"],
+            "options": {
+                "showLanguageIcon": true,
+                "showCopyButton": true,
+                "showDownloadMenu": true
+            }
+        },
+
+        "tree-icons": {
+            "description": "Adds file type icons to treeview code blocks",
+            "module": "./dropins/tree-icons.js",
+            "enabled": true,
+            "hooks": ["afterHighlight"],
+            "options": {
+                "iconSprite": "file-type-icons"
+            }
+        },
+
+        "icon-sprites": {
+            "description": "Loads icon sprite CSS files defined in iconSprites config",
+            "module": "./dropins/icon-sprites.js",
+            "enabled": true,
+            "hooks": ["init"],
+            "options": {}
+        }
     }
 }
-

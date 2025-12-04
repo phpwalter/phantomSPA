@@ -25,14 +25,40 @@ pre[class*="language-"] {
 /* Note: Prism.js actively resets overflow, so we can't use overflow-y: visible.
    Instead, we reposition line numbers inside the padding area. */
 
-/* Inline code */
+/* Inline code - Override Prism theme styles for code NOT inside pre blocks */
+/* This ensures inline <code> elements display as simple monospace text, not code blocks */
+:not(pre) > code,
+p code,
+li code,
+td code,
+th code,
+span code,
+strong code,
+em code,
+a code {
+    display: inline !important;
+    background: var(--panel, rgba(0, 0, 0, 0.3)) !important;
+    color: var(--accent, #ff79c6) !important;
+    padding: 0.15em 0.4em !important;
+    border-radius: 4px !important;
+    font-size: 0.875em !important;
+    font-family: var(--font-mono, 'Fira Code', 'Consolas', monospace) !important;
+    border: 1px solid var(--panel-line, rgba(255, 255, 255, 0.1)) !important;
+    white-space: nowrap !important;
+    /* Reset Prism block styles */
+    margin: 0 !important;
+    overflow: visible !important;
+    text-shadow: none !important;
+}
+
+/* Inline code with language class (from Prism) */
 :not(pre) > code[class*="language-"] {
-    background: black !important;
-    color: var(--accent) !important;
-    padding: 0.2em 0.4em;
-    border-radius: 4px;
-    font-size: 0.875em;
-    border: 1px solid var(--panel-line);
+    background: var(--panel, rgba(0, 0, 0, 0.3)) !important;
+    color: var(--accent, #ff79c6) !important;
+    padding: 0.15em 0.4em !important;
+    border-radius: 4px !important;
+    font-size: 0.875em !important;
+    border: 1px solid var(--panel-line, rgba(255, 255, 255, 0.1)) !important;
 }
 
 /* Prism.js Overrides - Override CDN styles to align with PhantomSPA design system */
@@ -506,8 +532,14 @@ div.code-toolbar > pre {
     /* Override CSS custom properties system for header icons */
     width: var(--lang-icon-size-sm) !important;
     height: var(--lang-icon-size-sm) !important;
-    /* Scale background-size for small icons */
-    background-size: calc(7 * var(--lang-icon-size-sm)) calc(4 * var(--lang-icon-size-sm)) !important; /* 126px 72px */
+    /* Scale background-size for small icons (7 cols × 5 rows) */
+    background-size:
+        calc(var(--lang-sprite-cols, 7) * var(--lang-icon-size-sm))
+        calc(var(--lang-sprite-rows, 5) * var(--lang-icon-size-sm)) !important;
+    /* Calculate background-position based on icon row/col custom properties */
+    background-position:
+        calc(-1 * var(--icon-col, 0) * var(--lang-icon-size-sm))
+        calc(-1 * var(--icon-row, 0) * var(--lang-icon-size-sm)) !important;
     margin-top: -4px !important;
     margin-right: 6px;
     flex-shrink: 0;
