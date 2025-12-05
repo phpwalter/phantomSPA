@@ -28,6 +28,12 @@
         ],
         "plugins": [
           {
+            "name": "toolbar",
+            "jsPath": "/plugins/toolbar/prism-toolbar.min.js",
+            "cssPath": "/plugins/toolbar/prism-toolbar.min.css",
+            "dependencies": []
+          },
+          {
             "name": "line-numbers",
             "jsPath": "/plugins/line-numbers/prism-line-numbers.min.js",
             "cssPath": "/plugins/line-numbers/prism-line-numbers.min.css",

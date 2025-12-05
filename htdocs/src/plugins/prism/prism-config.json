@@ -5,26 +5,22 @@
     "storageKey": "prismConfig",
 
     "deprecatedDirectives": {
-        "$comment": "Directives that are incompatible with PhantomSPA's custom-headers drop-in and should be filtered out",
+        "$comment": "Directives that should not be used directly - PhantomSPA handles these via the hybrid approach",
+        "$note": "The toolbar plugin is now REQUIRED and loaded from CDN. PhantomSPA registers custom buttons via Prism.plugins.toolbar.registerButton() API.",
         "show-language": {
-            "reason": "PhantomSPA uses its own custom-headers drop-in which automatically displays language labels. The Prism CDN show-language plugin conflicts with this system.",
-            "replacement": "Custom headers are applied automatically. No directive needed.",
-            "severity": "warning"
-        },
-        "toolbar": {
-            "reason": "PhantomSPA uses its own custom-headers drop-in which provides toolbar functionality (copy button, download menu). The Prism CDN toolbar plugin conflicts with this system.",
-            "replacement": "Custom headers are applied automatically. No directive needed.",
-            "severity": "warning"
+            "reason": "PhantomSPA registers a custom 'phantomspa-language' button with the toolbar that includes language icons. Do not load the CDN show-language plugin.",
+            "replacement": "Language label with icon is registered automatically via toolbar API.",
+            "severity": "info"
         },
         "copy-to-clipboard": {
-            "reason": "PhantomSPA's custom-headers drop-in automatically provides a copy button on all code blocks. The Prism CDN copy-to-clipboard plugin is not needed.",
-            "replacement": "Copy button is included in custom headers automatically.",
-            "severity": "warning"
+            "reason": "PhantomSPA registers a custom 'phantomspa-copy' button with the toolbar that provides enhanced copy feedback. Do not load the CDN copy-to-clipboard plugin.",
+            "replacement": "Copy button is registered automatically via toolbar API.",
+            "severity": "info"
         },
         "download-button": {
-            "reason": "PhantomSPA's custom-headers drop-in automatically provides a download menu on all code blocks. The Prism CDN download-button plugin is not needed.",
-            "replacement": "Download menu is included in custom headers automatically.",
-            "severity": "warning"
+            "reason": "PhantomSPA registers a custom 'phantomspa-download' button with the toolbar that provides a multi-format download menu. Do not load the CDN download-button plugin.",
+            "replacement": "Download menu is registered automatically via toolbar API.",
+            "severity": "info"
         }
     },
 

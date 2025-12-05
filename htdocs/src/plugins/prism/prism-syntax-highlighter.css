@@ -143,64 +143,15 @@ pre.line-numbers > code {
     bottom: 0.4em;
 }
 
-/* Toolbar plugin */
-div.code-toolbar {
-    position: relative;
-}
+/* ============================================
+   LEGACY PRISM TOOLBAR STYLES (for non-PhantomSPA buttons)
+   ============================================
+   These styles apply to default Prism CDN plugin buttons.
+   PhantomSPA buttons have their own styles defined later.
+   ============================================ */
 
-div.code-toolbar > .toolbar {
-    position: absolute;
-    top: 0.5em;
-    right: 0.5em;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-div.code-toolbar:hover > .toolbar,
-div.code-toolbar:focus-within > .toolbar {
-    opacity: 1;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item {
-    display: inline-block;
-    margin-left: 0.5em;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item > button,
-div.code-toolbar > .toolbar > .toolbar-item > a,
-div.code-toolbar > .toolbar > .toolbar-item > span {
-    background: var(--panel) !important;
-    color: var(--fg) !important;
-    border: 1px solid var(--line-strong) !important;
-    border-radius: 6px;
-    padding: 0.4em 0.8em;
-    font-size: 0.75rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-div.code-toolbar > .toolbar > .toolbar-item > button:hover,
-div.code-toolbar > .toolbar > .toolbar-item > a:hover,
-div.code-toolbar > .toolbar > .toolbar-item > span:hover {
-    background: var(--card) !important;
-    border-color: var(--accent) !important;
-    color: var(--accent) !important;
-}
-
-div.code-toolbar > .toolbar > .toolbar-item > button:focus,
-div.code-toolbar > .toolbar > .toolbar-item > a:focus {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-}
-
-/* Copy button success state */
-div.code-toolbar > .toolbar > .toolbar-item > button[data-copy-state="copy-success"] {
-    background: var(--accent) !important;
-    color: #fff !important;
-    border-color: var(--accent) !important;
-}
+/* NOTE: The main toolbar styling is now in the HYBRID APPROACH section below.
+   These legacy styles are kept for any non-PhantomSPA toolbar buttons. */
 
 /* Command line plugin */
 .command-line-prompt {
@@ -458,41 +409,146 @@ body.prism-no-command-line pre[class*="language-"]:not([data-prism-configured]) 
 }
 
 /* ============================================
-   HIDE DEFAULT PRISM TOOLBAR
+   PRISM TOOLBAR - HYBRID APPROACH STYLING
+   ============================================
+   PhantomSPA uses Prism's official toolbar plugin as the container,
+   but registers custom buttons via Prism.plugins.toolbar.registerButton().
+   This CSS styles the toolbar to match PhantomSPA's Material Design.
+
+   KEY INSIGHT: Prism's toolbar plugin APPENDS the toolbar AFTER the <pre>
+   element in the DOM. We use flexbox with explicit order values to
+   visually position the toolbar ABOVE the code block.
    ============================================ */
 
-/* Hide only the toolbar elements, NOT the code-toolbar wrapper or pre/code elements */
-div.code-toolbar > .toolbar,
-div.code-toolbar > .toolbar > .toolbar-item,
-div.code-toolbar > .toolbar > .toolbar-item > button,
-div.code-toolbar > .toolbar > .toolbar-item > span {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-}
-
-/* Keep code-toolbar wrapper visible and properly positioned */
+/* Toolbar wrapper - use flexbox to reorder toolbar above code */
 div.code-toolbar {
     position: relative !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin: 0.5em 0;
 }
 
-/* Ensure pre element displays normally within code-toolbar */
-div.code-toolbar > pre {
-    position: static !important;
-    margin: 0.5em 0 !important;
-    display: block !important;
-    visibility: visible !important;
+/* The toolbar itself - styled as header bar ABOVE the code */
+div.code-toolbar > .toolbar {
+    /* Reset Prism's default absolute positioning */
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    /* Use order to position BEFORE the pre element */
+    order: -1 !important;
+    /* Flexbox layout for toolbar items - NO space-between, use margin-right: auto on first item */
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    /* PhantomSPA Material Design styling */
+    background: var(--card);
+    border: 1px solid var(--line-strong);
+    border-bottom: none;
+    /* Rounded TOP corners (toolbar is visually above code) */
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 0.25rem 1rem;
+    font-family: var(--font-mono), monospace;
+    font-size: 0.75rem;
     opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Code block connects to toolbar header */
+div.code-toolbar > pre[class*="language-"] {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    /* Rounded BOTTOM corners (code is visually below toolbar) */
+    border-radius: 0 0 var(--radius) var(--radius);
+    order: 1 !important;
 }
 
 /* ============================================
-   CUSTOM CODE BLOCK HEADER
+   TOOLBAR ITEMS - HIDE DEFAULT PRISM BUTTONS
+   ============================================
+   Hide Prism's default 'label' button and any CDN plugin buttons.
+   Only show PhantomSPA registered buttons (phantomspa-*).
+   ============================================ */
+
+/* Hide ALL toolbar items by default */
+div.code-toolbar > .toolbar > .toolbar-item {
+    display: none !important;
+}
+
+/* Show ONLY PhantomSPA registered buttons */
+div.code-toolbar > .toolbar > .toolbar-item:has(.prism-language-label),
+div.code-toolbar > .toolbar > .toolbar-item:has(.prism-copy-btn),
+div.code-toolbar > .toolbar > .toolbar-item:has(.prism-download-container) {
+    display: inline-flex !important;
+    align-items: center;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    /* Transparent background - no visible container */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* Language label (first visible item) - push action buttons to the right */
+div.code-toolbar > .toolbar > .toolbar-item:has(.prism-language-label) {
+    margin: 0 auto 0 0 !important; /* margin-right: auto pushes siblings to right */
+    flex-shrink: 0;
+}
+
+/* Action buttons (copy and download) - grouped on the right */
+div.code-toolbar > .toolbar > .toolbar-item:has(.prism-copy-btn) {
+    margin: 0 0.5rem 0 0 !important; /* Small gap before download button */
+    flex-shrink: 0;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item:has(.prism-download-container) {
+    margin: 0 !important;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   FALLBACK: Class-based selectors for older browsers
+   ============================================
+   For browsers that don't support :has(), the dropin adds
+   classes directly to toolbar-item elements.
+   ============================================ */
+
+div.code-toolbar > .toolbar > .toolbar-item.phantomspa-language-item,
+div.code-toolbar > .toolbar > .toolbar-item.phantomspa-copy-item,
+div.code-toolbar > .toolbar > .toolbar-item.phantomspa-download-item {
+    display: inline-flex !important;
+    align-items: center;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    flex-shrink: 0;
+}
+
+/* Language label - push action buttons to the right */
+div.code-toolbar > .toolbar > .toolbar-item.phantomspa-language-item {
+    margin: 0 auto 0 0 !important;
+}
+
+/* Copy button - small gap before download */
+div.code-toolbar > .toolbar > .toolbar-item.phantomspa-copy-item {
+    margin: 0 0.5rem 0 0 !important;
+}
+
+/* Download button - no extra margin */
+div.code-toolbar > .toolbar > .toolbar-item.phantomspa-download-item {
+    margin: 0 !important;
+}
+
+/* ============================================
+   CUSTOM CODE BLOCK HEADER (Fallback)
+   ============================================
+   Used when Prism toolbar plugin is not available.
+   The dropin creates a standalone header element.
    ============================================ */
 
 .prism-custom-header {
@@ -505,7 +561,7 @@ div.code-toolbar > pre {
     border-radius: var(--radius) var(--radius) 0 0;
     padding: 0.25rem 1rem;
     margin-top: 0.5em;
-    font-family: var(--font-mono) monospace;
+    font-family: var(--font-mono), monospace;
     font-size: 0.75rem;
 }
 
@@ -515,7 +571,14 @@ div.code-toolbar > pre {
     border-radius: 0 0 var(--radius) var(--radius);
 }
 
-/* Language label (left side) */
+/* ============================================
+   LANGUAGE LABEL STYLING
+   ============================================
+   Applies to both toolbar and fallback header
+   ============================================ */
+
+/* Language label in toolbar */
+div.code-toolbar > .toolbar .prism-language-label,
 .prism-custom-header .prism-language-label {
     display: flex;
     margin-top: 4px;
@@ -524,10 +587,16 @@ div.code-toolbar > pre {
     color: var(--text);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    /* Ensure transparent - override any inherited styles */
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    cursor: default;
 }
 
-
-/* Language icon within header - CSS Custom Properties System */
+/* Language icon within label - CSS Custom Properties System */
+div.code-toolbar > .toolbar .prism-language-label .lang-icon,
 .prism-custom-header .prism-language-label .lang-icon {
     /* Override CSS custom properties system for header icons */
     width: var(--lang-icon-size-sm) !important;
@@ -545,8 +614,11 @@ div.code-toolbar > pre {
     flex-shrink: 0;
 }
 
+/* ============================================
+   TOOLBAR BUTTON CONTAINERS
+   ============================================ */
 
-/* Actions container (right side) */
+/* Actions container (right side) - for fallback header */
 .prism-header-actions {
     display: flex;
     align-items: center;
@@ -554,11 +626,33 @@ div.code-toolbar > pre {
     position: relative;
 }
 
-/* Button base styles */
+/* Download container in toolbar */
+.prism-download-container,
+div.code-toolbar > .toolbar .prism-download-container {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    /* Ensure transparent - override any inherited styles */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* ============================================
+   BUTTON BASE STYLES
+   ============================================
+   Applies to buttons in both toolbar and fallback header
+   ============================================ */
+
 .prism-copy-btn,
-.prism-menu-btn {
-    background: transparent;
-    border: none;
+.prism-menu-btn,
+div.code-toolbar > .toolbar .prism-copy-btn,
+div.code-toolbar > .toolbar .prism-menu-btn {
+    /* Ensure transparent background - override any inherited styles */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     color: var(--text-muted);
     cursor: pointer;
     padding: 0.25rem;
