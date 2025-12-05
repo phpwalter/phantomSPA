@@ -33,21 +33,46 @@
             color: var(--fg);
         }
 
+        /* ===== SCROLLBAR STYLING ===== */
+        /* Webkit browsers (Chrome, Safari, Edge) */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--panel);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--line);
+            border-radius: 5px;
+            border: 2px solid var(--panel);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--muted);
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: var(--panel);
+        }
+
+        /* Firefox */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--line) var(--panel);
+        }
+
         /* ===== DOCS LAYOUT ===== */
         .docs-layout {
             display: grid;
-            grid-template-columns: var(--sidebar) 1fr 200px;
+            grid-template-columns: var(--sidebar) 1fr;
             gap: 0;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             min-height: calc(100vh - 52px);
-        }
-
-        @media (max-width: 1200px) {
-            .docs-layout {
-                grid-template-columns: var(--sidebar) 1fr;
-            }
-            .docs-toc { display: none; }
         }
 
         @media (max-width: 768px) {
@@ -301,15 +326,24 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
         }
 
-        .docs-feature-icon {
-            font-size: 2rem;
+        /* Feature card header: icon + title inline */
+        .docs-feature-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-bottom: 12px;
         }
 
-        /* Support for sprite icons in feature cards - 48px size */
+        .docs-feature-icon {
+            font-size: 1.35rem;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        /* Support for sprite icons in feature cards - 32px size */
         .docs-feature-icon .lang-icon,
         .docs-feature-icon .file-icon {
-            --docs-icon-size: 48px;
+            --docs-icon-size: 32px;
             width: var(--docs-icon-size);
             height: var(--docs-icon-size);
             background-size:
@@ -320,7 +354,7 @@
                 calc(-1 * var(--icon-row, 0) * var(--docs-icon-size));
         }
 
-        /* Ensure icon positions are applied for 48px size */
+        /* Ensure icon positions are applied for 32px size */
         .docs-feature-icon .lang-icon-html5      { --icon-row: 0; --icon-col: 0; }
         .docs-feature-icon .lang-icon-css3       { --icon-row: 0; --icon-col: 1; }
         .docs-feature-icon .lang-icon-javascript { --icon-row: 0; --icon-col: 2; }
@@ -335,7 +369,7 @@
             font-size: 1.1rem;
             font-weight: 600;
             color: var(--heading);
-            margin: 0 0 8px 0;
+            margin: 0;
         }
 
         .docs-feature-desc {
@@ -456,56 +490,6 @@
             border: 1px solid var(--panel-line);
         }
 
-        /* ===== RIGHT TOC ===== */
-        .docs-toc {
-            position: sticky;
-            top: 52px;
-            height: calc(100vh - 52px);
-            overflow-y: auto;
-            padding: 24px 16px;
-            border-left: 1px solid var(--panel-line);
-            background: var(--bg);
-        }
-
-        .docs-toc-title {
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--muted);
-            margin: 0 0 16px 0;
-        }
-
-        .docs-toc-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .docs-toc-list li {
-            margin: 4px 0;
-        }
-
-        .docs-toc-list a {
-            display: block;
-            padding: 6px 12px;
-            font-size: 0.8rem;
-            color: var(--muted);
-            text-decoration: none;
-            border-left: 2px solid transparent;
-            transition: all 0.15s ease;
-        }
-
-        .docs-toc-list a:hover {
-            color: var(--fg);
-            border-color: var(--line);
-        }
-
-        .docs-toc-list a.active {
-            color: var(--accent);
-            border-color: var(--accent);
-        }
-
         /* ===== LISTS ===== */
         .docs-list {
             margin: 16px 0;
@@ -550,20 +534,34 @@
         }
 
         /* ===== BACK TO TOP LINK ===== */
+        /* Wrapper for section titles with back-to-top links */
+        .docs-section-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .docs-section-title-row .docs-section-title {
+            margin-bottom: 0;
+        }
+
         .docs-back-to-top {
             color: var(--muted);
             text-decoration: none;
-            font-size: 0.85rem;
+            font-size: 1.1rem;
             font-weight: 400;
-            margin-left: 12px;
-            opacity: 0.6;
-            transition: opacity 0.2s ease, color 0.2s ease;
-            vertical-align: middle;
+            opacity: 0.5;
+            transition: opacity 0.2s ease, color 0.2s ease, transform 0.2s ease;
+            padding: 4px 8px;
+            flex-shrink: 0;
+            align-self: center;
         }
 
         .docs-back-to-top:hover {
             opacity: 1;
             color: var(--accent);
+            transform: translateY(-2px);
         }
 
         /* ===== SUBSECTIONS ===== */
@@ -803,9 +801,13 @@
         <section class="docs-hero" id="introduction">
             <h1 class="docs-hero-title">🎨 Prism.js Syntax Highlighter</h1>
             <p class="docs-hero-subtitle">
-                Beautiful, lightweight syntax highlighting for your code blocks.
-                Prism.js integrates seamlessly with PhantomSPA to provide config-driven,
-                per-block customization with HTML comment directives.
+                Beautiful, lightweight syntax highlighting for your code blocks that brings your documentation to life.
+                Prism.js integrates seamlessly with PhantomSPA to provide config-driven, per-block customization
+                using intuitive HTML comment directives. With support for over 9 programming languages, customizable
+                themes, and powerful plugins like line numbers, line highlighting, and brace matching, you can create
+                professional-quality code examples that are both visually appealing and highly functional. The modular
+                architecture ensures fast load times while the drop-in system allows for easy extensibility without
+                modifying core files.
             </p>
         </section>
 
@@ -814,34 +816,46 @@
             <h2 class="docs-section-title">Key Features</h2>
             <div class="docs-feature-grid">
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon">🎨</div>
-                    <h3 class="docs-feature-title">Syntax Highlighting</h3>
-                    <p class="docs-feature-desc">Beautiful code coloring for 9+ programming languages with the Tomorrow Night theme.</p>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon">🎨</div>
+                        <h3 class="docs-feature-title">Syntax Highlighting</h3>
+                    </div>
+                    <p class="docs-feature-desc">Beautiful code coloring for 9+ programming languages using the Tomorrow Night theme. Each language has carefully crafted token colors that enhance readability while maintaining visual consistency across your documentation. The highlighting engine automatically detects language-specific syntax patterns including keywords, strings, comments, and operators.</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon">🔢</div>
-                    <h3 class="docs-feature-title">Line Numbers</h3>
-                    <p class="docs-feature-desc">Optional line numbering for easy reference and discussion.</p>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon">🔢</div>
+                        <h3 class="docs-feature-title">Line Numbers</h3>
+                    </div>
+                    <p class="docs-feature-desc">Optional line numbering makes it easy to reference specific lines in discussions, code reviews, or tutorials. Line numbers are styled to be unobtrusive yet clearly visible, with proper alignment for code blocks of any length. Enable them per-block using the simple directive syntax for maximum flexibility.</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon">✨</div>
-                    <h3 class="docs-feature-title">Line Highlighting</h3>
-                    <p class="docs-feature-desc">Draw attention to specific lines with customizable highlighting.</p>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon">✨</div>
+                        <h3 class="docs-feature-title">Line Highlighting</h3>
+                    </div>
+                    <p class="docs-feature-desc">Draw attention to specific lines with customizable highlighting that uses a subtle background color to emphasize important code sections. Perfect for tutorials where you need to guide readers through step-by-step changes, or for documentation that explains key implementation details. Supports individual lines, ranges, and multiple selections.</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon">📋</div>
-                    <h3 class="docs-feature-title">Copy Button</h3>
-                    <p class="docs-feature-desc">One-click code copying via custom headers (automatic).</p>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon">📋</div>
+                        <h3 class="docs-feature-title">Copy Button</h3>
+                    </div>
+                    <p class="docs-feature-desc">One-click code copying via the custom headers system that appears automatically on every code block. Users can instantly copy code to their clipboard without manually selecting text, improving the developer experience. The button provides visual feedback on successful copy by displaying a green checkmark icon for 2 seconds before reverting to the copy icon.</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon">📥</div>
-                    <h3 class="docs-feature-title">Download Menu</h3>
-                    <p class="docs-feature-desc">Download code as files with proper extensions.</p>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon">📥</div>
+                        <h3 class="docs-feature-title">Download Menu</h3>
+                    </div>
+                    <p class="docs-feature-desc">Download code snippets as properly formatted files with correct extensions based on the detected language. The three-dot menu provides options to save code locally, making it easy for users to grab examples and use them in their own projects. File names are automatically generated from code block titles when available.</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon">🌳</div>
-                    <h3 class="docs-feature-title">Treeview</h3>
-                    <p class="docs-feature-desc">File structure visualization with optional icons.</p>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon">🌳</div>
+                        <h3 class="docs-feature-title">Treeview</h3>
+                    </div>
+                    <p class="docs-feature-desc">Visualize file and folder structures with the treeview plugin that renders directory hierarchies with proper indentation and tree lines. Supports three icon modes: no icons for minimal display, native Prism icons, or custom PhantomSPA sprite icons for a polished look. Perfect for documenting project structures and file organization.</p>
                 </div>
             </div>
         </section>
@@ -849,28 +863,36 @@
         <!-- Best Practices Section -->
         <section class="docs-section" id="best-practices">
             <h2 class="docs-section-title">Best Practices</h2>
-            <p class="docs-section-desc">Recommendations for using Prism.js effectively in your documentation.</p>
+            <p class="docs-section-desc">Recommendations for using Prism.js effectively in your documentation. Following these guidelines will help you create code examples that are both visually appealing and highly functional. Well-structured code blocks improve readability, make it easier for readers to follow along with tutorials, and ensure your documentation maintains a professional, consistent appearance across all pages.</p>
 
             <div class="docs-feature-grid">
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon">✅</div>
-                    <h3 class="docs-feature-title">Use Line Numbers</h3>
-                    <p class="docs-feature-desc">Add line numbers for code blocks longer than 5 lines to make referencing easier.</p>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon">✅</div>
+                        <h3 class="docs-feature-title">Use Line Numbers</h3>
+                    </div>
+                    <p class="docs-feature-desc">Add line numbers for code blocks longer than 5 lines to make referencing easier. Line numbers are essential when discussing specific parts of code in tutorials, code reviews, or technical documentation. They allow readers to quickly locate the exact line being discussed and make it simple to reference code in comments or discussions.</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon">✅</div>
-                    <h3 class="docs-feature-title">Highlight Key Lines</h3>
-                    <p class="docs-feature-desc">Use line highlighting to draw attention to important code sections.</p>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon">✅</div>
+                        <h3 class="docs-feature-title">Highlight Key Lines</h3>
+                    </div>
+                    <p class="docs-feature-desc">Use line highlighting to draw attention to important code sections. When explaining complex code or walking through step-by-step changes, highlighted lines help readers focus on what matters most. This is particularly useful in tutorials where you want to show additions, modifications, or critical implementation details without overwhelming the reader.</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon">✅</div>
-                    <h3 class="docs-feature-title">Specify Language</h3>
-                    <p class="docs-feature-desc">Always specify the language class for proper syntax highlighting.</p>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon">✅</div>
+                        <h3 class="docs-feature-title">Specify Language</h3>
+                    </div>
+                    <p class="docs-feature-desc">Always specify the language class for proper syntax highlighting. Without a language specification, Prism cannot apply the correct token colors and patterns, resulting in plain, unformatted text. Proper language tags also enable language-specific icons in headers and ensure the correct file extension is used when readers download code snippets.</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon">⚠️</div>
-                    <h3 class="docs-feature-title">Avoid Overloading</h3>
-                    <p class="docs-feature-desc">Don't enable all features at once; use only what's necessary.</p>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon">⚠️</div>
+                        <h3 class="docs-feature-title">Avoid Overloading</h3>
+                    </div>
+                    <p class="docs-feature-desc">Don't enable all features at once; use only what's necessary. Combining too many plugins can create visual clutter and distract from the code itself. Choose features that genuinely enhance understanding—for example, use line numbers for long blocks but skip them for short one-liners, and reserve line highlighting for truly important sections rather than highlighting everything.</p>
                 </div>
             </div>
         </section>
@@ -882,48 +904,66 @@
 
             <div class="docs-feature-grid">
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-html5"></span></div>
-                    <h3 class="docs-feature-title">markup</h3>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon"><span class="lang-icon lang-icon-html5"></span></div>
+                        <h3 class="docs-feature-title">markup</h3>
+                    </div>
                     <p class="docs-feature-desc">HTML, XML, SVG</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-css3"></span></div>
-                    <h3 class="docs-feature-title">css</h3>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon"><span class="lang-icon lang-icon-css3"></span></div>
+                        <h3 class="docs-feature-title">css</h3>
+                    </div>
                     <p class="docs-feature-desc">Cascading Style Sheets</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-javascript"></span></div>
-                    <h3 class="docs-feature-title">javascript</h3>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon"><span class="lang-icon lang-icon-javascript"></span></div>
+                        <h3 class="docs-feature-title">javascript</h3>
+                    </div>
                     <p class="docs-feature-desc">JavaScript / ES6+</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-json"></span></div>
-                    <h3 class="docs-feature-title">json</h3>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon"><span class="lang-icon lang-icon-json"></span></div>
+                        <h3 class="docs-feature-title">json</h3>
+                    </div>
                     <p class="docs-feature-desc">JSON data format</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-bash"></span></div>
-                    <h3 class="docs-feature-title">bash</h3>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon"><span class="lang-icon lang-icon-bash"></span></div>
+                        <h3 class="docs-feature-title">bash</h3>
+                    </div>
                     <p class="docs-feature-desc">Shell scripts</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-markdown"></span></div>
-                    <h3 class="docs-feature-title">markdown</h3>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon"><span class="lang-icon lang-icon-markdown"></span></div>
+                        <h3 class="docs-feature-title">markdown</h3>
+                    </div>
                     <p class="docs-feature-desc">Markdown syntax</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-typescript"></span></div>
-                    <h3 class="docs-feature-title">typescript</h3>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon"><span class="lang-icon lang-icon-typescript"></span></div>
+                        <h3 class="docs-feature-title">typescript</h3>
+                    </div>
                     <p class="docs-feature-desc">TypeScript</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-react"></span></div>
-                    <h3 class="docs-feature-title">jsx</h3>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon"><span class="lang-icon lang-icon-react"></span></div>
+                        <h3 class="docs-feature-title">jsx</h3>
+                    </div>
                     <p class="docs-feature-desc">React JSX syntax</p>
                 </div>
                 <div class="docs-feature-card">
-                    <div class="docs-feature-icon"><span class="lang-icon lang-icon-python"></span></div>
-                    <h3 class="docs-feature-title">python</h3>
+                    <div class="docs-feature-header">
+                        <div class="docs-feature-icon"><span class="lang-icon lang-icon-python"></span></div>
+                        <h3 class="docs-feature-title">python</h3>
+                    </div>
                     <p class="docs-feature-desc">Python 3</p>
                 </div>
             </div>
@@ -933,8 +973,10 @@
         <section class="docs-section" id="plugins">
             <h2 class="docs-section-title">Available Plugins</h2>
             <p class="docs-section-desc">
-                Prism plugins extend syntax highlighting with additional features like line numbers, brace matching, and more.
-                Enable plugins per code block using HTML comment directives placed immediately before the <code>&lt;pre&gt;&lt;code&gt;</code> block.
+                Prism plugins extend syntax highlighting with additional features like line numbers, brace matching, command-line prompts, and file structure visualization.
+                Each plugin is designed to enhance specific aspects of code presentation, from improving readability with line numbers to providing interactive features like brace matching on hover.
+                Enable plugins per code block using HTML comment directives placed immediately before the <code>&lt;pre&gt;&lt;code&gt;</code> block—this gives you fine-grained control over which features appear on each code example.
+                Plugins can be combined freely, allowing you to create the perfect presentation for each code snippet. The directive system is processed at render time, so changes take effect immediately without requiring any build steps or configuration changes.
             </p>
 
             <div class="docs-card">
@@ -999,11 +1041,10 @@
         <!-- Deprecated Plugins Section -->
         <section class="docs-section" id="deprecated-plugins">
             <h2 class="docs-section-title">Deprecated Plugins</h2>
-            <p class="docs-section-desc">These plugins are automatically filtered out and should not be used.</p>
 
             <div class="docs-callout docs-callout-warning">
                 <div class="docs-callout-title">⚠️ Auto-filtered Plugins</div>
-                <p>The following plugins conflict with PhantomSPA's <strong>custom-headers</strong> drop-in module, which provides enhanced code block headers with language labels, copy buttons, and download menus. These directives are automatically stripped from your code and replaced by the custom-headers functionality:</p>
+                <p>The following plugins conflict with PhantomSPA's <strong>custom-headers</strong> drop-in module architecture, which provides enhanced code block headers with language labels, copy buttons, and download menus. These directives are automatically stripped from your code and replaced by the custom-headers functionality:</p>
                 <table class="docs-table" style="margin-top: 1rem;">
                     <thead>
                         <tr>
@@ -1036,7 +1077,10 @@
 
         <!-- Example: Line Numbers -->
         <section class="docs-section" id="example-line-numbers">
-            <h2 class="docs-section-title">Example: Line Numbers <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a></h2>
+            <div class="docs-section-title-row">
+                <h2 class="docs-section-title">Example: Line Numbers</h2>
+                <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a>
+            </div>
             <p class="docs-section-desc">Add line numbers to make code easier to reference.</p>
 
             <div class="docs-code-example">
@@ -1061,7 +1105,10 @@ export default config;</code></pre>
 
         <!-- Example: Line Highlighting -->
         <section class="docs-section" id="example-line-highlight">
-            <h2 class="docs-section-title">Example: Line Highlighting <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a></h2>
+            <div class="docs-section-title-row">
+                <h2 class="docs-section-title">Example: Line Highlighting</h2>
+                <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a>
+            </div>
             <p class="docs-section-desc">Highlight specific lines to draw attention to important code.</p>
 
             <div class="docs-code-example">
@@ -1084,7 +1131,10 @@ function authenticate(user, password) {
 
         <!-- Example: Match Braces -->
         <section class="docs-section" id="example-match-braces">
-            <h2 class="docs-section-title">Example: Match Braces <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a></h2>
+            <div class="docs-section-title-row">
+                <h2 class="docs-section-title">Example: Match Braces</h2>
+                <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a>
+            </div>
             <p class="docs-section-desc">Highlight matching braces, brackets, and parentheses on hover.</p>
 
             <div class="docs-subsection">
@@ -1131,7 +1181,10 @@ function authenticate(user, password) {
 
         <!-- Example: Command Line -->
         <section class="docs-section" id="example-command-line">
-            <h2 class="docs-section-title">Example: Command Line <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a></h2>
+            <div class="docs-section-title-row">
+                <h2 class="docs-section-title">Example: Command Line</h2>
+                <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a>
+            </div>
             <p class="docs-section-desc">Display terminal commands with prompts and output.</p>
 
             <div class="docs-code-example">
@@ -1147,7 +1200,10 @@ npm start</code></pre>
 
         <!-- Example: Treeview -->
         <section class="docs-section" id="example-treeview">
-            <h2 class="docs-section-title">Example: Treeview <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a></h2>
+            <div class="docs-section-title-row">
+                <h2 class="docs-section-title">Example: Treeview</h2>
+                <a href="#plugins" class="docs-back-to-top" title="Back to Available Plugins table" aria-label="Back to Available Plugins table">⬆️</a>
+            </div>
             <p class="docs-section-desc">Display file and folder structures with optional icons.</p>
 
             <div class="docs-subsection">
@@ -1217,23 +1273,6 @@ phantomspa/
 
     </main>
 
-    <!-- ===== RIGHT TOC ===== -->
-    <aside class="docs-toc">
-        <div class="docs-toc-title">On This Page</div>
-        <ul class="docs-toc-list">
-            <li><a href="#introduction" class="active">Introduction</a></li>
-            <li><a href="#best-practices">Best Practices</a></li>
-            <li><a href="#languages">Supported Languages</a></li>
-            <li><a href="#plugins">Available Plugins</a></li>
-            <li><a href="#deprecated-plugins">Deprecated Plugins</a></li>
-            <li><a href="#example-line-numbers">Line Numbers</a></li>
-            <li><a href="#example-line-highlight">Line Highlighting</a></li>
-            <li><a href="#example-match-braces">Match Braces</a></li>
-            <li><a href="#example-command-line">Command Line</a></li>
-            <li><a href="#example-treeview">Treeview</a></li>
-        </ul>
-    </aside>
-
 </div>
 
 <script type="module">
@@ -1283,8 +1322,8 @@ async function initPrism() {
 
 // Scroll-spy: Active nav link highlighting using Intersection Observer
 function initScrollSpy() {
-    // Get all nav links that point to sections
-    const navLinks = document.querySelectorAll('.docs-nav-link, .docs-toc-list a');
+    // Get all nav links that point to sections (left sidebar only)
+    const navLinks = document.querySelectorAll('.docs-nav-link');
 
     // Build a map of section IDs to their nav links
     const sectionIds = new Set();

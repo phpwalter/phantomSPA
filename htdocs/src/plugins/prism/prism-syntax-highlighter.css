@@ -581,7 +581,8 @@ div.code-toolbar > pre {
 }
 
 /* Copy button success state */
-.prism-copy-btn.success {
+.prism-copy-btn.success,
+.prism-copy-btn.copied {
     color: #4ade80;
     background: rgba(74, 222, 128, 0.1);
 }
