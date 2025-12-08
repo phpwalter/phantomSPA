@@ -797,29 +797,33 @@ async function applyDirectiveOptions(pre, options) {
     });
 
     // Execute custom activation handlers for directives that require special logic
+    // All activation handlers are located in dropins/ directory
     for (const directive of appliedDirectives) {
         const directiveConfig = directives[directive];
         if (directiveConfig?.customActivation) {
+            const handlerName = directiveConfig.customActivation;
+
+            // Build context object for the handler
+            const context = {
+                options,
+                appliedDirectives,
+                directiveConfig
+            };
+
             try {
-                // Dynamic import of the activation handler
-                const handlerPath = `./activation-handlers/${directiveConfig.customActivation}.js`;
-                const handler = await import(handlerPath);
+                // Load activation handler from dropins/ directory
+                const dropinPath = `./dropins/${handlerName}.js`;
+                const handler = await import(dropinPath);
 
-                // Build context object for the handler
-                const context = {
-                    options,
-                    appliedDirectives,
-                    directiveConfig
-                };
-
-                // Execute the handler
-                if (typeof handler.activate === 'function') {
+                // Execute the activation function
+                if (handler && typeof handler.activate === 'function') {
                     handler.activate(pre, code, context);
+                    console.debug(`[prism-config] Activated ${handlerName}`);
                 } else {
-                    console.warn(`[prism-config] Handler ${directiveConfig.customActivation} has no activate function`);
+                    console.warn(`[prism-config] Handler ${handlerName} has no activate function`);
                 }
             } catch (err) {
-                console.error(`[prism-config] Failed to load activation handler: ${directiveConfig.customActivation}`, err);
+                console.error(`[prism-config] Failed to load activation handler: ${handlerName}`, err);
             }
         }
     }

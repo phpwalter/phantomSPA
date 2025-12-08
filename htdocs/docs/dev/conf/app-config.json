@@ -50,6 +50,18 @@
             "jsPath": "/plugins/command-line/prism-command-line.min.js",
             "cssPath": "/plugins/command-line/prism-command-line.min.css",
             "dependencies": []
+          },
+          {
+            "name": "match-braces",
+            "jsPath": "/plugins/match-braces/prism-match-braces.min.js",
+            "cssPath": "/plugins/match-braces/prism-match-braces.min.css",
+            "dependencies": []
+          },
+          {
+            "name": "treeview",
+            "jsPath": "/plugins/treeview/prism-treeview.min.js",
+            "cssPath": "/plugins/treeview/prism-treeview.min.css",
+            "dependencies": []
           }
         ],
         "availablePlugins": [
@@ -81,6 +93,30 @@
             "name": "treeview",
             "jsPath": "/plugins/treeview/prism-treeview.min.js",
             "cssPath": "/plugins/treeview/prism-treeview.min.css",
+            "dependencies": []
+          },
+          {
+            "name": "match-braces",
+            "jsPath": "/plugins/match-braces/prism-match-braces.min.js",
+            "cssPath": "/plugins/match-braces/prism-match-braces.min.css",
+            "dependencies": []
+          },
+          {
+            "name": "line-numbers",
+            "jsPath": "/plugins/line-numbers/prism-line-numbers.min.js",
+            "cssPath": "/plugins/line-numbers/prism-line-numbers.min.css",
+            "dependencies": []
+          },
+          {
+            "name": "line-highlight",
+            "jsPath": "/plugins/line-highlight/prism-line-highlight.min.js",
+            "cssPath": "/plugins/line-highlight/prism-line-highlight.min.css",
+            "dependencies": []
+          },
+          {
+            "name": "command-line",
+            "jsPath": "/plugins/command-line/prism-command-line.min.js",
+            "cssPath": "/plugins/command-line/prism-command-line.min.css",
             "dependencies": []
           }
         ]

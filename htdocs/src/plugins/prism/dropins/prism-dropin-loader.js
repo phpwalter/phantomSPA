@@ -11,10 +11,10 @@
  * - onConfigChange: Called when user changes Prism settings
  * - destroy: Called when the drop-in is unloaded (if supported)
  *
- * @module prism-dropin-loader
+ * @module dropins/prism-dropin-loader
  */
 
-import { getDirectiveConfig } from './prism-config.js';
+import { getDirectiveConfig } from '../prism-config.js';
 
 // Registry of loaded drop-ins
 const loadedDropins = new Map();
@@ -70,12 +70,22 @@ async function loadDropin(name, config) {
         return;
     }
 
-    // Resolve module path relative to this file
+    // Resolve module path relative to this file (now in dropins/ directory)
     const scriptUrl = import.meta.url;
     const basePath = scriptUrl.substring(0, scriptUrl.lastIndexOf('/'));
-    const modulePath = config.module.startsWith('./')
-        ? `${basePath}/${config.module.substring(2)}`
-        : config.module;
+
+    // Module paths in config are relative to prism plugin root (e.g., "./dropins/foo.js")
+    // Since we're now IN the dropins directory, we need to handle this
+    let modulePath;
+    if (config.module.startsWith('./dropins/')) {
+        // Strip "./dropins/" prefix since we're already in dropins/
+        modulePath = `${basePath}/${config.module.substring(10)}`;
+    } else if (config.module.startsWith('./')) {
+        // Relative to prism root, go up one level
+        modulePath = `${basePath}/../${config.module.substring(2)}`;
+    } else {
+        modulePath = config.module;
+    }
 
     console.log(`[prism-dropins] Loading "${name}" from ${modulePath}`);
 
@@ -169,4 +179,3 @@ export function isDropinLoaded(name) {
 export function getLoadedDropins() {
     return Array.from(loadedDropins.keys());
 }
-

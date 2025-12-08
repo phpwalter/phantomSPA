@@ -24,7 +24,7 @@ import {
 } from './prism-config.js';
 
 import { loadPrismPlugins } from './prism-plugin-loader.js';
-import { loadDropins, executeHook } from './prism-dropin-loader.js';
+import { loadDropins, executeHook } from './dropins/prism-dropin-loader.js';
 
 /**
  * Plugin initialization function called by the plugin manager

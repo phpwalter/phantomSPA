@@ -331,13 +331,13 @@
     "dropins": {
         "$comment": "Drop-in modules that extend Prism functionality without modifying core files",
 
-        "custom-headers": {
-            "description": "Adds custom headers with language icons, copy button, and download menu to code blocks",
-            "module": "./dropins/custom-headers.js",
+        "toolbar": {
+            "description": "Toolbar orchestration - registers PhantomSPA buttons with Prism toolbar plugin",
+            "module": "./dropins/toolbar.js",
             "enabled": true,
-            "hooks": ["afterHighlight", "onConfigChange"],
+            "hooks": ["init", "afterHighlight", "onConfigChange"],
             "options": {
-                "showLanguageIcon": true,
+                "showLanguageLabel": true,
                 "showCopyButton": true,
                 "showDownloadMenu": true
             }
