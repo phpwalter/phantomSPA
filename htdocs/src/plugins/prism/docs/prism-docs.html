@@ -1293,31 +1293,118 @@ const prismConfig = {
     cdnBase: 'https://cdn.jsdelivr.net/npm/prismjs@{version}',
     languages: ['markup', 'css', 'javascript', 'json', 'bash', 'markdown', 'typescript', 'jsx', 'python'],
     plugins: [
+        // Core plugins - loaded from CDN
         { name: 'line-numbers', jsPath: '/plugins/line-numbers/prism-line-numbers.min.js', cssPath: '/plugins/line-numbers/prism-line-numbers.min.css', dependencies: [] },
         { name: 'match-braces', jsPath: '/plugins/match-braces/prism-match-braces.min.js', cssPath: '/plugins/match-braces/prism-match-braces.min.css', dependencies: [] },
         { name: 'line-highlight', jsPath: '/plugins/line-highlight/prism-line-highlight.min.js', cssPath: '/plugins/line-highlight/prism-line-highlight.min.css', dependencies: [] },
         { name: 'command-line', jsPath: '/plugins/command-line/prism-command-line.min.js', cssPath: '/plugins/command-line/prism-command-line.min.css', dependencies: [] },
-        { name: 'toolbar', jsPath: '/plugins/toolbar/prism-toolbar.min.js', cssPath: '/plugins/toolbar/prism-toolbar.min.css', dependencies: [] },
-        { name: 'copy-to-clipboard', jsPath: '/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js', cssPath: null, dependencies: ['toolbar'] },
-        { name: 'show-language', jsPath: '/plugins/show-language/prism-show-language.min.js', cssPath: null, dependencies: ['toolbar'] },
-        { name: 'treeview', jsPath: '/plugins/treeview/prism-treeview.min.js', cssPath: '/plugins/treeview/prism-treeview.min.css', dependencies: [] }
+        { name: 'treeview', jsPath: '/plugins/treeview/prism-treeview.min.js', cssPath: '/plugins/treeview/prism-treeview.min.css', dependencies: [] },
+        // Toolbar plugin - required for PhantomSPA custom buttons
+        // NOTE: Do NOT load copy-to-clipboard or show-language from CDN - PhantomSPA provides custom implementations
+        { name: 'toolbar', jsPath: '/plugins/toolbar/prism-toolbar.min.js', cssPath: '/plugins/toolbar/prism-toolbar.min.css', dependencies: [] }
     ]
 };
 
 async function initPrism() {
     console.log('=== Initializing Prism.js for Documentation Page ===');
     try {
+        // Use document.body as the container for standalone docs page
         const mockSPA = { events: { addEventListener: () => {} } };
-        await setup(mockSPA, prismConfig);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        await applyPerBlockPrismConfig(document.body);
+
+        console.log('[docs] Step 1: Calling setup()...');
+        await setup(mockSPA, {
+            ...prismConfig,
+            // Override selectors for standalone docs page (no PhantomSPA shell)
+            containerSelector: 'body',
+            navSelector: '.docs-header',
+            controlsSelector: '.docs-nav-actions'
+        });
+        console.log('[docs] Step 1 complete: setup() finished');
+
+        // Check Prism state after setup
+        console.log('[docs] Prism state after setup:');
+        console.log('   - window.Prism exists:', !!window.Prism);
+        console.log('   - Prism.manual:', window.Prism?.manual);
+        console.log('   - Prism.plugins:', Object.keys(window.Prism?.plugins || {}));
+        console.log('   - Prism.plugins.toolbar:', !!window.Prism?.plugins?.toolbar);
+        console.log('   - toolbar.registerButton:', typeof window.Prism?.plugins?.toolbar?.registerButton);
+
+        // Get the container for highlighting
+        const container = document.body;
         let config = loadPrismConfig();
+        console.log('[docs] Step 2: Loaded config:', config);
+
+        // Execute beforeHighlight hook (required for some dropins)
+        console.log('[docs] Step 3: Executing beforeHighlight hook...');
+        await executeHook('beforeHighlight', { container, config });
+
+        // Apply per-block configuration from HTML comment directives
+        console.log('[docs] Step 4: Applying per-block config...');
+
+        // Debug: Check directive config before applying
+        const { getDirectiveConfig } = await import('/src/plugins/prism/prism-config-storage.js');
+        const directiveConfig = getDirectiveConfig();
+        console.log('[docs] Directive config loaded:', {
+            hasDirectives: !!directiveConfig.directives,
+            directiveCount: Object.keys(directiveConfig.directives || {}).length,
+            directives: Object.keys(directiveConfig.directives || {}),
+            hasDropins: !!directiveConfig.dropins,
+            dropinCount: Object.keys(directiveConfig.dropins || {}).length
+        });
+
+        await applyPerBlockPrismConfig(container);
+
+        // Check pre elements after directive parsing
+        const preElements = container.querySelectorAll('pre');
+        console.log('[docs] Pre elements found:', preElements.length);
+        preElements.forEach((pre, i) => {
+            if (i < 5) { // Log first 5 only
+                console.log(`   Pre ${i}: classes="${pre.className}", data-line="${pre.getAttribute('data-line')}"`);
+            }
+        });
+
+        // Apply global configuration
+        console.log('[docs] Step 5: Applying global config...');
         applyPrismConfig(config);
-        highlightCode(document.body, config);
-        await executeHook('afterHighlight', { container: document.body, config: config });
+
+        // Highlight all code blocks
+        console.log('[docs] Step 6: Highlighting code...');
+        highlightCode(container, config);
+
+        // Execute afterHighlight hook (toolbar styling, tree icons, etc.)
+        console.log('[docs] Step 7: Executing afterHighlight hook...');
+        await executeHook('afterHighlight', { container, config });
+
+        // Check for code-toolbar wrappers (created by Prism toolbar plugin)
+        const toolbars = container.querySelectorAll('.code-toolbar');
+        console.log('[docs] Code-toolbar wrappers found:', toolbars.length);
+
+        // Check DOM state after highlighting
+        console.log('[docs] === DOM State After Highlighting ===');
+        const allPres = container.querySelectorAll('pre');
+        allPres.forEach((pre, i) => {
+            if (i < 5) {
+                const hasLineNumbers = pre.classList.contains('line-numbers');
+                const hasLineNumbersRows = pre.querySelector('.line-numbers-rows');
+                const hasToolbar = pre.parentElement?.classList.contains('code-toolbar');
+                const toolbarDiv = pre.parentElement?.querySelector('.toolbar');
+                console.log(`   Pre ${i}:`, {
+                    classes: pre.className,
+                    hasLineNumbers,
+                    hasLineNumbersRows: !!hasLineNumbersRows,
+                    hasToolbarWrapper: hasToolbar,
+                    hasToolbarDiv: !!toolbarDiv,
+                    toolbarButtons: toolbarDiv ? toolbarDiv.querySelectorAll('.toolbar-item').length : 0
+                });
+            }
+        });
+
         console.log('✅ Prism.js initialized successfully');
+        console.log('   Toolbar available:', typeof Prism !== 'undefined' && !!Prism.plugins?.toolbar);
+        console.log('   Registered plugins:', Object.keys(Prism?.plugins || {}));
     } catch (err) {
         console.error('❌ Failed to initialize Prism.js:', err);
+        console.error(err.stack);
     }
 }
 

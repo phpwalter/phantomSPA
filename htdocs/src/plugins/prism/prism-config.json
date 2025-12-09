@@ -335,7 +335,7 @@
             "description": "Toolbar orchestration - registers PhantomSPA buttons with Prism toolbar plugin",
             "module": "./dropins/toolbar.js",
             "enabled": true,
-            "hooks": ["init", "afterHighlight", "onConfigChange"],
+            "hooks": ["init", "beforeHighlight", "afterHighlight", "onConfigChange"],
             "options": {
                 "showLanguageLabel": true,
                 "showCopyButton": true,

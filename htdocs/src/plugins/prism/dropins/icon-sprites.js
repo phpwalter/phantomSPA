@@ -7,29 +7,7 @@
  * @module dropins/icon-sprites
  */
 
-/**
- * Load a stylesheet dynamically
- * @param {string} href - CSS file URL
- * @param {string} id - Link element ID
- * @returns {Promise<void>}
- */
-function loadStylesheet(href, id) {
-    return new Promise((resolve, reject) => {
-        // Check if already loaded
-        if (document.getElementById(id)) {
-            resolve();
-            return;
-        }
-
-        const link = document.createElement('link');
-        link.id = id;
-        link.rel = 'stylesheet';
-        link.href = href;
-        link.onload = () => resolve();
-        link.onerror = () => reject(new Error(`Failed to load stylesheet: ${href}`));
-        document.head.appendChild(link);
-    });
-}
+import { loadStylesheet } from '../prism-utils.js';
 
 /**
  * Initialize the icon sprites drop-in

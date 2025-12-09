@@ -24,11 +24,29 @@ import {
 
 import { loadPrismPlugins } from './prism-plugin-loader.js';
 import { loadDropins, executeHook } from './dropins/prism-dropin-loader.js';
+import { loadStylesheet, loadScript } from './prism-utils.js';
+
+/**
+ * Default DOM selectors for PhantomSPA integration.
+ * These can be overridden via options for portability to other frameworks.
+ * @type {Object}
+ */
+const DEFAULT_SELECTORS = {
+    /** Main content container where code blocks are rendered */
+    containerSelector: '#app-shell',
+    /** Navigation element where settings button is placed */
+    navSelector: '.site-nav',
+    /** Controls container within nav for settings button */
+    controlsSelector: '.nav-controls'
+};
 
 /**
  * Plugin initialization function called by the plugin manager
  * @param {PluginManager} pluginManager - The plugin manager instance
  * @param {Object} options - Plugin options from app-config.json
+ * @param {string} [options.containerSelector='#app-shell'] - CSS selector for main content container
+ * @param {string} [options.navSelector='.site-nav'] - CSS selector for navigation element
+ * @param {string} [options.controlsSelector='.nav-controls'] - CSS selector for controls container
  */
 export async function init(pluginManager, options = {}) {
     // For compatibility with the plugin manager, we need to access the eventBus
@@ -54,6 +72,14 @@ export async function setup(spa, options = {}) {
         console.groupEnd();
         return;
     }
+
+    // Merge selector options with defaults for portability
+    const selectors = {
+        ...DEFAULT_SELECTORS,
+        containerSelector: options.containerSelector || DEFAULT_SELECTORS.containerSelector,
+        navSelector: options.navSelector || DEFAULT_SELECTORS.navSelector,
+        controlsSelector: options.controlsSelector || DEFAULT_SELECTORS.controlsSelector
+    };
 
     const config = options;
 
@@ -87,8 +113,8 @@ export async function setup(spa, options = {}) {
         // Step 8: Hook into SPA routing to highlight code on page load
         if (spa.events) {
             spa.events.addEventListener('route:after', async (event) => {
-                // TODO: Make container selector configurable via options.containerSelector for portability outside PhantomSPA
-                const main = document.querySelector('#app-shell');
+                // Container selector is configurable via options.containerSelector for portability
+                const main = document.querySelector(selectors.containerSelector);
                 if (main) {
                     // Execute beforeHighlight hook for drop-ins
                     await executeHook('beforeHighlight', { container: main, config: prismConfig });
@@ -106,12 +132,12 @@ export async function setup(spa, options = {}) {
             });
         }
 
-        // Step 9: Initialize settings UI
-        initPrismSettingsUI(spa, prismConfig, async (newConfig) => {
+        // Step 9: Initialize settings UI (pass selectors for portability)
+        initPrismSettingsUI(spa, prismConfig, selectors, async (newConfig) => {
             prismConfig = newConfig;
             // Re-apply highlighting to current page
-            // TODO: Make container selector configurable via options.containerSelector for portability outside PhantomSPA
-            const main = document.querySelector('#app-shell');
+            // Container selector is configurable via options.containerSelector for portability
+            const main = document.querySelector(selectors.containerSelector);
             if (main) {
                 highlightCode(main, prismConfig);
                 // Execute onConfigChange hook for drop-ins
@@ -161,6 +187,13 @@ async function loadPrismCDNResources(config) {
     // Load Prism core
     await loadScript(`${cdnBase}/prism.min.js`, 'prism-core');
 
+    // Debug: Check Prism state after core loads
+    console.log('[prism-syntax-highlighter] After Prism core load:');
+    console.log('   - window.Prism exists:', !!window.Prism);
+    console.log('   - Prism.manual:', window.Prism?.manual);
+    console.log('   - Prism.plugins:', Object.keys(window.Prism?.plugins || {}));
+    console.log('   - Prism.highlightElement:', typeof window.Prism?.highlightElement);
+
     // Load languages
     if (config.languages && Array.isArray(config.languages)) {
         for (const lang of config.languages) {
@@ -202,12 +235,18 @@ function injectCSSFixes() {
 
 /**
  * Initialize Prism settings UI
+ * @param {Object} spa - SPA instance with events
+ * @param {Object} prismConfig - Current Prism configuration
+ * @param {Object} selectors - DOM selectors for portability
+ * @param {string} selectors.navSelector - CSS selector for navigation element
+ * @param {string} selectors.controlsSelector - CSS selector for controls container
+ * @param {Function} onConfigChange - Callback when configuration changes
  */
-function initPrismSettingsUI(spa, prismConfig, onConfigChange) {
+function initPrismSettingsUI(spa, prismConfig, selectors, onConfigChange) {
     // Wait for navigation to be rendered
     const checkNav = setInterval(() => {
-        // TODO: Make nav selector configurable via options.settingsUI.navSelector for portability outside PhantomSPA
-        const nav = document.querySelector('.site-nav');
+        // Nav selector is configurable via options.navSelector for portability
+        const nav = document.querySelector(selectors.navSelector);
         if (nav) {
             clearInterval(checkNav);
 
@@ -218,11 +257,11 @@ function initPrismSettingsUI(spa, prismConfig, onConfigChange) {
             const button = createPrismSettingsButton(panel);
 
             // Find or create nav controls container
-            // TODO: Make controls selector configurable via options.settingsUI.controlsSelector for portability outside PhantomSPA
-            let controlsContainer = nav.querySelector('.nav-controls');
+            // Controls selector is configurable via options.controlsSelector for portability
+            let controlsContainer = nav.querySelector(selectors.controlsSelector);
             if (!controlsContainer) {
                 controlsContainer = document.createElement('div');
-                controlsContainer.className = 'nav-controls';
+                controlsContainer.className = selectors.controlsSelector.replace(/^\./, '');
                 nav.insertBefore(controlsContainer, nav.firstChild);
             }
 
@@ -235,44 +274,5 @@ function initPrismSettingsUI(spa, prismConfig, onConfigChange) {
     setTimeout(() => clearInterval(checkNav), 5000);
 }
 
-/**
- * Load a stylesheet dynamically
- */
-function loadStylesheet(href, id) {
-    return new Promise((resolve, reject) => {
-        // Check if already loaded
-        if (document.getElementById(id)) {
-            resolve();
-            return;
-        }
-
-        const link = document.createElement('link');
-        link.id = id;
-        link.rel = 'stylesheet';
-        link.href = href;
-        link.onload = () => resolve();
-        link.onerror = () => reject(new Error(`Failed to load stylesheet: ${href}`));
-        document.head.appendChild(link);
-    });
-}
-
-/**
- * Load a script dynamically
- */
-function loadScript(src, id) {
-    return new Promise((resolve, reject) => {
-        // Check if already loaded
-        if (document.getElementById(id)) {
-            resolve();
-            return;
-        }
-
-        const script = document.createElement('script');
-        script.id = id;
-        script.src = src;
-        script.defer = true;
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
-        document.head.appendChild(script);
-    });
-}
+// Note: loadStylesheet and loadScript are now imported from ./prism-utils.js
+// to avoid code duplication with dropins/icon-sprites.js

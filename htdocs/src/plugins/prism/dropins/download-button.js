@@ -24,13 +24,24 @@
  */
 
 let dropinConfig = {};
+let globalClickListenerAttached = false;
 
 /**
  * Initialize the download-button drop-in
+ * Sets up a single global click listener for all dropdown menus (event delegation)
  * @param {Object} context - Initialization context
  */
 export async function init(context) {
     dropinConfig = context.config || {};
+
+    // Attach global click listener once for all dropdowns (event delegation pattern)
+    // This prevents memory leaks from adding listeners per code block
+    if (!globalClickListenerAttached) {
+        document.addEventListener('click', handleGlobalClick);
+        globalClickListenerAttached = true;
+        console.log('[download-button] Global click listener attached');
+    }
+
     console.log('[download-button] Initialized');
     return {
         createDownloadMenu,
@@ -38,6 +49,25 @@ export async function init(context) {
         downloadCode,
         getFileExtension
     };
+}
+
+/**
+ * Global click handler for closing dropdowns (event delegation)
+ * Closes all open dropdowns when clicking outside of them
+ * @param {Event} event - Click event
+ */
+function handleGlobalClick(event) {
+    // Check if click is inside a dropdown container
+    const container = event.target.closest('.prism-download-container');
+
+    // Close all dropdowns except the one being clicked (if any)
+    const allDropdowns = document.querySelectorAll('.prism-dropdown-menu.show');
+    allDropdowns.forEach(dropdown => {
+        // If clicking outside any container, or inside a different container, close this dropdown
+        if (!container || !container.contains(dropdown)) {
+            dropdown.classList.remove('show');
+        }
+    });
 }
 
 /**
@@ -122,8 +152,8 @@ export function createDownloadMenu(codeText, title, language) {
         dropdown.classList.remove('show');
     });
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', () => dropdown.classList.remove('show'));
+    // Note: Global click handler for closing dropdowns is attached once in init()
+    // using event delegation pattern to prevent memory leaks
 
     return { menuBtn, dropdown };
 }

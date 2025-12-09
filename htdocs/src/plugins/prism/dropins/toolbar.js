@@ -53,13 +53,26 @@ export async function init(context) {
 
     // Register buttons with Prism toolbar if available
     // This must happen during init, before any highlighting occurs
-    registerToolbarButtons();
+    // Use retry mechanism in case toolbar plugin is still loading
+    await registerToolbarButtonsWithRetry();
 
     return {
         registerToolbarButtons,
         isToolbarAvailable,
         enhanceToolbarStyling
     };
+}
+
+/**
+ * beforeHighlight hook - ensure buttons are registered before highlighting
+ * This is a safety net in case init() ran before toolbar was ready
+ * @param {Object} context - Hook context
+ */
+export function beforeHighlight(context) {
+    if (!buttonsRegistered) {
+        console.log('[toolbar] beforeHighlight: Attempting button registration...');
+        registerToolbarButtons();
+    }
 }
 
 /**
@@ -70,6 +83,36 @@ export function isToolbarAvailable() {
     return typeof Prism !== 'undefined' &&
            Prism.plugins?.toolbar &&
            typeof Prism.plugins.toolbar.registerButton === 'function';
+}
+
+/**
+ * Register PhantomSPA buttons with Prism's toolbar plugin with retry mechanism
+ * Waits for toolbar plugin to be available (up to 2 seconds)
+ * @returns {Promise<boolean>} True if registration succeeded
+ */
+async function registerToolbarButtonsWithRetry() {
+    const maxAttempts = 10;
+    const delayMs = 200;
+
+    console.log('[toolbar] Starting button registration with retry...');
+    console.log('[toolbar] Initial state:');
+    console.log('   - window.Prism exists:', typeof Prism !== 'undefined');
+    console.log('   - Prism.plugins:', typeof Prism !== 'undefined' ? Object.keys(Prism.plugins || {}) : 'N/A');
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        const available = isToolbarAvailable();
+        console.log(`[toolbar] Attempt ${attempt}/${maxAttempts}: toolbar available = ${available}`);
+
+        if (available) {
+            registerToolbarButtons();
+            return true;
+        }
+        console.log(`[toolbar] Waiting for toolbar plugin (attempt ${attempt}/${maxAttempts})...`);
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+
+    console.warn('[toolbar] Toolbar plugin not available after retries');
+    return false;
 }
 
 /**
